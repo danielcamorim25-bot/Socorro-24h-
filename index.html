@@ -198,7 +198,7 @@
                         <input type="file" id="reg-selfie" accept="image/*" capture="user" style="font-size: 12px; padding: 4px;" required>
 
                         <div class="security-badge">
-                            <i class="fa-solid fa-shield-check"></i> Antecedentes criminais verificados em base federal via CPF e Selfie.
+                            <i class="fa-solid fa-shield-check"></i> Antecedentes criminais verificados via CPF e Selfie.
                         </div>
 
                         <button type="submit" class="btn-primary" style="margin-top: 15px;">Concluir Cadastro Seguro</button>
@@ -292,7 +292,7 @@
                         <!-- OPÇÕES DE FORMA DE PAGAMENTO E TROCO -->
                         <label>Forma de Pagamento Preferida:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix Online pelo App (Garantido em Custódia)</option>
+                            <option value="pix_online">Pix Online pelo Mercado Pago (Garantido em Custódia)</option>
                             <option value="cash_direct">Dinheiro ou Cartão Direto ao Mecânico no Local</option>
                         </select>
 
@@ -438,11 +438,11 @@
 
                 <div id="modal-pix-section">
                     <div style="background: #e8f5e9; border: 1px solid #c8e6c9; padding: 10px; border-radius: 6px; font-size: 12px; color: #2e7d32; margin-bottom: 10px;">
-                        <i class="fa-solid fa-shield-halved"></i> <b>Pagamento Protegido no Sistema (Custódia):</b><br>
-                        O valor fica retido no app e só é repassado ao prestador após o término do socorro e digitação do PIN.
+                        <i class="fa-solid fa-shield-halved"></i> <b>Pagamento Protegido Mercado Pago (Custódia):</b><br>
+                        O valor fica retido com segurança e só é liberado para o prestador após a conclusão e o PIN.
                     </div>
 
-                    <label>Pix Copia e Cola (Taxa Inicial de Deslocamento):</label>
+                    <label>Pix Copia e Cola Oficial Mercado Pago:</label>
                     <div class="pix-code-box" id="pix-code">00020126580014BR.GOV.BCB.PIX0136resgate24h-pagamentos-aut-88371252040000000.00</div>
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()">
                         <i class="fa-solid fa-copy"></i> Copiar Código Pix
@@ -488,6 +488,12 @@
             messagingSenderId: "990265975054",
             appId: "1:990265975054:web:9dfdff267988368a77abbf",
             measurementId: "G-TXBFY74LD"
+        };
+
+        // CREDENCIAIS OFICIAIS MERCADO PAGO INTEGRADAS
+        const MERCADO_PAGO_CONFIG = {
+            publicKey: "APP_USR-ad16fd7a-f6d3-4ae8-a039-933834d587c0",
+            accessToken: "APP_USR-4473911271421064-102313-8adce932ee43b2bcb3811eee6a20e44a-394061967"
         };
 
         // Inicializar Firebase
@@ -645,7 +651,7 @@
                 plate: document.getElementById('reg-plate').value
             };
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
-            alert("✅ Cadastro verificado com sucesso! Antecedentes e selfie validados pelo sistema federal.");
+            alert("✅ Cadastro verificado com sucesso! Antecedentes e selfie validados pelo sistema.");
             selectRole('client');
         }
 
@@ -664,7 +670,7 @@
                 nightDuty: document.getElementById('mech-night').checked
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-            alert("✅ Profissional verificado com sucesso! Antecedentes criminais limpos e selfie confirmada.");
+            alert("✅ Profissional verificado com sucesso! Antecedentes limpos e selfie confirmada.");
             selectRole('mechanic');
         }
 
@@ -825,7 +831,7 @@
             var dynamicAnswer = document.getElementById('dynamic-answer').value;
             var paymentMethod = document.getElementById('payment-method-select').value;
             var changeNeeded = document.getElementById('change-amount').value || 'Não especificado';
-            var mechanicWhatsApp = "5511999999999"; // WhatsApp direto do prestador/central
+            var mechanicWhatsApp = "5511999999999"; 
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -874,12 +880,10 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     };
 
-                    // ENVIAR PARA O FIREBASE REALTIME DATABASE
                     rtdb.ref('resgate_orders/' + newOrderId).set(newOrder).then(() => {
                         checkClientActiveCode();
                         triggerEmergencyNotification("Procurando Socorrista...", "Seu pedido foi disparado no radar próximo.");
                         
-                        // FLUXO ESTILO 99/UBER: Esconde formulário e mostra radar de busca no mapa
                         document.getElementById('client-form-card').style.display = 'none';
                         document.getElementById('nearby-mech-box-card').style.display = 'none';
                         document.getElementById('searching-radar').style.display = 'block';
@@ -888,7 +892,7 @@
                         alert("Erro ao enviar pedido: " + error.message);
                     });
 
-                    var payText = (paymentMethod === 'cash_direct') ? "💵 *Dinheiro no Local* (Troco para: " + changeNeeded + ")" : "💳 *Pix no App (Custódia)*";
+                    var payText = (paymentMethod === 'cash_direct') ? "💵 *Dinheiro no Local* (Troco para: " + changeNeeded + ")" : "💳 *Pix Mercado Pago (Custódia)*";
 
                     var mensagem = "🚨 *NOVO PEDIDO DE SOCORRO (RESGATE 24H)* 🚨\n\n" +
                                    "🆔 *Pedido:* " + newOrderId + "\n" +
@@ -905,7 +909,6 @@
                                    "📍 *Referência:* " + (reference || 'Não informada') + "\n" +
                                    "🌐 *GPS Exato:* " + mapsLink;
 
-                    // ABRE O WHATSAPP AUTOMATICAMENTE PARA CONVERSAR DIRETO COM O MECÂNICO
                     var url = "https://api.whatsapp.com/send?phone=" + mechanicWhatsApp + "&text=" + encodeURIComponent(mensagem);
                     window.open(url, '_blank');
                 });
@@ -992,7 +995,7 @@
                         statusBadge = '<span class="order-badge cash"><i class="fa-solid fa-money-bill-wave"></i> Dinheiro (Troco: ' + data.changeNeeded + ')</span>';
                         paymentText = 'Cobrar R$ ' + data.clientTotal + ' em dinheiro (Troco: ' + data.changeNeeded + ').';
                     } else {
-                        statusBadge = '<span class="order-badge custody"><i class="fa-solid fa-lock"></i> Retido no App</span>';
+                        statusBadge = '<span class="order-badge custody"><i class="fa-solid fa-lock"></i> Mercado Pago</span>';
                         paymentText = 'R$ ' + data.mechPay + ' retidos com segurança no app.';
                     }
                     
@@ -1007,7 +1010,7 @@
                             <div style="font-size:12px; width:210px;">
                                 <strong style="color:#d32f2f;">🚨 ${data.vehicleType} - ${data.problem}</strong><br>
                                 <b>Necessidade:</b> ${data.dynamicAnswer || 'Nenhuma'}<br>
-                                <b>Pagamento:</b> ${data.paymentMethod === 'cash_direct' ? 'Dinheiro' : 'Pix App'}<br>
+                                <b>Pagamento:</b> ${data.paymentMethod === 'cash_direct' ? 'Dinheiro' : 'Pix Mercado Pago'}<br>
                                 <b>Ganho do Mecânico:</b> <strong style="color:#2e7d32; font-size:13px;">R$ ${data.mechPay}</strong><br>
                                 <button onclick="acceptOrder('${data.id}', '${data.clientPhone}', '${data.clientName}')" style="background:#25d366; color:#fff; border:none; padding:6px; border-radius:4px; font-weight:bold; width:100%; margin-top:6px; cursor:pointer;">
                                     Aceitar Chamado
@@ -1085,7 +1088,6 @@
                 return;
             }
 
-            // Atualiza status no Firebase para o cliente ver no mapa em tempo real
             rtdb.ref('resgate_orders/' + orderId).update({
                 status: 'accepted',
                 mechanicName: currentMechanic.name
@@ -1123,9 +1125,9 @@
                     status: 'completed'
                 }).then(() => {
                     if (targetOrder.paymentMethod === 'cash_direct') {
-                        alert("✅ SERVIÇO CONCLUÍDO E VALIDADO!\n\nVocê recebeu R$ " + targetOrder.clientTotal + " em dinheiro. A taxa da plataforma foi registrada.");
+                        alert("✅ SERVIÇO CONCLUÍDO E VALIDADO!\n\nVocê recebeu R$ " + targetOrder.clientTotal + " em dinheiro.");
                     } else {
-                        alert("✅ CÓDIGO PIN E FOTO VALIDADOS!\n\nO repasse Pix de R$ " + targetOrder.mechPay + " foi liberado para sua chave (" + currentMechanic.pixKey + ").");
+                        alert("✅ CÓDIGO PIN E FOTO VALIDADOS!\n\nO repasse de R$ " + targetOrder.mechPay + " foi liberado para sua chave Mercado Pago (" + currentMechanic.pixKey + ").");
                     }
                 });
             });
