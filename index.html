@@ -87,7 +87,7 @@
         .status-btn { background: #757575; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .status-btn.online { background: #25d366; }
 
-        /* Radar */
+        /* Radar Progressivo */
         .searching-radar-box { text-align: center; padding: 25px 15px; background: #fff3e0; border: 2px dashed #ffb300; border-radius: 10px; margin-bottom: 15px; display: none; }
         .searching-radar-box i { font-size: 40px; color: #e65100; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
         @keyframes pulseRadar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
@@ -205,8 +205,8 @@
                 <div id="client-main-content" style="display: none;">
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
-                        <h3 style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos...</h3>
-                        <p style="font-size: 12px; color: #666;">Avisando oficinas e guinchos cadastrados num raio de 10km.</p>
+                        <h3 id="radar-title-text" style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos (Raio: 10 km)...</h3>
+                        <p id="radar-desc-text" style="font-size: 12px; color: #666;">Buscando profissionais disponíveis na região.</p>
                     </div>
 
                     <div id="client-map-container" class="map-box">
@@ -309,6 +309,11 @@
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome / Oficina:</label>
                         <input type="text" id="mech-name" placeholder="Oficina do Alemão" required>
+                        
+                        <!-- NOVO CAMPO: ENDEREÇO DA OFICINA -->
+                        <label><i class="fa-solid fa-map-pin"></i> Endereço Completo da Oficina / Base:</label>
+                        <input type="text" id="mech-shop-address" placeholder="Ex: Av. Principal, 500 - Arujá / SP" required>
+
                         <label>CPF ou CNPJ:</label>
                         <input type="text" id="mech-doc-number" placeholder="00.000.000/0001-00" required>
                         <label>WhatsApp:</label>
@@ -335,13 +340,12 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- MAPA DO MECÂNICO (FOCA NO CLIENTE QUANDO ACEITO) -->
+                    <!-- MAPA DO MECÂNICO -->
                     <div class="card" style="padding: 8px;">
                         <span id="mech-map-title" style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
                     </div>
 
-                    <!-- CONTAINER DE CHAMADOS DISPONÍVEIS OU EM ANDAMENTO -->
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-bell"></i> Gerenciador de Socorro</span></h2>
                         <div id="orders-container" style="margin-top: 8px;"></div>
@@ -359,7 +363,7 @@
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
                         <div>
                             <p><b id="modal-mech-name">João Carlos</b></p>
-                            <p style="font-size:11px; color:#666;">18 anos de experiência</p>
+                            <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Endereço da Oficina</p>
                         </div>
                     </div>
                     <div>
@@ -442,10 +446,17 @@
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
+        var currentSearchRadius = 10;
+        var radarInterval = null;
+
         window.onload = function() { 
+            // ZERA TODOS OS DADOS LOCAIS AO RECARREGAR (Zera cadastros antigos)
+            localStorage.removeItem('resgate_user');
+            localStorage.removeItem('resgate_mechanic');
+            localStorage.removeItem('resgate_mech_online');
+
             checkInitialAuth(); 
             requestNotificationPermission();
-            checkPersistentOnlineState();
         };
 
         function requestNotificationPermission() {
@@ -476,10 +487,8 @@
         }
 
         function checkInitialAuth() {
-            var savedUser = localStorage.getItem('resgate_user');
-            var savedMech = localStorage.getItem('resgate_mechanic');
-            if (savedUser) currentUser = JSON.parse(savedUser);
-            if (savedMech) currentMechanic = JSON.parse(savedMech);
+            currentUser = null;
+            currentMechanic = null;
             goToWelcome();
         }
 
@@ -583,6 +592,7 @@
             e.preventDefault();
             currentMechanic = {
                 name: document.getElementById('mech-name').value,
+                shopAddress: document.getElementById('mech-shop-address').value,
                 docNumber: document.getElementById('mech-doc-number').value,
                 phone: document.getElementById('mech-phone').value,
                 pixKey: document.getElementById('mech-pix-key').value,
@@ -590,7 +600,7 @@
                 shopImg: mechShopImgUrl
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-            alert("✅ Perfil profissional cadastrado!");
+            alert("✅ Perfil profissional cadastrado com endereço da oficina!");
             selectRole('mechanic');
         }
 
@@ -626,8 +636,8 @@
         function loadNearbyMechanics() {
             document.getElementById('mechanics-list').innerHTML = `
                 <div class="mechanic-item">
-                    <span><i class="fa-solid fa-wrench"></i> <b>João Carlos (Borracharia Alemão)</b> (4.2 km)</span>
-                    <span class="badge">Raio 10km</span>
+                    <span><i class="fa-solid fa-wrench"></i> <b>Nenhum prestador cadastrado ainda</b></span>
+                    <span class="badge">Aguardando</span>
                 </div>
             `;
         }
@@ -649,6 +659,8 @@
         async function openConfirmationModal() {
             var total = 35.50;
             document.getElementById('modal-total-price').innerText = "R$ " + total.toFixed(2);
+            document.getElementById('modal-mech-name').innerText = currentMechanic ? currentMechanic.name : "Oficina Parceira";
+            document.getElementById('modal-mech-address-display').innerText = currentMechanic ? currentMechanic.shopAddress : "Endereço não informado";
             document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
             document.getElementById('modal-confirm').classList.add('active');
         }
@@ -656,6 +668,32 @@
         function closeModal() { document.getElementById('modal-confirm').classList.remove('active'); }
         function copyPixCode() { alert("Pix copiado!"); }
         function confirmSOSAndPay() { closeModal(); dispatchSOS(); }
+
+        /* RADAR PROGRESSIVO */
+        function startProgressiveRadar() {
+            currentSearchRadius = 10;
+            document.getElementById('client-form-card').style.display = 'none';
+            document.getElementById('nearby-mech-box-card').style.display = 'none';
+            document.getElementById('searching-radar').style.display = 'block';
+
+            if (radarInterval) clearInterval(radarInterval);
+
+            radarInterval = setInterval(() => {
+                currentSearchRadius += 5;
+                var titleText = document.getElementById('radar-title-text');
+                var descText = document.getElementById('radar-desc-text');
+                
+                if (titleText) titleText.innerHTML = `Expandindo Busca... (Raio: ${currentSearchRadius} km)`;
+                if (descText) descText.innerHTML = `Procurando oficinas disponíveis até ${currentSearchRadius} km.`;
+            }, 6000);
+        }
+
+        function stopProgressiveRadar() {
+            if (radarInterval) {
+                clearInterval(radarInterval);
+                radarInterval = null;
+            }
+        }
 
         function dispatchSOS() {
             if (navigator.geolocation) {
@@ -680,11 +718,17 @@
                     };
 
                     rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
-                        document.getElementById('client-form-card').style.display = 'none';
-                        document.getElementById('searching-radar').style.display = 'block';
+                        startProgressiveRadar();
                         document.getElementById('client-active-code-card').style.display = 'block';
                         document.getElementById('display-client-pin').innerText = pin;
                         listenChatMessages(orderId, 'client-chat-messages');
+
+                        rtdb.ref('resgate_orders/' + orderId + '/status').on('value', (snap) => {
+                            if (snap.val() === 'accepted') {
+                                stopProgressiveRadar();
+                                document.getElementById('searching-radar').style.display = 'none';
+                            }
+                        });
                     });
                 });
             }
@@ -704,6 +748,7 @@
             }
 
             if (activeOrderId) {
+                stopProgressiveRadar();
                 rtdb.ref('resgate_orders/' + activeOrderId).update({
                     status: 'cancelled',
                     refundPin: refundPin,
@@ -786,14 +831,14 @@
             }
         }
 
-        /* OUVIDOR DE CHAMADOS E ATUALIZAÇÃO DO MAPA DO MECÂNICO */
+        /* OUVIDOR DE CHAMADOS E MAPA */
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if (orderMarkersGroup) orderMarkersGroup.clearLayers();
                 
                 if (!snap.exists()) {
-                    if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento num raio de 10 km.</p>';
+                    if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento.</p>';
                     return;
                 }
 
@@ -804,12 +849,10 @@
                     var d = child.val();
                     if (d.status === 'completed' || d.status === 'cancelled') return;
 
-                    // Se o mecânico aceitou este pedido, fixa o foco do mapa nele
                     if (d.status === 'accepted' && d.mechanicName === currentMechanic.name) {
                         foundActiveOrder = true;
                         activeOrderId = d.id;
 
-                        // Atualiza o mapa acima para a geolocalização exata do cliente
                         if (mapMechanic && d.lat && d.lng) {
                             mapMechanic.setView([d.lat, d.lng], 16);
                             L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [22, 22]})}).addTo(orderMarkersGroup)
@@ -817,7 +860,6 @@
                             document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Rota Exata para o Local do Cliente';
                         }
 
-                        // Renderiza as informações e o painel de validação/chat abaixo do mapa
                         html += `
                             <div class="order-card" style="border-left-color: #25d366; background: #e8f5e9;">
                                 <div class="order-header">
@@ -859,8 +901,7 @@
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
                     } else if (!foundActiveOrder) {
-                        // Exibe chamados disponíveis no raio de 10km
-                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)';
+                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados';
                         if (mapMechanic && d.lat && d.lng) {
                             L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})}).addTo(orderMarkersGroup)
                                 .bindPopup(`<b>${d.problem}</b><br><button onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')" style="background:#25d366;color:#fff;border:none;padding:5px;border-radius:4px;margin-top:4px;cursor:pointer;">Aceitar</button>`);
