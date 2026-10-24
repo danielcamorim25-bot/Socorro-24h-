@@ -335,13 +335,15 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
+                    <!-- MAPA DO MECÂNICO (FOCA NO CLIENTE QUANDO ACEITO) -->
                     <div class="card" style="padding: 8px;">
-                        <span style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)</span>
+                        <span id="mech-map-title" style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
                     </div>
 
+                    <!-- CONTAINER DE CHAMADOS DISPONÍVEIS OU EM ANDAMENTO -->
                     <div class="card card-mech">
-                        <h2><span><i class="fa-solid fa-bell"></i> Chamados (Ao Vivo)</span></h2>
+                        <h2><span><i class="fa-solid fa-bell"></i> Gerenciador de Socorro</span></h2>
                         <div id="orders-container" style="margin-top: 8px;"></div>
                     </div>
                 </div>
@@ -443,7 +445,6 @@
         window.onload = function() { 
             checkInitialAuth(); 
             requestNotificationPermission();
-            // Mantém os ouvintes ativos em segundo plano caso o prestador já estivesse online antes
             checkPersistentOnlineState();
         };
 
@@ -453,7 +454,7 @@
             }
         }
 
-        function triggerEmergencyNotification(title, bodyText, orderId) {
+        function triggerEmergencyNotification(title, bodyText) {
             try {
                 var ctx = new (window.AudioContext || window.webkitAudioContext)();
                 var osc = ctx.createOscillator();
@@ -470,10 +471,7 @@
                     icon: "https://cdn-icons-png.flaticon.com/512/1048/1048315.png",
                     requireInteraction: true
                 });
-
-                notif.onclick = function() {
-                    window.focus();
-                };
+                notif.onclick = function() { window.focus(); };
             }
         }
 
@@ -513,7 +511,6 @@
                     document.getElementById('mech-main-content').style.display = 'block';
                     initMechanicMap();
                     
-                    // Se o mecânico já marcou online anteriormente, restaura o estado visual e os ouvintes de fundo
                     if (localStorage.getItem('resgate_mech_online') === 'true') {
                         isOnline = true;
                         var btn = document.getElementById('toggle-status-btn');
@@ -693,7 +690,7 @@
             }
         }
 
-        /* SISTEMA DE REEMBOLSO COM SENHA */
+        /* REEMBOLSO COM SENHA */
         function openCancelModal() { document.getElementById('modal-cancel').classList.add('active'); }
         function closeCancelModal() { document.getElementById('modal-cancel').classList.remove('active'); }
 
@@ -702,7 +699,7 @@
             var reason = document.getElementById('cancel-reason').value;
 
             if (!refundPin || refundPin.length !== 4) {
-                alert("⚠️ Digite uma senha válida de 4 dígitos para o saque do reembolso.");
+                alert("⚠️ Digite uma senha válida de 4 dígitos.");
                 return;
             }
 
@@ -712,7 +709,7 @@
                     refundPin: refundPin,
                     cancelReason: reason
                 }).then(() => {
-                    alert("✅ Pedido cancelado com sucesso!\n\nO valor foi retido para estorno com a senha cadastrada.");
+                    alert("✅ Pedido cancelado com sucesso!");
                     closeCancelModal();
                     location.reload();
                 });
@@ -721,7 +718,8 @@
 
         /* CHAT EM TEMPO REAL */
         function sendChatMessage(sender) {
-            if (!activeOrderId) return;
+            var currentActiveId = activeOrderId;
+            if (!currentActiveId) return;
             var input = document.getElementById(sender + '-chat-input');
             var text = input.value.trim();
             if (!text) return;
@@ -732,7 +730,7 @@
                 timestamp: Date.now()
             };
 
-            rtdb.ref('resgate_chats/' + activeOrderId).push(msgData);
+            rtdb.ref('resgate_chats/' + currentActiveId).push(msgData);
             input.value = '';
         }
 
@@ -750,7 +748,7 @@
             });
         }
 
-        /* TOGGLE DE STATUS ONLINE COM PERMISSÃO DE SOBREPOSIÇÃO (OVERLAY) */
+        /* TOGGLE DE STATUS */
         function toggleStatus() {
             isOnline = !isOnline;
             var btn = document.getElementById('toggle-status-btn');
@@ -762,8 +760,7 @@
                 btn.innerText = 'Online (Fundo Ativo)';
                 text.innerText = 'ONLINE (Sobre Outros Apps)';
                 text.style.color = '#25d366';
-                
-                alert("🟢 Você está Online!\n\nMesmo se fechar o aplicativo ou sair da tela, o Radar continuará ouvindo os chamados num raio de 10km em segundo plano com alerta sobre os outros apps.");
+                alert("🟢 Você está Online!");
                 listenLiveOrders();
             } else {
                 localStorage.removeItem('resgate_mech_online');
@@ -782,16 +779,14 @@
         }
 
         function initMechanicMap() {
-            if (navigator.geolocation && !mapMechanic) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    mapMechanic = L.map('map-mechanic').setView([pos.coords.latitude, pos.coords.longitude], 13);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
-                    orderMarkersGroup = L.layerGroup().addTo(mapMechanic);
-                });
+            if (!mapMechanic) {
+                mapMechanic = L.map('map-mechanic').setView([-23.5505, -46.6333], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
+                orderMarkersGroup = L.layerGroup().addTo(mapMechanic);
             }
         }
 
-        /* OUVIDOR DE CHAMADOS EM TEMPO REAL (FUNDO E TELA ATIVA) */
+        /* OUVIDOR DE CHAMADOS E ATUALIZAÇÃO DO MAPA DO MECÂNICO */
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
@@ -803,35 +798,135 @@
                 }
 
                 var html = '';
+                var foundActiveOrder = false;
+
                 snap.forEach((child) => {
                     var d = child.val();
                     if (d.status === 'completed' || d.status === 'cancelled') return;
 
-                    // Se estiver online, dispara notificação flutuante e alerta sonoro mesmo se fechado
-                    if (isOnline) {
-                        triggerEmergencyNotification("NOVO SOCORRO PRÓXIMO!", d.problem + " - " + d.vehicleModel, d.id);
-                    }
+                    // Se o mecânico aceitou este pedido, fixa o foco do mapa nele
+                    if (d.status === 'accepted' && d.mechanicName === currentMechanic.name) {
+                        foundActiveOrder = true;
+                        activeOrderId = d.id;
 
-                    html += `
-                        <div class="order-card">
-                            <div class="order-title">🚨 ${d.problem} (${d.vehicleModel})</div>
-                            <div class="order-details">Cliente: ${d.clientName} | Total: R$ ${d.clientTotal}</div>
-                            <button class="btn-action" onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')">Aceitar & Chat</button>
-                        </div>
-                    `;
+                        // Atualiza o mapa acima para a geolocalização exata do cliente
+                        if (mapMechanic && d.lat && d.lng) {
+                            mapMechanic.setView([d.lat, d.lng], 16);
+                            L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [22, 22]})}).addTo(orderMarkersGroup)
+                                .bindPopup("<b>Local exato do Cliente:</b> " + d.clientName).openPopup();
+                            document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Rota Exata para o Local do Cliente';
+                        }
+
+                        // Renderiza as informações e o painel de validação/chat abaixo do mapa
+                        html += `
+                            <div class="order-card" style="border-left-color: #25d366; background: #e8f5e9;">
+                                <div class="order-header">
+                                    <span class="order-title" style="color: #2e7d32;"><i class="fa-solid fa-circle-check"></i> ATENDIMENTO EM ANDAMENTO</span>
+                                    <span class="order-badge" style="background:#2e7d32;">Aceito</span>
+                                </div>
+                                <div class="order-details">
+                                    <b>Cliente:</b> ${d.clientName} (${d.clientPhone})<br>
+                                    <b>Veículo:</b> ${d.vehicleModel} | Placa: ${d.vehiclePlate}<br>
+                                    <b>O QUE LEVAR:</b> <strong style="color:#d32f2f;">${d.problem}</strong><br>
+                                    <b>Seu Repasse:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong>
+                                </div>
+                                
+                                <button class="btn-route" onclick="openGpsRoute('${d.lat}', '${d.lng}')">
+                                    <i class="fa-solid fa-location-arrow"></i> Abrir Navegação GPS
+                                </button>
+
+                                <h3 style="font-size: 13px; color: #2e7d32; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Chat com o Cliente</h3>
+                                <div class="chat-box-container">
+                                    <div class="chat-messages" id="mech-chat-messages"></div>
+                                    <div class="chat-input-row">
+                                        <input type="text" id="mech-chat-input" placeholder="Digite sua mensagem...">
+                                        <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('mech')">Enviar</button>
+                                    </div>
+                                </div>
+
+                                <div style="background:#fff; border:1px dashed #2e7d32; padding:10px; border-radius:6px; margin-top:10px;">
+                                    <label style="margin-top:0; font-size:11px; color:#2e7d32;"><i class="fa-solid fa-key"></i> Digite o PIN de 4 dígitos do Cliente:</label>
+                                    <input type="text" id="input-pin-${d.id}" maxlength="4" placeholder="Ex: 4829" style="font-weight:bold; text-align:center; letter-spacing:3px;">
+
+                                    <label style="margin-top:8px; font-size:11px; color:#2e7d32;"><i class="fa-solid fa-camera"></i> Foto de Comprovação:</label>
+                                    <input type="file" id="proof-photo-${d.id}" accept="image/*" capture="environment" style="font-size:11px; padding:3px;">
+                                    
+                                    <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">
+                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Receber Repasse
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        listenChatMessages(d.id, 'mech-chat-messages');
+                    } else if (!foundActiveOrder) {
+                        // Exibe chamados disponíveis no raio de 10km
+                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)';
+                        if (mapMechanic && d.lat && d.lng) {
+                            L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})}).addTo(orderMarkersGroup)
+                                .bindPopup(`<b>${d.problem}</b><br><button onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')" style="background:#25d366;color:#fff;border:none;padding:5px;border-radius:4px;margin-top:4px;cursor:pointer;">Aceitar</button>`);
+                        }
+
+                        if (isOnline) {
+                            triggerEmergencyNotification("NOVO SOCORRO PRÓXIMO!", d.problem + " - " + d.vehicleModel);
+                        }
+
+                        html += `
+                            <div class="order-card">
+                                <div class="order-header">
+                                    <span class="order-title">🚨 ${d.problem} (${d.vehicleModel})</span>
+                                    <span class="order-badge">Disponível</span>
+                                </div>
+                                <div class="order-details">
+                                    <b>Cliente:</b> ${d.clientName}<br>
+                                    <b>Repasse:</b> R$ ${d.mechPay}
+                                </div>
+                                <button class="btn-action" onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')">
+                                    <i class="fa-solid fa-check"></i> Aceitar Chamado
+                                </button>
+                            </div>
+                        `;
+                    }
                 });
                 
-                if (container) {
-                    container.innerHTML = html;
-                }
+                if (container) container.innerHTML = html;
             });
+        }
+
+        function openGpsRoute(lat, lng) {
+            window.open("https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng, '_blank');
         }
 
         function acceptOrder(orderId, clientPhone, clientName) {
             activeOrderId = orderId;
-            rtdb.ref('resgate_orders/' + orderId).update({ status: 'accepted', mechanicName: currentMechanic.name });
-            alert("Chamado aceito! O chat de comunicação foi aberto.");
-            window.open("https://api.whatsapp.com/send?phone=55" + clientPhone + "&text=" + encodeURIComponent("Olá, sou o mecânico e estou a caminho!"), '_blank');
+            rtdb.ref('resgate_orders/' + orderId).update({ 
+                status: 'accepted', 
+                mechanicName: currentMechanic.name 
+            });
+            alert("✅ Chamado aceito! O mapa acima agora foca na geolocalização do cliente e o chat foi ativado.");
+        }
+
+        function completeOrderWithPin(orderId) {
+            var inputPin = document.getElementById('input-pin-' + orderId).value;
+            var fileInput = document.getElementById('proof-photo-' + orderId);
+            
+            rtdb.ref('resgate_orders/' + orderId).once('value', (snap) => {
+                if (!snap.exists()) return;
+                var target = snap.val();
+
+                if (!inputPin || inputPin.trim() !== target.clientPin) {
+                    alert("❌ PIN Incorreto!");
+                    return;
+                }
+                if (!fileInput || fileInput.files.length === 0) {
+                    alert("⚠️ Envie a foto de comprovação!");
+                    return;
+                }
+
+                rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
+                    alert("✅ Serviço concluído com sucesso e repasse liberado!");
+                    location.reload();
+                });
+            });
         }
     </script>
 </body>
