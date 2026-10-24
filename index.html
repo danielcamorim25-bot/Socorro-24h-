@@ -329,14 +329,14 @@
                 <div id="mech-main-content" style="display: none;">
                     <div class="status-toggle">
                         <div>
-                            <span style="font-size: 11px; color: #666;">Status:</span>
+                            <span style="font-size: 11px; color: #666;">Status (Fundo / Sobre Apps):</span>
                             <strong id="status-text" style="font-size: 13px; color: #757575;">OFFLINE</strong>
                         </div>
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
                     <div class="card" style="padding: 8px;">
-                        <span style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados</span>
+                        <span style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
                     </div>
 
@@ -384,13 +384,13 @@
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso por Desistência</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Para garantir que o dinheiro seja estornado com segurança para a sua conta, cadastre uma <b>Senha de Saque</b>:</p>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Para estorno seguro, cadastre uma <b>Senha de Saque</b>:</p>
                 
                 <label>Criar Senha de Reembolso (4 dígitos):</label>
                 <input type="password" id="cancel-withdrawal-pin" maxlength="4" placeholder="Ex: 9876" style="text-align:center; font-size:18px; letter-spacing:4px;">
                 
                 <label style="margin-top:10px;">Motivo da Desistência:</label>
-                <textarea id="cancel-reason" placeholder="Ex: Consegui resolver sozinho..."></textarea>
+                <textarea id="cancel-reason" placeholder="Ex: Resolvido..."></textarea>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeCancelModal()">Voltar</button>
@@ -440,7 +440,42 @@
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
-        window.onload = function() { checkInitialAuth(); };
+        window.onload = function() { 
+            checkInitialAuth(); 
+            requestNotificationPermission();
+            // Mantém os ouvintes ativos em segundo plano caso o prestador já estivesse online antes
+            checkPersistentOnlineState();
+        };
+
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        }
+
+        function triggerEmergencyNotification(title, bodyText, orderId) {
+            try {
+                var ctx = new (window.AudioContext || window.webkitAudioContext)();
+                var osc = ctx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 1.5);
+            } catch(e){}
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                var notif = new Notification("🚨 " + title, {
+                    body: bodyText,
+                    icon: "https://cdn-icons-png.flaticon.com/512/1048/1048315.png",
+                    requireInteraction: true
+                });
+
+                notif.onclick = function() {
+                    window.focus();
+                };
+            }
+        }
 
         function checkInitialAuth() {
             var savedUser = localStorage.getItem('resgate_user');
@@ -477,6 +512,16 @@
                     document.getElementById('mech-register-card').style.display = 'none';
                     document.getElementById('mech-main-content').style.display = 'block';
                     initMechanicMap();
+                    
+                    // Se o mecânico já marcou online anteriormente, restaura o estado visual e os ouvintes de fundo
+                    if (localStorage.getItem('resgate_mech_online') === 'true') {
+                        isOnline = true;
+                        var btn = document.getElementById('toggle-status-btn');
+                        btn.className = 'status-btn online'; 
+                        btn.innerText = 'Online (Fundo Ativo)';
+                        document.getElementById('status-text').innerText = 'ONLINE (Sobre Outros Apps)';
+                        document.getElementById('status-text').style.color = '#25d366';
+                    }
                     listenLiveOrders();
                 } else {
                     document.getElementById('mech-register-card').style.display = 'block';
@@ -505,7 +550,12 @@
 
         function logoutCurrentRole() {
             if (currentRole === 'client') { localStorage.removeItem('resgate_user'); currentUser = null; }
-            else { localStorage.removeItem('resgate_mechanic'); currentMechanic = null; isOnline = false; }
+            else { 
+                localStorage.removeItem('resgate_mechanic'); 
+                localStorage.removeItem('resgate_mech_online');
+                currentMechanic = null; 
+                isOnline = false; 
+            }
             selectRole(currentRole);
         }
 
@@ -662,7 +712,7 @@
                     refundPin: refundPin,
                     cancelReason: reason
                 }).then(() => {
-                    alert("✅ Pedido cancelado com sucesso!\n\nO valor foi retido para estorno. Para retirar nos caixas/Pix parceiros, utilize sua senha cadastrada.");
+                    alert("✅ Pedido cancelado com sucesso!\n\nO valor foi retido para estorno com a senha cadastrada.");
                     closeCancelModal();
                     location.reload();
                 });
@@ -700,14 +750,34 @@
             });
         }
 
+        /* TOGGLE DE STATUS ONLINE COM PERMISSÃO DE SOBREPOSIÇÃO (OVERLAY) */
         function toggleStatus() {
             isOnline = !isOnline;
             var btn = document.getElementById('toggle-status-btn');
+            var text = document.getElementById('status-text');
+
             if (isOnline) {
-                btn.className = 'status-btn online'; btn.innerText = 'Online';
+                localStorage.setItem('resgate_mech_online', 'true');
+                btn.className = 'status-btn online'; 
+                btn.innerText = 'Online (Fundo Ativo)';
+                text.innerText = 'ONLINE (Sobre Outros Apps)';
+                text.style.color = '#25d366';
+                
+                alert("🟢 Você está Online!\n\nMesmo se fechar o aplicativo ou sair da tela, o Radar continuará ouvindo os chamados num raio de 10km em segundo plano com alerta sobre os outros apps.");
                 listenLiveOrders();
             } else {
-                btn.className = 'status-btn'; btn.innerText = 'Ficar Online';
+                localStorage.removeItem('resgate_mech_online');
+                btn.className = 'status-btn'; 
+                btn.innerText = 'Ficar Online';
+                text.innerText = 'OFFLINE';
+                text.style.color = '#757575';
+            }
+        }
+
+        function checkPersistentOnlineState() {
+            if (localStorage.getItem('resgate_mech_online') === 'true' && currentMechanic) {
+                isOnline = true;
+                listenLiveOrders();
             }
         }
 
@@ -721,16 +791,26 @@
             }
         }
 
+        /* OUVIDOR DE CHAMADOS EM TEMPO REAL (FUNDO E TELA ATIVA) */
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if (orderMarkersGroup) orderMarkersGroup.clearLayers();
-                if (!snap.exists()) { container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento.</p>'; return; }
+                
+                if (!snap.exists()) {
+                    if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento num raio de 10 km.</p>';
+                    return;
+                }
 
                 var html = '';
                 snap.forEach((child) => {
                     var d = child.val();
                     if (d.status === 'completed' || d.status === 'cancelled') return;
+
+                    // Se estiver online, dispara notificação flutuante e alerta sonoro mesmo se fechado
+                    if (isOnline) {
+                        triggerEmergencyNotification("NOVO SOCORRO PRÓXIMO!", d.problem + " - " + d.vehicleModel, d.id);
+                    }
 
                     html += `
                         <div class="order-card">
@@ -740,7 +820,10 @@
                         </div>
                     `;
                 });
-                container.innerHTML = html;
+                
+                if (container) {
+                    container.innerHTML = html;
+                }
             });
         }
 
