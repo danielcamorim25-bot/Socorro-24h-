@@ -58,6 +58,11 @@
 
         .fee-box { background: #fff8e1; border: 1px dashed #ffb300; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #b26a00; display: flex; justify-content: space-between; align-items: center; }
 
+        /* Galeria de Fotos do Estabelecimento e Mecânico */
+        .photos-preview-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .photo-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ff9800; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .mech-avatar-large { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid #ff9800; margin-right: 10px; }
+
         /* Caixa de Pergunta Dinâmica */
         .dynamic-question-box { background: #eefbe8; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; margin-top: 12px; }
         .dynamic-question-box label { color: #2e7d32; margin-top: 0; font-size: 12px; }
@@ -112,7 +117,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; }
+        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; max-height: 80px; overflow-y: auto; }
 
         /* Marcadores no Mapa */
         .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
@@ -330,7 +335,7 @@
                 <!-- Cadastro Seguro do Mecânico / Guincho -->
                 <div id="mech-register-card" class="card card-mech">
                     <h2 id="mech-card-title"><i class="fa-solid fa-id-card"></i> Cadastro Seguro do Profissional</h2>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Validação de antecedentes e chave Pix para recebimento automático.</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Validação de antecedentes, fotos do local e chave Pix para recebimento automático.</p>
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome Completo / Oficina / Serviço:</label>
                         <input type="text" id="mech-name" placeholder="Ex: Borracharia do Alemão / Guincho 24h" required>
@@ -360,6 +365,15 @@
 
                         <label>Endereço Completo / Base:</label>
                         <input type="text" id="mech-address" placeholder="Ex: Av. Brasil, 1200 - SP" required>
+
+                        <!-- NOVOS CAMPOS DE FOTO DO PROFISSIONAL E ESTABELECIMENTO -->
+                        <label><i class="fa-solid fa-user-gear"></i> Foto do Perfil do Mecânico (Para o Cliente Ver):</label>
+                        <input type="file" id="mech-profile-photo" accept="image/*" capture="user" style="font-size: 12px; padding: 4px;" onchange="previewMechPhotos(event, 'profile')" required>
+
+                        <label><i class="fa-solid fa-shop"></i> Foto do Estabelecimento / Oficina / Reboque:</label>
+                        <input type="file" id="mech-shop-photo" accept="image/*" capture="environment" style="font-size: 12px; padding: 4px;" onchange="previewMechPhotos(event, 'shop')" required>
+
+                        <div class="photos-preview-gallery" id="mech-gallery-preview"></div>
 
                         <label><i class="fa-solid fa-id-card"></i> Foto do Documento (Alvará / CNH):</label>
                         <input type="file" id="mech-id-doc" accept="image/*" capture="environment" style="font-size: 12px; padding: 4px;" required>
@@ -428,10 +442,24 @@
                 <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Pedido de Socorro</div>
                 <p style="font-size: 12px; color: #555; text-align: center;">Profissional Próximo Encontrado (Raio 10 km):</p>
                 
-                <div class="mech-profile-box">
-                    <p><b>Nome:</b> <span id="modal-mech-name">João Carlos (Borracharia Alemão)</span></p>
-                    <p><b>Idade:</b> <span id="modal-mech-age">42 anos</span></p>
-                    <p><b>Tempo de Profissão:</b> <span id="modal-mech-exp">18 anos de experiência</span></p>
+                <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center;">
+                        <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto do Mecânico">
+                        <div>
+                            <p><b id="modal-mech-name">João Carlos (Borracharia Alemão)</b></p>
+                            <p style="font-size:11px; color:#666;"><b>Idade:</b> <span id="modal-mech-age">42 anos</span> | <span id="modal-mech-exp">18 anos de experiência</span></p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 4px;">
+                        <span style="font-size: 11px; font-weight: bold; color: #333;"><i class="fa-solid fa-camera"></i> Fotos do Estabelecimento / Reboque:</span>
+                        <div class="photos-preview-gallery" id="modal-shop-gallery">
+                            <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150" class="photo-thumb" alt="Oficina">
+                            <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=150" class="photo-thumb" alt="Atendimento">
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top: 1px solid #e0e0e0; margin: 4px 0;">
                     <p><b>Distância Calculada:</b> <span id="modal-dist">4.2 km</span></p>
                     <p><b>Valor Estimado da Corrida:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 0,00</strong></p>
                 </div>
@@ -443,7 +471,7 @@
                     </div>
 
                     <label>Pix Copia e Cola Oficial Mercado Pago:</label>
-                    <div class="pix-code-box" id="pix-code">00020126580014BR.GOV.BCB.PIX0136resgate24h-pagamentos-aut-88371252040000000.00</div>
+                    <div class="pix-code-box" id="pix-code">Gerando Pix dinâmico do Mercado Pago...</div>
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()">
                         <i class="fa-solid fa-copy"></i> Copiar Código Pix
                     </button>
@@ -522,6 +550,9 @@
         var orderMarkersGroup;
         var currentClientLat = 0, currentClientLng = 0;
 
+        var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
+
         window.onload = function() {
             checkInitialAuth();
             requestNotificationPermission();
@@ -545,11 +576,16 @@
             } catch(e){}
 
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("🚨 " + title, {
+                var notif = new Notification("🚨 " + title, {
                     body: bodyText,
                     icon: "https://cdn-icons-png.flaticon.com/512/1048/1048315.png",
                     requireInteraction: true
                 });
+
+                // Abertura automática ao clicar na notificação
+                notif.onclick = function() {
+                    window.focus();
+                };
             }
         }
 
@@ -655,6 +691,21 @@
             selectRole('client');
         }
 
+        function previewMechPhotos(event, type) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var gallery = document.getElementById('mech-gallery-preview');
+                var img = document.createElement('img');
+                img.src = reader.result;
+                img.className = 'photo-thumb';
+                gallery.appendChild(img);
+
+                if (type === 'profile') { mechProfileImgUrl = reader.result; }
+                if (type === 'shop') { mechShopImgUrl = reader.result; }
+            };
+            if(event.target.files[0]) { reader.readAsDataURL(event.target.files[0]); }
+        }
+
         function saveMechanicAccount(e) {
             e.preventDefault();
             currentMechanic = {
@@ -667,10 +718,12 @@
                 exp: document.getElementById('mech-exp').value,
                 address: document.getElementById('mech-address').value,
                 specialty: document.getElementById('mech-specialty').value,
-                nightDuty: document.getElementById('mech-night').checked
+                nightDuty: document.getElementById('mech-night').checked,
+                profileImg: mechProfileImgUrl,
+                shopImg: mechShopImgUrl
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-            alert("✅ Profissional verificado com sucesso! Antecedentes limpos e selfie confirmada.");
+            alert("✅ Profissional verificado com sucesso! Fotos da oficina e perfil registradas.");
             selectRole('mechanic');
         }
 
@@ -782,7 +835,7 @@
             });
         }
 
-        function openConfirmationModal() {
+        async function openConfirmationModal() {
             var estimatedKm = 4.2; 
             var clientTotal = 0;
             var paymentMethod = document.getElementById('payment-method-select').value;
@@ -805,6 +858,31 @@
             } else {
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
+
+                document.getElementById('pix-code').innerText = "Gerando Pix automático do Mercado Pago...";
+
+                try {
+                    const response = await fetch("https://us-central1-socorro-24h-2ae4a.cloudfunctions.net/generatePixPayment", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            transactionAmount: clientTotal.toFixed(2),
+                            description: "Resgate 24h - " + selectedProblem,
+                            payerName: currentUser ? currentUser.name : "Cliente Resgate 24h",
+                            payerCPF: currentUser ? currentUser.cpf : ""
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data && data.pixCode) {
+                        document.getElementById('pix-code').innerText = data.pixCode;
+                    } else {
+                        document.getElementById('pix-code').innerText = "00020126580014BR.GOV.BCB.PIX0136resgate24h-pagamentos-aut-88371252040000000.00";
+                    }
+                } catch (err) {
+                    document.getElementById('pix-code').innerText = "00020126580014BR.GOV.BCB.PIX0136resgate24h-pagamentos-aut-88371252040000000.00";
+                }
             }
 
             document.getElementById('modal-confirm').classList.add('active');
@@ -917,25 +995,6 @@
             }
         }
 
-        function saveMechanicAccount(e) {
-            e.preventDefault();
-            currentMechanic = {
-                name: document.getElementById('mech-name').value,
-                docNumber: document.getElementById('mech-doc-number').value,
-                phone: document.getElementById('mech-phone').value,
-                pixType: document.getElementById('mech-pix-type').value,
-                pixKey: document.getElementById('mech-pix-key').value,
-                age: document.getElementById('mech-age').value,
-                exp: document.getElementById('mech-exp').value,
-                address: document.getElementById('mech-address').value,
-                specialty: document.getElementById('mech-specialty').value,
-                nightDuty: document.getElementById('mech-night').checked
-            };
-            localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-            alert("✅ Cadastro de Profissional aprovado com segurança!");
-            selectRole('mechanic');
-        }
-
         function toggleStatus() {
             isOnline = !isOnline;
             var btn = document.getElementById('toggle-status-btn');
@@ -944,8 +1003,11 @@
             if (isOnline) {
                 btn.className = 'status-btn online';
                 btn.innerText = 'Ficar Offline';
-                text.innerText = 'ONLINE (Raio 10km)';
+                text.innerText = 'ONLINE (Bolinhar Ativa sobre outros Apps)';
                 text.style.color = '#25d366';
+                
+                // Dispara o alerta no app e abre se chegar chamado
+                triggerEmergencyNotification("Modo Online Ativo!", "O app monitorará em segundo plano. Mantenha as notificações ativas.");
                 listenLiveOrders();
             } else {
                 btn.className = 'status-btn';
@@ -990,6 +1052,11 @@
                     var data = childSnapshot.val();
                     var statusBadge = '';
                     var paymentText = '';
+
+                    // Ao entrar chamado e estar online, toca o alarme de socorro
+                    if (isOnline && data.status !== 'completed') {
+                        triggerEmergencyNotification("NOVO CHAMADO DE SOCORRO!", data.vehicleType + " - " + data.problem);
+                    }
 
                     if (data.paymentMethod === 'cash_direct') {
                         statusBadge = '<span class="order-badge cash"><i class="fa-solid fa-money-bill-wave"></i> Dinheiro (Troco: ' + data.changeNeeded + ')</span>';
