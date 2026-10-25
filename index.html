@@ -56,8 +56,6 @@
         .option-btn i { font-size: 16px; color: #ff9800; }
         .option-btn.active { background-color: #fff3e0; border-color: #ff9800; color: #e65100; font-weight: bold; }
 
-        .fee-box { background: #fff8e1; border: 1px dashed #ffb300; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #b26a00; display: flex; justify-content: space-between; align-items: center; }
-
         /* Galeria de Fotos */
         .photos-preview-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 5px; }
         .photo-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ff9800; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -73,9 +71,6 @@
         /* Caixa de Pergunta Dinâmica */
         .dynamic-question-box { background: #eefbe8; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; margin-top: 12px; }
         .dynamic-question-box label { color: #2e7d32; margin-top: 0; font-size: 12px; }
-
-        /* Badge de Segurança */
-        .security-badge { background: #e3f2fd; border: 1px solid #90caf9; padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #0288d1; margin-top: 10px; display: flex; align-items: center; gap: 6px; }
 
         /* Botões */
         .btn-sos { width: 100%; background: linear-gradient(135deg, #d32f2f, #f44336); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(244,67,54,0.4); text-transform: uppercase; }
@@ -97,24 +92,17 @@
         .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
         .order-title { font-weight: bold; font-size: 13px; color: #d32f2f; }
         .order-badge { background: #e65100; color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .order-badge.custody { background: #0288d1; }
-        .order-badge.cash { background: #2e7d32; }
-        .order-badge.completed { background: #4caf50; }
         .order-details { font-size: 12px; color: #444; line-height: 1.4; margin-bottom: 8px; }
 
         .btn-action { width: 100%; background: #25d366; color: white; border: none; padding: 9px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 5px; }
         .btn-route { width: 100%; background: #0288d1; color: white; border: none; padding: 9px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 5px; }
         .btn-complete { width: 100%; background: #ed6c02; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
-        .btn-support { width: 100%; background-color: #0288d1; color: white; border: none; padding: 11px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         .mechanic-item { background: #fafafa; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; border-left: 4px solid #ff9800; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: #4caf50; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
         .pin-box { background: #e3f2fd; border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
-
-        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; cursor: pointer; }
-        .checkbox-container input { width: 16px; height: 16px; accent-color: #ff9800; }
 
         /* JANELA MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
@@ -126,7 +114,6 @@
         .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; max-height: 80px; overflow-y: auto; }
 
         .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
-        .green-marker-icon { background-color: #25d366; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(37,211,102,0.8); }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -194,8 +181,11 @@
                         <input type="text" id="reg-vehicle" placeholder="Ex: Honda CG 160" required>
                         <label>Placa:</label>
                         <input type="text" id="reg-plate" placeholder="Ex: ABC-1234" required>
-                        <label>Foto do Documento (RG/CNH):</label>
-                        <input type="file" id="reg-doc-photo" accept="image/*" capture="environment" style="font-size: 12px; padding: 4px;" required>
+                        
+                        <!-- PERMITE ENVIAR PDF OU FOTO DA CNH/DOCUMENTO -->
+                        <label>Documento (CNH / RG em PDF ou Foto):</label>
+                        <input type="file" id="reg-doc-photo" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
+                        
                         <label>Selfie:</label>
                         <input type="file" id="reg-selfie" accept="image/*" capture="user" style="font-size: 12px; padding: 4px;" required>
                         <button type="submit" class="btn-primary" style="margin-top: 15px;">Concluir Cadastro</button>
@@ -278,15 +268,10 @@
                         </div>
 
                         <label>Forma de Pagamento:</label>
-                        <select id="payment-method-select" onchange="checkPaymentMethodChange()">
+                        <select id="payment-method-select">
                             <option value="pix_online">Pix Online Mercado Pago (Custódia)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico</option>
                         </select>
-
-                        <div id="change-box-container" style="display: none; background: #f9f9f9; padding: 10px; border-radius: 6px; margin-top: 10px;">
-                            <label style="margin-top:0; color:#e65100;">Troco para quanto?</label>
-                            <input type="text" id="change-amount" placeholder="Ex: R$ 100,00">
-                        </div>
 
                         <label>Descreva o ocorrido:</label>
                         <textarea id="problem-desc" placeholder="Detalhes..."></textarea>
@@ -437,9 +422,6 @@
         var locationContext = 'Cidade Urbana';
         var activeOrderId = null;
         
-        var clientRatePerKm = 3.50;  
-        var mechRatePerKm = 3.00;    
-        var platformFee = 0.50;      
         var isOnline = false;
         var mapClient, mapMechanic, orderMarkersGroup;
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -448,9 +430,8 @@
         var currentSearchRadius = 10;
         var radarInterval = null;
 
-        // EXECUTA A LIMPEZA AUTOMÁTICA DE TODOS OS REGISTROS LOCAIS E DO SISTEMA
         window.onload = function() { 
-            // Apaga dados fictícios e contas prévias do navegador
+            // Limpa dados salvos para teste limpo
             localStorage.clear();
             sessionStorage.clear();
 
@@ -486,12 +467,6 @@
                 });
                 notif.onclick = function() { window.focus(); };
             }
-        }
-
-        function checkInitialAuth() {
-            currentUser = null;
-            currentMechanic = null;
-            goToWelcome();
         }
 
         function selectRole(role) {
@@ -565,8 +540,15 @@
                 plate: document.getElementById('reg-plate').value
             };
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
+            
+            // Oculta card de cadastro e abre painel principal imediatamente
+            document.getElementById('client-register-card').style.display = 'none';
+            document.getElementById('client-main-content').style.display = 'block';
+            document.getElementById('user-greeting').innerText = "Olá, " + currentUser.name;
+            initClientMap();
+            loadNearbyMechanics();
+            updateLogoutButton();
             alert("✅ Cadastro de usuário criado com sucesso!");
-            selectRole('client');
         }
 
         function previewMechPhotos(event, type) {
@@ -590,8 +572,15 @@
                 shopImg: mechShopImgUrl
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
+            
+            // CORREÇÃO: Oculta o formulário de cadastro e mostra imediatamente o painel do mecânico sem travar
+            document.getElementById('mech-register-card').style.display = 'none';
+            document.getElementById('mech-main-content').style.display = 'block';
+            initMechanicMap();
+            listenLiveOrders();
+            updateLogoutButton();
+            
             alert("✅ Perfil profissional criado com sucesso!");
-            selectRole('mechanic');
         }
 
         function selectVehicle(vehicle, element) {
@@ -608,7 +597,6 @@
 
         function setLocationType(type, cRate, mRate, wCRate, wMRate, element) {
             locationContext = type;
-            clientRatePerKm = cRate;
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
         }
