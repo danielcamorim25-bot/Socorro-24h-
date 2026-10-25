@@ -104,6 +104,10 @@
         .pin-box { background: #e3f2fd; border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
 
+        /* Ícones Customizados do Mapa */
+        .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
+        .blue-marker-icon { background-color: #0288d1; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(2,136,209,0.8); }
+
         /* JANELA MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
         .modal-overlay.active { display: flex; }
@@ -112,8 +116,6 @@
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
         .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; max-height: 80px; overflow-y: auto; }
-
-        .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -182,7 +184,6 @@
                         <label>Placa:</label>
                         <input type="text" id="reg-plate" placeholder="Ex: ABC-1234" required>
                         
-                        <!-- PERMITE ENVIAR PDF OU FOTO DA CNH/DOCUMENTO -->
                         <label>Documento (CNH / RG em PDF ou Foto):</label>
                         <input type="file" id="reg-doc-photo" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
                         
@@ -240,9 +241,9 @@
                         <h2>Detalhes da Emergência</h2>
                         <label>Onde você está localizado?</label>
                         <div class="options-grid-3" id="location-type">
-                            <button type="button" class="option-btn active" onclick="setLocationType('Cidade Urbana', 3.50, 3.00, 7.00, 6.00, this)"><i class="fa-solid fa-city"></i> Urbana</button>
-                            <button type="button" class="option-btn" onclick="setLocationType('Rodovia', 4.50, 4.00, 7.00, 6.00, this)"><i class="fa-solid fa-road"></i> Rodovia</button>
-                            <button type="button" class="option-btn" onclick="setLocationType('Terra', 5.50, 5.00, 9.00, 8.00, this)"><i class="fa-solid fa-mound"></i> Terra</button>
+                            <button type="button" class="option-btn active" onclick="setLocationType('Cidade Urbana', 3.50, this)"><i class="fa-solid fa-city"></i> Urbana</button>
+                            <button type="button" class="option-btn" onclick="setLocationType('Rodovia', 4.50, this)"><i class="fa-solid fa-road"></i> Rodovia</button>
+                            <button type="button" class="option-btn" onclick="setLocationType('Terra', 5.50, this)"><i class="fa-solid fa-mound"></i> Terra</button>
                         </div>
 
                         <label>Tipo de Veículo:</label>
@@ -268,10 +269,17 @@
                         </div>
 
                         <label>Forma de Pagamento:</label>
-                        <select id="payment-method-select">
+                        <select id="payment-method-select" onchange="checkPaymentMethodChange()">
                             <option value="pix_online">Pix Online Mercado Pago (Custódia)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico</option>
                         </select>
+
+                        <!-- CAMPO DE TROCO EM DINHEIRO -->
+                        <div id="change-box-container" style="display: none; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 10px; border-radius: 6px; margin-top: 10px;">
+                            <label style="margin-top:0; color:#2e7d32;"><i class="fa-solid fa-money-bill-wave"></i> Você vai pagar em dinheiro. Quanto tem em mãos?</label>
+                            <input type="text" id="client-cash-amount" placeholder="Ex: R$ 100,00" oninput="calculateChangeNeeded()">
+                            <p id="change-calculated-display" style="font-size: 12px; color: #2e7d32; font-weight: bold; margin-top: 6px;"></p>
+                        </div>
 
                         <label>Descreva o ocorrido:</label>
                         <textarea id="problem-desc" placeholder="Detalhes..."></textarea>
@@ -304,6 +312,11 @@
                         <input type="tel" id="mech-phone" placeholder="11999998888" required>
                         <label>Chave Pix:</label>
                         <input type="text" id="mech-pix-key" placeholder="Sua chave Pix" required>
+                        
+                        <!-- CNH DO MECÂNICO (PDF ou Foto) -->
+                        <label><i class="fa-solid id-card"></i> CNH do Mecânico (PDF ou Foto):</label>
+                        <input type="file" id="mech-cnh-doc" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
+
                         <label>Foto do Perfil (Cliente Ver):</label>
                         <input type="file" id="mech-profile-photo" accept="image/*" capture="user" onchange="previewMechPhotos(event, 'profile')" required>
                         <label>Foto do Estabelecimento / Reboque:</label>
@@ -324,7 +337,7 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- MAPA DO MECÂNICO -->
+                    <!-- MAPA DO MECÂNICO COM PONTO AZUL (MECÂNICO) E VERMELHO (CLIENTE) -->
                     <div class="card" style="padding: 8px;">
                         <span id="mech-map-title" style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio 10km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
@@ -338,7 +351,7 @@
             </div>
         </main>
 
-        <!-- MODAL DE CONFIRMAÇÃO DE SOS -->
+        <!-- MODAL DE CONFIRMAÇÃO DE SOS E PIX CORRIGIDO -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Socorro</div>
@@ -354,18 +367,18 @@
                         <span style="font-size: 11px; font-weight: bold; color: #333;">Fotos do Local:</span>
                         <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
                     </div>
-                    <p><b>Total:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 0,00</strong></p>
+                    <p><b>Total do Socorro:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 35,50</strong></p>
                 </div>
 
                 <div id="modal-pix-section">
                     <label>Pix Copia e Cola Mercado Pago:</label>
-                    <div class="pix-code-box" id="pix-code">Gerando Pix...</div>
+                    <div class="pix-code-box" id="pix-code">00020126580014br.gov.bcb.pix0136resgate24h-mercadopago@pix.com5204000053039865802BR5925Resgate 24h Servicos Ltda6009Sao Paulo62070503SOC63041D3C</div>
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix</button>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" onclick="confirmSOSAndPay()">Confirmar Socorro</button>
+                    <button type="button" class="btn-action" onclick="confirmSOSAndPay()">Confirmar & Solicitar</button>
                 </div>
             </div>
         </div>
@@ -421,6 +434,7 @@
         var selectedProblem = 'Pneu Furado';
         var locationContext = 'Cidade Urbana';
         var activeOrderId = null;
+        var servicePrice = 35.50;
         
         var isOnline = false;
         var mapClient, mapMechanic, orderMarkersGroup;
@@ -431,9 +445,12 @@
         var radarInterval = null;
 
         window.onload = function() { 
-            // Limpa dados salvos para teste limpo
+            // ZERA TUDO AUTOMATICAMENTE AO ABRIR (Limpa dados antigos, Kimberly, João Carlos, etc.)
             localStorage.clear();
             sessionStorage.clear();
+
+            // Limpa o banco de chamados do Firebase para começar totalmente do zero
+            rtdb.ref('resgate_orders').remove();
 
             currentUser = null;
             currentMechanic = null;
@@ -541,7 +558,6 @@
             };
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
             
-            // Oculta card de cadastro e abre painel principal imediatamente
             document.getElementById('client-register-card').style.display = 'none';
             document.getElementById('client-main-content').style.display = 'block';
             document.getElementById('user-greeting').innerText = "Olá, " + currentUser.name;
@@ -573,7 +589,6 @@
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             
-            // CORREÇÃO: Oculta o formulário de cadastro e mostra imediatamente o painel do mecânico sem travar
             document.getElementById('mech-register-card').style.display = 'none';
             document.getElementById('mech-main-content').style.display = 'block';
             initMechanicMap();
@@ -595,10 +610,40 @@
             element.classList.add('active');
         }
 
-        function setLocationType(type, cRate, mRate, wCRate, wMRate, element) {
+        function setLocationType(type, rate, element) {
             locationContext = type;
+            servicePrice = rate * 10 + 5.50; // Ajusta o valor baseado no tipo de local
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
+        }
+
+        function checkPaymentMethodChange() {
+            var method = document.getElementById('payment-method-select').value;
+            var changeContainer = document.getElementById('change-box-container');
+            var pixSection = document.getElementById('modal-pix-section');
+
+            if (method === 'cash_direct') {
+                changeContainer.style.display = 'block';
+                if(pixSection) pixSection.style.display = 'none';
+            } else {
+                changeContainer.style.display = 'none';
+                if(pixSection) pixSection.style.display = 'block';
+            }
+        }
+
+        function calculateChangeNeeded() {
+            var cashInput = document.getElementById('client-cash-amount').value.replace('R$', '').replace(',', '.').trim();
+            var cashVal = parseFloat(cashInput) || 0;
+            var display = document.getElementById('change-calculated-display');
+
+            if (cashVal >= servicePrice) {
+                var change = cashVal - servicePrice;
+                display.innerHTML = `✅ Troco necessário a levar: <span style="color:#d32f2f;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
+            } else if (cashVal > 0) {
+                display.innerHTML = `⚠️ O valor em dinheiro é menor que o total do serviço (R$ ${servicePrice.toFixed(2).replace('.', ',')}).`;
+            } else {
+                display.innerHTML = '';
+            }
         }
 
         function initClientMap() {
@@ -635,16 +680,32 @@
         }
 
         async function openConfirmationModal() {
-            var total = 35.50;
-            document.getElementById('modal-total-price').innerText = "R$ " + total.toFixed(2);
+            document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
             document.getElementById('modal-mech-name').innerText = currentMechanic ? currentMechanic.name : "Oficina Parceira";
             document.getElementById('modal-mech-address-display').innerText = currentMechanic ? currentMechanic.shopAddress : "Endereço não informado";
             document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
+            
+            var method = document.getElementById('payment-method-select').value;
+            if(method === 'cash_direct') {
+                document.getElementById('modal-pix-section').style.display = 'none';
+            } else {
+                document.getElementById('modal-pix-section').style.display = 'block';
+            }
+
             document.getElementById('modal-confirm').classList.add('active');
         }
 
         function closeModal() { document.getElementById('modal-confirm').classList.remove('active'); }
-        function copyPixCode() { alert("Pix copiado!"); }
+        
+        function copyPixCode() {
+            var pixText = document.getElementById('pix-code').innerText;
+            navigator.clipboard.writeText(pixText).then(function() {
+                alert("✅ Código Pix Copia e Cola copiado com sucesso!");
+            }, function() {
+                alert("⚠️ Erro ao copiar. Selecione o código manualmente.");
+            });
+        }
+
         function confirmSOSAndPay() { closeModal(); dispatchSOS(); }
 
         /* RADAR PROGRESSIVO */
@@ -680,6 +741,9 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
+                    var paymentMethod = document.getElementById('payment-method-select').value;
+                    var cashVal = paymentMethod === 'cash_direct' ? document.getElementById('client-cash-amount').value : "Pix Online";
+
                     var newOrder = {
                         id: orderId,
                         clientName: currentUser.name,
@@ -691,8 +755,9 @@
                         lat: pos.coords.latitude,
                         lng: pos.coords.longitude,
                         status: 'in_custody',
-                        clientTotal: "35.50",
-                        mechPay: "30.00"
+                        clientTotal: servicePrice.toFixed(2),
+                        mechPay: (servicePrice * 0.85).toFixed(2),
+                        paymentInfo: cashVal
                     };
 
                     rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
@@ -795,19 +860,30 @@
         }
 
         function initMechanicMap() {
-            if (!mapMechanic) {
-                mapMechanic = L.map('map-mechanic').setView([-23.5505, -46.6333], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
-                orderMarkersGroup = L.layerGroup().addTo(mapMechanic);
+            if (!mapMechanic && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    mapMechanic = L.map('map-mechanic').setView([pos.coords.latitude, pos.coords.longitude], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
+                    orderMarkersGroup = L.layerGroup().addTo(mapMechanic);
+                });
             }
         }
 
-        /* OUVIDOR DE CHAMADOS E MAPA */
+        /* OUVIDOR DE CHAMADOS E MAPA DO MECÂNICO (COM PONTO AZUL E VERMELHO) */
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if (orderMarkersGroup) orderMarkersGroup.clearLayers();
                 
+                // Adiciona o marcador azul da geolocalização atual do mecânico no mapa
+                if (navigator.geolocation && mapMechanic) {
+                    navigator.geolocation.getCurrentPosition(function(pos) {
+                        L.marker([pos.coords.latitude, pos.coords.longitude], {
+                            icon: L.divIcon({className: 'blue-marker-icon', iconSize: [20, 20]})
+                        }).addTo(orderMarkersGroup).bindPopup("<b>Sua Base / Localização Atual</b>");
+                    });
+                }
+
                 if (!snap.exists()) {
                     if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento.</p>';
                     return;
@@ -826,8 +902,9 @@
 
                         if (mapMechanic && d.lat && d.lng) {
                             mapMechanic.setView([d.lat, d.lng], 16);
-                            L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [22, 22]})}).addTo(orderMarkersGroup)
-                                .bindPopup("<b>Local exato do Cliente:</b> " + d.clientName).openPopup();
+                            L.marker([d.lat, d.lng], {
+                                icon: L.divIcon({className: 'red-marker-icon', iconSize: [24, 24]})
+                            }).addTo(orderMarkersGroup).bindPopup("<b>Local exato do Cliente:</b> " + d.clientName).openPopup();
                             document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Rota Exata para o Local do Cliente';
                         }
 
@@ -841,6 +918,7 @@
                                     <b>Cliente:</b> ${d.clientName} (${d.clientPhone})<br>
                                     <b>Veículo:</b> ${d.vehicleModel} | Placa: ${d.vehiclePlate}<br>
                                     <b>O QUE LEVAR:</b> <strong style="color:#d32f2f;">${d.problem}</strong><br>
+                                    <b>Pagamento:</b> ${d.paymentInfo}<br>
                                     <b>Seu Repasse:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong>
                                 </div>
                                 
@@ -872,10 +950,11 @@
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
                     } else if (!foundActiveOrder) {
-                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados';
+                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Azul: Você | Vermelho: Cliente)';
                         if (mapMechanic && d.lat && d.lng) {
-                            L.marker([d.lat, d.lng], {icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})}).addTo(orderMarkersGroup)
-                                .bindPopup(`<b>${d.problem}</b><br><button onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')" style="background:#25d366;color:#fff;border:none;padding:5px;border-radius:4px;margin-top:4px;cursor:pointer;">Aceitar</button>`);
+                            L.marker([d.lat, d.lng], {
+                                icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})
+                            }).addTo(orderMarkersGroup).bindPopup(`<b>${d.problem} (${d.clientName})</b><br><button onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')" style="background:#25d366;color:#fff;border:none;padding:5px;border-radius:4px;margin-top:4px;cursor:pointer;">Aceitar Chamado</button>`);
                         }
 
                         if (isOnline) {
@@ -890,6 +969,7 @@
                                 </div>
                                 <div class="order-details">
                                     <b>Cliente:</b> ${d.clientName}<br>
+                                    <b>Pagamento:</b> ${d.paymentInfo}<br>
                                     <b>Repasse:</b> R$ ${d.mechPay}
                                 </div>
                                 <button class="btn-action" onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')">
@@ -914,7 +994,7 @@
                 status: 'accepted', 
                 mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira" 
             });
-            alert("✅ Chamado aceito! O mapa acima agora foca na geolocalização do cliente e o chat foi ativado.");
+            alert("✅ Chamado aceito! O mapa acima agora foca na geolocalização exata do cliente e o chat foi ativado.");
         }
 
         function completeOrderWithPin(orderId) {
