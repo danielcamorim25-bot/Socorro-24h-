@@ -308,9 +308,8 @@
                     <h2 id="mech-card-title"><i class="fa-solid fa-id-card"></i> Cadastro do Profissional</h2>
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome / Oficina:</label>
-                        <input type="text" id="mech-name" placeholder="Oficina do Alemão" required>
+                        <input type="text" id="mech-name" placeholder="Ex: Oficina Mecânica 24h" required>
                         
-                        <!-- NOVO CAMPO: ENDEREÇO DA OFICINA -->
                         <label><i class="fa-solid fa-map-pin"></i> Endereço Completo da Oficina / Base:</label>
                         <input type="text" id="mech-shop-address" placeholder="Ex: Av. Principal, 500 - Arujá / SP" required>
 
@@ -362,7 +361,7 @@
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
                         <div>
-                            <p><b id="modal-mech-name">João Carlos</b></p>
+                            <p><b id="modal-mech-name">Oficina Parceira</b></p>
                             <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Endereço da Oficina</p>
                         </div>
                     </div>
@@ -449,13 +448,16 @@
         var currentSearchRadius = 10;
         var radarInterval = null;
 
+        // EXECUTA A LIMPEZA AUTOMÁTICA DE TODOS OS REGISTROS LOCAIS E DO SISTEMA
         window.onload = function() { 
-            // ZERA TODOS OS DADOS LOCAIS AO RECARREGAR (Zera cadastros antigos)
-            localStorage.removeItem('resgate_user');
-            localStorage.removeItem('resgate_mechanic');
-            localStorage.removeItem('resgate_mech_online');
+            // Apaga dados fictícios e contas prévias do navegador
+            localStorage.clear();
+            sessionStorage.clear();
 
-            checkInitialAuth(); 
+            currentUser = null;
+            currentMechanic = null;
+
+            goToWelcome();
             requestNotificationPermission();
         };
 
@@ -519,15 +521,6 @@
                     document.getElementById('mech-register-card').style.display = 'none';
                     document.getElementById('mech-main-content').style.display = 'block';
                     initMechanicMap();
-                    
-                    if (localStorage.getItem('resgate_mech_online') === 'true') {
-                        isOnline = true;
-                        var btn = document.getElementById('toggle-status-btn');
-                        btn.className = 'status-btn online'; 
-                        btn.innerText = 'Online (Fundo Ativo)';
-                        document.getElementById('status-text').innerText = 'ONLINE (Sobre Outros Apps)';
-                        document.getElementById('status-text').style.color = '#25d366';
-                    }
                     listenLiveOrders();
                 } else {
                     document.getElementById('mech-register-card').style.display = 'block';
@@ -555,14 +548,11 @@
         }
 
         function logoutCurrentRole() {
-            if (currentRole === 'client') { localStorage.removeItem('resgate_user'); currentUser = null; }
-            else { 
-                localStorage.removeItem('resgate_mechanic'); 
-                localStorage.removeItem('resgate_mech_online');
-                currentMechanic = null; 
-                isOnline = false; 
-            }
-            selectRole(currentRole);
+            localStorage.clear();
+            currentUser = null;
+            currentMechanic = null;
+            isOnline = false;
+            goToWelcome();
         }
 
         function saveUserAccount(e) {
@@ -575,7 +565,7 @@
                 plate: document.getElementById('reg-plate').value
             };
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
-            alert("✅ Cadastro realizado com sucesso!");
+            alert("✅ Cadastro de usuário criado com sucesso!");
             selectRole('client');
         }
 
@@ -600,7 +590,7 @@
                 shopImg: mechShopImgUrl
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-            alert("✅ Perfil profissional cadastrado com endereço da oficina!");
+            alert("✅ Perfil profissional criado com sucesso!");
             selectRole('mechanic');
         }
 
@@ -636,7 +626,7 @@
         function loadNearbyMechanics() {
             document.getElementById('mechanics-list').innerHTML = `
                 <div class="mechanic-item">
-                    <span><i class="fa-solid fa-wrench"></i> <b>Nenhum prestador cadastrado ainda</b></span>
+                    <span><i class="fa-solid fa-wrench"></i> <b>Nenhum prestador cadastrado no momento</b></span>
                     <span class="badge">Aguardando</span>
                 </div>
             `;
@@ -646,7 +636,7 @@
             rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
                 snap.forEach((child) => {
                     var order = child.val();
-                    if (order.clientPhone === currentUser.phone && order.status !== 'completed' && order.status !== 'cancelled') {
+                    if (currentUser && order.clientPhone === currentUser.phone && order.status !== 'completed' && order.status !== 'cancelled') {
                         activeOrderId = order.id;
                         document.getElementById('client-active-code-card').style.display = 'block';
                         document.getElementById('display-client-pin').innerText = order.clientPin;
@@ -816,13 +806,6 @@
             }
         }
 
-        function checkPersistentOnlineState() {
-            if (localStorage.getItem('resgate_mech_online') === 'true' && currentMechanic) {
-                isOnline = true;
-                listenLiveOrders();
-            }
-        }
-
         function initMechanicMap() {
             if (!mapMechanic) {
                 mapMechanic = L.map('map-mechanic').setView([-23.5505, -46.6333], 13);
@@ -849,7 +832,7 @@
                     var d = child.val();
                     if (d.status === 'completed' || d.status === 'cancelled') return;
 
-                    if (d.status === 'accepted' && d.mechanicName === currentMechanic.name) {
+                    if (d.status === 'accepted' && currentMechanic && d.mechanicName === currentMechanic.name) {
                         foundActiveOrder = true;
                         activeOrderId = d.id;
 
@@ -941,7 +924,7 @@
             activeOrderId = orderId;
             rtdb.ref('resgate_orders/' + orderId).update({ 
                 status: 'accepted', 
-                mechanicName: currentMechanic.name 
+                mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira" 
             });
             alert("✅ Chamado aceito! O mapa acima agora foca na geolocalização do cliente e o chat foi ativado.");
         }
