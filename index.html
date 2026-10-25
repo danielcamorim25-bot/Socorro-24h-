@@ -314,7 +314,7 @@
                         <input type="text" id="mech-pix-key" placeholder="Sua chave Pix" required>
                         
                         <!-- CNH DO MECÂNICO (PDF ou Foto) -->
-                        <label><i class="fa-solid id-card"></i> CNH do Mecânico (PDF ou Foto):</label>
+                        <label><i class="fa-solid fa-id-card"></i> CNH do Mecânico (PDF ou Foto):</label>
                         <input type="file" id="mech-cnh-doc" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
 
                         <label>Foto do Perfil (Cliente Ver):</label>
@@ -351,10 +351,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE CONFIRMAÇÃO DE SOS E PIX CORRIGIDO -->
+        <!-- MODAL DE CONFIRMAÇÃO DE SOS E PIX OBRIGATÓRIO -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Socorro</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento Obrigatório do Socorro</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -371,14 +371,15 @@
                 </div>
 
                 <div id="modal-pix-section">
-                    <label>Pix Copia e Cola Mercado Pago:</label>
+                    <label style="color:#d32f2f;">⚠️ Realize o Pix Copia e Cola abaixo antes de prosseguir:</label>
                     <div class="pix-code-box" id="pix-code">00020126580014br.gov.bcb.pix0136resgate24h-mercadopago@pix.com5204000053039865802BR5925Resgate 24h Servicos Ltda6009Sao Paulo62070503SOC63041D3C</div>
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix</button>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" onclick="confirmSOSAndPay()">Confirmar & Solicitar</button>
+                    <!-- SÓ ENVIA O CHAMADO APÓS CLICAR AQUI (CONFIRMAR PAGAMENTO) -->
+                    <button type="button" class="btn-action" onclick="confirmPaymentAndDispatchSOS()"><i class="fa-solid fa-check-double"></i> Já Paguei - Enviar Chamado</button>
                 </div>
             </div>
         </div>
@@ -445,11 +446,9 @@
         var radarInterval = null;
 
         window.onload = function() { 
-            // ZERA TUDO AUTOMATICAMENTE AO ABRIR (Limpa dados antigos, Kimberly, João Carlos, etc.)
+            // Zera dados ao abrir para iniciar limpo
             localStorage.clear();
             sessionStorage.clear();
-
-            // Limpa o banco de chamados do Firebase para começar totalmente do zero
             rtdb.ref('resgate_orders').remove();
 
             currentUser = null;
@@ -509,6 +508,13 @@
             } else {
                 roleClient.classList.remove('active');
                 roleMechanic.classList.add('active');
+                
+                // Recupera da memória local caso já estivesse cadastrado nesta sessão
+                var savedMech = localStorage.getItem('resgate_mechanic');
+                if (savedMech) {
+                    currentMechanic = JSON.parse(savedMech);
+                }
+
                 if (currentMechanic) {
                     document.getElementById('mech-register-card').style.display = 'none';
                     document.getElementById('mech-main-content').style.display = 'block';
@@ -589,6 +595,7 @@
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             
+            // Oculta cadastro e abre painel principal sem travar
             document.getElementById('mech-register-card').style.display = 'none';
             document.getElementById('mech-main-content').style.display = 'block';
             initMechanicMap();
@@ -612,7 +619,7 @@
 
         function setLocationType(type, rate, element) {
             locationContext = type;
-            servicePrice = rate * 10 + 5.50; // Ajusta o valor baseado no tipo de local
+            servicePrice = rate * 10 + 5.50;
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
         }
@@ -679,10 +686,9 @@
             });
         }
 
+        // APENAS ABRE O MODAL PARA PAGAR. NÃO DISPATCHA AINDA.
         async function openConfirmationModal() {
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
-            document.getElementById('modal-mech-name').innerText = currentMechanic ? currentMechanic.name : "Oficina Parceira";
-            document.getElementById('modal-mech-address-display').innerText = currentMechanic ? currentMechanic.shopAddress : "Endereço não informado";
             document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
             
             var method = document.getElementById('payment-method-select').value;
@@ -706,7 +712,11 @@
             });
         }
 
-        function confirmSOSAndPay() { closeModal(); dispatchSOS(); }
+        // CHAMADO SÓ É ENVIADO APÓS O CLIENTE CONFIRMAR QUE EFETUOU O PIX/PAGAMENTO
+        function confirmPaymentAndDispatchSOS() {
+            closeModal();
+            dispatchSOS();
+        }
 
         /* RADAR PROGRESSIVO */
         function startProgressiveRadar() {
@@ -742,7 +752,7 @@
                     activeOrderId = orderId;
 
                     var paymentMethod = document.getElementById('payment-method-select').value;
-                    var cashVal = paymentMethod === 'cash_direct' ? document.getElementById('client-cash-amount').value : "Pix Online";
+                    var cashVal = paymentMethod === 'cash_direct' ? document.getElementById('client-cash-amount').value : "Pix Online Pago";
 
                     var newOrder = {
                         id: orderId,
@@ -875,7 +885,6 @@
                 var container = document.getElementById('orders-container');
                 if (orderMarkersGroup) orderMarkersGroup.clearLayers();
                 
-                // Adiciona o marcador azul da geolocalização atual do mecânico no mapa
                 if (navigator.geolocation && mapMechanic) {
                     navigator.geolocation.getCurrentPosition(function(pos) {
                         L.marker([pos.coords.latitude, pos.coords.longitude], {
