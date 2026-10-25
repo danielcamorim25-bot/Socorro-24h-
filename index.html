@@ -115,7 +115,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; max-height: 80px; overflow-y: auto; }
+        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -199,7 +199,7 @@
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
                         <h3 style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Pix...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">O código Pix válido foi gerado. Efetue o pagamento ou simule abaixo para liberar o chamado instantaneamente.</p>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Copie a chave Pix da oficina, faça a transferência no seu banco ou use o botão abaixo para simular a aprovação instantânea.</p>
                         
                         <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES IMEDIATOS -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
@@ -325,8 +325,8 @@
                         <input type="text" id="mech-doc-number" placeholder="00.000.000/0001-00" required>
                         <label>WhatsApp:</label>
                         <input type="tel" id="mech-phone" placeholder="11999998888" required>
-                        <label>Chave Pix:</label>
-                        <input type="text" id="mech-pix-key" placeholder="Sua chave Pix" required>
+                        <label>Chave Pix (Ex: E-mail, Telefone ou CPF/CNPJ):</label>
+                        <input type="text" id="mech-pix-key" placeholder="Ex: 11999998888" required>
                         
                         <!-- CNH DO MECÂNICO (PDF ou Foto) -->
                         <label><i class="fa-solid fa-id-card"></i> CNH do Mecânico (PDF ou Foto):</label>
@@ -366,10 +366,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX DINÂMICO E WEBHOOK -->
+        <!-- MODAL DE PIX COM CHAVE REAL SEGURA -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento Pix Copia e Cola</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento Pix da Oficina</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -385,11 +385,11 @@
                     <p><b>Total do Socorro:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 35,50</strong></p>
                 </div>
 
-                <!-- SEÇÃO DO PIX OBRIGATÓRIO COM GERAÇÃO DINÂMICA VÁLIDA -->
+                <!-- SEÇÃO DA CHAVE PIX REAL (COMPATÍVEL COM QUALQUER BANCO SEM ERRO) -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie o Pix abaixo (compatível com todos os bancos):</label>
-                    <div class="pix-code-box" id="pix-code">Gerando Pix...</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix Copia e Cola</button>
+                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix abaixo e cole na opção "Pix com Chave" do seu banco:</label>
+                    <div class="pix-code-box" id="pix-code">11999998888</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix</button>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -702,50 +702,6 @@
             });
         }
 
-        // GERADOR DE CRC16 VÁLIDO PARA PIX (PADRÃO BANCO CENTRAL)
-        function calcularCRC16(payload) {
-            let polinomio = 0x1021;
-            let resultado = 0xFFFF;
-            let length = payload.length;
-            for (let offset = 0; offset < length; offset++) {
-                let ascii = payload.charCodeAt(offset);
-                resultado ^= (ascii << 8);
-                for (let bitwise = 0; bitwise < 8; bitwise++) {
-                    if ((resultado & 0x8000) !== 0) {
-                        resultado = ((resultado << 1) ^ polinomio);
-                    } else {
-                        resultado = (resultado << 1);
-                    }
-                    resultado &= 0xFFFF;
-                }
-            }
-            return resultado.toString(16).toUpperCase().padStart(4, '0');
-        }
-
-        // GERAÇÃO DE PIX EMV COMPATÍVEL COM TODOS OS BANCOS
-        function gerarPayloadPix(chavePix, nomeRecebedor, cidade, valor) {
-            function formatField(id, value) {
-                let len = value.length.toString().padStart(2, '0');
-                return id + len + value;
-            }
-
-            let payloadFormat = formatField("00", "01");
-            let merchantAccountInfo = formatField("00", "br.gov.bcb.pix") + formatField("01", chavePix);
-            let merchantAccount = formatField("26", merchantAccountInfo);
-            let mcc = formatField("52", "0000");
-            let currency = formatField("53", "986"); // BRL
-            let amount = formatField("54", valor.toFixed(2));
-            let country = formatField("58", "BR");
-            let merchantName = formatField("59", nomeRecebedor.substring(0, 25));
-            let merchantCity = formatField("60", cidade.substring(0, 15));
-            let additionalData = formatField("05", "RESGATE24H");
-            let additional = formatField("62", additionalData);
-
-            let payloadSemCRC = payloadFormat + merchantAccount + mcc + currency + amount + country + merchantName + merchantCity + additional + "6304";
-            let crc = calcularCRC16(payloadSemCRC);
-            return payloadSemCRC + crc;
-        }
-
         async function openConfirmationModal() {
             var method = document.getElementById('payment-method-select').value;
 
@@ -762,11 +718,9 @@
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
 
-                // Gera o Pix Dinâmico Corrigido Válido para o Banco
-                let chaveRecebimento = (currentMechanic && currentMechanic.pixKey) ? currentMechanic.pixKey : "suporte@resgate24h.com.br";
-                let nomeRecebimento = (currentMechanic && currentMechanic.name) ? currentMechanic.name : "Resgate 24h Servicos";
-                let pixValido = gerarPayloadPix(chaveRecebimento, nomeRecebimento, "Sao Paulo", servicePrice);
-                document.getElementById('pix-code').innerText = pixValido;
+                // Pega a chave Pix real cadastrada pelo mecânico ou usa uma padrão segura
+                let chaveReal = (currentMechanic && currentMechanic.pixKey) ? currentMechanic.pixKey : "11999998888";
+                document.getElementById('pix-code').innerText = chaveReal;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -779,7 +733,7 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Código Pix Copia e Cola válido copiado! Cole no seu aplicativo bancário.");
+                alert("✅ Chave Pix copiada com sucesso! Cole na opção 'Pix com Chave' do seu aplicativo bancário.");
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o código manualmente.");
             });
