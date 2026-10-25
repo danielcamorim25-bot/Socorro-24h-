@@ -194,6 +194,15 @@
                 </div>
 
                 <div id="client-main-content" style="display: none;">
+                    
+                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX (WEBHOOK) -->
+                    <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
+                        <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
+                        <h3 style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Banco...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">O Pix Copia e Cola foi gerado. Assim que o pagamento for identificado pela nossa notificação automática, o chamado será liberado instantaneamente.</p>
+                        <button type="button" class="btn-cancel" onclick="cancelWaitingPayment()" style="background:#757575; max-width: 200px; margin: 0 auto;">Cancelar / Fechar</button>
+                    </div>
+
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
                         <h3 id="radar-title-text" style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos (Raio: 10 km)...</h3>
@@ -351,10 +360,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE CONFIRMAÇÃO DE SOS E PIX OBRIGATÓRIO -->
+        <!-- MODAL DE PIX COM AGUARDO DE WEBHOOK DO BANCO -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento Obrigatório do Socorro</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento via Pix Webhook</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -370,16 +379,22 @@
                     <p><b>Total do Socorro:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 35,50</strong></p>
                 </div>
 
+                <!-- SEÇÃO DO PIX OBRIGATÓRIO COM NOTIFICAÇÃO AUTOMÁTICA -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Realize o Pix Copia e Cola abaixo antes de prosseguir:</label>
+                    <label style="color:#d32f2f;">⚠️ Copie o Pix e efetue o pagamento. O app será liberado automaticamente após a notificação do banco:</label>
                     <div class="pix-code-box" id="pix-code">00020126580014br.gov.bcb.pix0136resgate24h-mercadopago@pix.com5204000053039865802BR5925Resgate 24h Servicos Ltda6009Sao Paulo62070503SOC63041D3C</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix</button>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix Copia e Cola</button>
+                </div>
+
+                <!-- SEÇÃO DE AVISO EM DINHEIRO -->
+                <div id="modal-cash-section" style="display: none; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                    <p style="font-size: 12px; color: #2e7d32; font-weight: bold;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro selecionado. O chamado será enviado direto.</p>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <!-- SÓ ENVIA O CHAMADO APÓS CLICAR AQUI (CONFIRMAR PAGAMENTO) -->
-                    <button type="button" class="btn-action" onclick="confirmPaymentAndDispatchSOS()"><i class="fa-solid fa-check-double"></i> Já Paguei - Enviar Chamado</button>
+                    <!-- BOTÃO QUE GERA O PEDIDO E ENTRA NO MODO DE ESPERA DA NOTIFICAÇÃO DO BANCO -->
+                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Gerar Pedido & Aguardar Banco</button>
                 </div>
             </div>
         </div>
@@ -444,9 +459,9 @@
 
         var currentSearchRadius = 10;
         var radarInterval = null;
+        var webhookListenerRef = null;
 
         window.onload = function() { 
-            // Zera dados ao abrir para iniciar limpo
             localStorage.clear();
             sessionStorage.clear();
             rtdb.ref('resgate_orders').remove();
@@ -509,7 +524,6 @@
                 roleClient.classList.remove('active');
                 roleMechanic.classList.add('active');
                 
-                // Recupera da memória local caso já estivesse cadastrado nesta sessão
                 var savedMech = localStorage.getItem('resgate_mechanic');
                 if (savedMech) {
                     currentMechanic = JSON.parse(savedMech);
@@ -595,7 +609,6 @@
             };
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             
-            // Oculta cadastro e abre painel principal sem travar
             document.getElementById('mech-register-card').style.display = 'none';
             document.getElementById('mech-main-content').style.display = 'block';
             initMechanicMap();
@@ -627,14 +640,11 @@
         function checkPaymentMethodChange() {
             var method = document.getElementById('payment-method-select').value;
             var changeContainer = document.getElementById('change-box-container');
-            var pixSection = document.getElementById('modal-pix-section');
 
             if (method === 'cash_direct') {
                 changeContainer.style.display = 'block';
-                if(pixSection) pixSection.style.display = 'none';
             } else {
                 changeContainer.style.display = 'none';
-                if(pixSection) pixSection.style.display = 'block';
             }
         }
 
@@ -657,7 +667,7 @@
             if (navigator.geolocation && !mapClient) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     mapClient = L.map('map-client').setView([pos.coords.latitude, pos.coords.longitude], 13);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapClient);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}⁠/{x}/{y}.png').addTo(mapClient);
                     L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Você").openPopup();
                 });
             }
@@ -686,18 +696,25 @@
             });
         }
 
-        // APENAS ABRE O MODAL PARA PAGAR. NÃO DISPATCHA AINDA.
         async function openConfirmationModal() {
-            document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
-            document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
-            
             var method = document.getElementById('payment-method-select').value;
-            if(method === 'cash_direct') {
+
+            if (method === 'cash_direct') {
+                var cashInput = document.getElementById('client-cash-amount').value.replace('R$', '').replace(',', '.').trim();
+                var cashVal = parseFloat(cashInput) || 0;
+                if (cashVal < servicePrice) {
+                    alert("⚠️ Por favor, informe um valor em dinheiro válido ou igual/superior ao total do serviço para calcular o troco.");
+                    return;
+                }
                 document.getElementById('modal-pix-section').style.display = 'none';
+                document.getElementById('modal-cash-section').style.display = 'block';
             } else {
                 document.getElementById('modal-pix-section').style.display = 'block';
+                document.getElementById('modal-cash-section').style.display = 'none';
             }
 
+            document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
+            document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
             document.getElementById('modal-confirm').classList.add('active');
         }
 
@@ -706,23 +723,91 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Código Pix Copia e Cola copiado com sucesso!");
+                alert("✅ Código Pix Copia e Cola copiado! Efetue o pagamento no seu banco.");
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o código manualmente.");
             });
         }
 
-        // CHAMADO SÓ É ENVIADO APÓS O CLIENTE CONFIRMAR QUE EFETUOU O PIX/PAGAMENTO
-        function confirmPaymentAndDispatchSOS() {
+        // REGISTRA O PEDIDO E FICA OUVINDO A NOTIFICAÇÃO DO BANCO (WEBHOOK) PARA LIBERAR AUTOMATICAMENTE
+        function registerOrderAndListenWebhook() {
             closeModal();
-            dispatchSOS();
+            var paymentMethod = document.getElementById('payment-method-select').value;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    var pin = Math.floor(1000 + Math.random() * 9000).toString();
+                    var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
+                    activeOrderId = orderId;
+
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Online (Aguardando Webhook)";
+                    
+                    // Se for dinheiro, já vai direto. Se for pix, começa como 'waiting_payment'
+                    var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
+
+                    var newOrder = {
+                        id: orderId,
+                        clientName: currentUser.name,
+                        clientPhone: currentUser.phone,
+                        vehicleModel: currentUser.vehicle,
+                        vehiclePlate: currentUser.plate,
+                        problem: selectedProblem,
+                        clientPin: pin,
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        status: initialStatus,
+                        clientTotal: servicePrice.toFixed(2),
+                        mechPay: (servicePrice * 0.85).toFixed(2),
+                        paymentInfo: paymentInfoText
+                    };
+
+                    rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
+                        if (paymentMethod === 'cash_direct') {
+                            startProgressiveRadar();
+                            document.getElementById('client-form-card').style.display = 'none';
+                            document.getElementById('nearby-mech-box-card').style.display = 'none';
+                            document.getElementById('client-active-code-card').style.display = 'block';
+                            document.getElementById('display-client-pin').innerText = pin;
+                            listenChatMessages(orderId, 'client-chat-messages');
+                        } else {
+                            // Mostra a tela de aguardando notificação do banco
+                            document.getElementById('client-form-card').style.display = 'none';
+                            document.getElementById('nearby-mech-box-card').style.display = 'none';
+                            document.getElementById('waiting-payment-box').style.display = 'block';
+
+                            // OUVINDO O WEBHOOK: Quando o status mudar no banco de 'waiting_payment' para 'in_custody', o app libera sozinho!
+                            if(webhookListenerRef) webhookListenerRef.off();
+                            webhookListenerRef = rtdb.ref('resgate_orders/' + orderId + '/status');
+                            
+                            webhookListenerRef.on('value', (snap) => {
+                                var currentDbStatus = snap.val();
+                                if (currentDbStatus === 'in_custody') {
+                                    document.getElementById('waiting-payment-box').style.display = 'none';
+                                    startProgressiveRadar();
+                                    document.getElementById('client-active-code-card').style.display = 'block';
+                                    document.getElementById('display-client-pin').innerText = pin;
+                                    listenChatMessages(orderId, 'client-chat-messages');
+                                    alert("✅ Notificação recebida do banco! Pagamento confirmado com sucesso, chamados liberados.");
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        }
+
+        function cancelWaitingPayment() {
+            if (activeOrderId) {
+                rtdb.ref('resgate_orders/' + activeOrderId).remove();
+            }
+            document.getElementById('waiting-payment-box').style.display = 'none';
+            document.getElementById('client-form-card').style.display = 'block';
+            document.getElementById('nearby-mech-box-card').style.display = 'block';
         }
 
         /* RADAR PROGRESSIVO */
         function startProgressiveRadar() {
             currentSearchRadius = 10;
-            document.getElementById('client-form-card').style.display = 'none';
-            document.getElementById('nearby-mech-box-card').style.display = 'none';
             document.getElementById('searching-radar').style.display = 'block';
 
             if (radarInterval) clearInterval(radarInterval);
@@ -741,49 +826,6 @@
             if (radarInterval) {
                 clearInterval(radarInterval);
                 radarInterval = null;
-            }
-        }
-
-        function dispatchSOS() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    var pin = Math.floor(1000 + Math.random() * 9000).toString();
-                    var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
-                    activeOrderId = orderId;
-
-                    var paymentMethod = document.getElementById('payment-method-select').value;
-                    var cashVal = paymentMethod === 'cash_direct' ? document.getElementById('client-cash-amount').value : "Pix Online Pago";
-
-                    var newOrder = {
-                        id: orderId,
-                        clientName: currentUser.name,
-                        clientPhone: currentUser.phone,
-                        vehicleModel: currentUser.vehicle,
-                        vehiclePlate: currentUser.plate,
-                        problem: selectedProblem,
-                        clientPin: pin,
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude,
-                        status: 'in_custody',
-                        clientTotal: servicePrice.toFixed(2),
-                        mechPay: (servicePrice * 0.85).toFixed(2),
-                        paymentInfo: cashVal
-                    };
-
-                    rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
-                        startProgressiveRadar();
-                        document.getElementById('client-active-code-card').style.display = 'block';
-                        document.getElementById('display-client-pin').innerText = pin;
-                        listenChatMessages(orderId, 'client-chat-messages');
-
-                        rtdb.ref('resgate_orders/' + orderId + '/status').on('value', (snap) => {
-                            if (snap.val() === 'accepted') {
-                                stopProgressiveRadar();
-                                document.getElementById('searching-radar').style.display = 'none';
-                            }
-                        });
-                    });
-                });
             }
         }
 
@@ -879,7 +921,7 @@
             }
         }
 
-        /* OUVIDOR DE CHAMADOS E MAPA DO MECÂNICO (COM PONTO AZUL E VERMELHO) */
+        /* OUVIDOR DE CHAMADOS E MAPA DO MECÂNICO (SÓ MOSTRA CHAMADOS COM PAGAMENTO CONCLUÍDO) */
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
@@ -903,7 +945,8 @@
 
                 snap.forEach((child) => {
                     var d = child.val();
-                    if (d.status === 'completed' || d.status === 'cancelled') return;
+                    // Ignora pedidos aguardando pagamento por webhook ou finalizados/cancelados
+                    if (d.status === 'waiting_payment' || d.status === 'completed' || d.status === 'cancelled') return;
 
                     if (d.status === 'accepted' && currentMechanic && d.mechanicName === currentMechanic.name) {
                         foundActiveOrder = true;
