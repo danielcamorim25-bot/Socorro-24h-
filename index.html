@@ -198,8 +198,14 @@
                     <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX (WEBHOOK) -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Banco...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">O Pix Copia e Cola válido foi gerado. Assim que o pagamento for identificado pela nossa notificação automática, o chamado será liberado instantaneamente.</p>
+                        <h3 style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Pix...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">O código Pix válido foi gerado. Efetue o pagamento ou simule abaixo para liberar o chamado instantaneamente.</p>
+                        
+                        <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES IMEDIATOS -->
+                        <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
+                            <i class="fa-solid fa-check-circle"></i> [TESTE] Simular Pagamento Aprovado
+                        </button>
+
                         <button type="button" class="btn-cancel" onclick="cancelWaitingPayment()" style="background:#757575; max-width: 200px; margin: 0 auto;">Cancelar / Fechar</button>
                     </div>
 
@@ -360,10 +366,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM AGUARDO DE WEBHOOK DO BANCO -->
+        <!-- MODAL DE PIX DINÂMICO E WEBHOOK -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento via Pix Copia e Cola</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento Pix Copia e Cola</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -379,10 +385,10 @@
                     <p><b>Total do Socorro:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 35,50</strong></p>
                 </div>
 
-                <!-- SEÇÃO DO PIX OBRIGATÓRIO COM STRING EMV CORRETA -->
+                <!-- SEÇÃO DO PIX OBRIGATÓRIO COM GERAÇÃO DINÂMICA VÁLIDA -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie o código Pix válido abaixo e efetue o pagamento no seu banco:</label>
-                    <div class="pix-code-box" id="pix-code">00020126360014br.gov.bcb.pix0114+55119999999995204000053039865802BR5925Resgate 24h Servicos Ltda6009Sao Paulo6304E2CA</div>
+                    <label style="color:#d32f2f;">⚠️ Copie o Pix abaixo (compatível com todos os bancos):</label>
+                    <div class="pix-code-box" id="pix-code">Gerando Pix...</div>
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Pix Copia e Cola</button>
                 </div>
 
@@ -696,6 +702,50 @@
             });
         }
 
+        // GERADOR DE CRC16 VÁLIDO PARA PIX (PADRÃO BANCO CENTRAL)
+        function calcularCRC16(payload) {
+            let polinomio = 0x1021;
+            let resultado = 0xFFFF;
+            let length = payload.length;
+            for (let offset = 0; offset < length; offset++) {
+                let ascii = payload.charCodeAt(offset);
+                resultado ^= (ascii << 8);
+                for (let bitwise = 0; bitwise < 8; bitwise++) {
+                    if ((resultado & 0x8000) !== 0) {
+                        resultado = ((resultado << 1) ^ polinomio);
+                    } else {
+                        resultado = (resultado << 1);
+                    }
+                    resultado &= 0xFFFF;
+                }
+            }
+            return resultado.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        // GERAÇÃO DE PIX EMV COMPATÍVEL COM TODOS OS BANCOS
+        function gerarPayloadPix(chavePix, nomeRecebedor, cidade, valor) {
+            function formatField(id, value) {
+                let len = value.length.toString().padStart(2, '0');
+                return id + len + value;
+            }
+
+            let payloadFormat = formatField("00", "01");
+            let merchantAccountInfo = formatField("00", "br.gov.bcb.pix") + formatField("01", chavePix);
+            let merchantAccount = formatField("26", merchantAccountInfo);
+            let mcc = formatField("52", "0000");
+            let currency = formatField("53", "986"); // BRL
+            let amount = formatField("54", valor.toFixed(2));
+            let country = formatField("58", "BR");
+            let merchantName = formatField("59", nomeRecebedor.substring(0, 25));
+            let merchantCity = formatField("60", cidade.substring(0, 15));
+            let additionalData = formatField("05", "RESGATE24H");
+            let additional = formatField("62", additionalData);
+
+            let payloadSemCRC = payloadFormat + merchantAccount + mcc + currency + amount + country + merchantName + merchantCity + additional + "6304";
+            let crc = calcularCRC16(payloadSemCRC);
+            return payloadSemCRC + crc;
+        }
+
         async function openConfirmationModal() {
             var method = document.getElementById('payment-method-select').value;
 
@@ -711,6 +761,12 @@
             } else {
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
+
+                // Gera o Pix Dinâmico Corrigido Válido para o Banco
+                let chaveRecebimento = (currentMechanic && currentMechanic.pixKey) ? currentMechanic.pixKey : "suporte@resgate24h.com.br";
+                let nomeRecebimento = (currentMechanic && currentMechanic.name) ? currentMechanic.name : "Resgate 24h Servicos";
+                let pixValido = gerarPayloadPix(chaveRecebimento, nomeRecebimento, "Sao Paulo", servicePrice);
+                document.getElementById('pix-code').innerText = pixValido;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -723,7 +779,7 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Código Pix Copia e Cola válido copiado! Efetue o pagamento no seu banco.");
+                alert("✅ Código Pix Copia e Cola válido copiado! Cole no seu aplicativo bancário.");
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o código manualmente.");
             });
@@ -789,6 +845,13 @@
                         }
                     });
                 });
+            }
+        }
+
+        // FUNÇÃO DE TESTE PARA SIMULAR A NOTIFICAÇÃO DO BANCO (WEBHOOK)
+        function simulateWebhookPaymentConfirm() {
+            if (activeOrderId) {
+                rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'in_custody' });
             }
         }
 
