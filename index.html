@@ -115,7 +115,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
+        .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -195,7 +195,7 @@
 
                 <div id="client-main-content" style="display: none;">
                     
-                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX (WEBHOOK / SPLIT CENTRAL) -->
+                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
                         <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Pix...</h3>
@@ -222,7 +222,7 @@
                     <!-- CARD DO CÓDIGO PIN E CHAT ATIVO -->
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Atendimento em Andamento</h2>
-                        <p style="font-size: 12px; color: #444;">Código PIN de Liberação:</p>
+                        <p style="font-size: 12px; color: #444;">Código PIN de Liberação (Passe para o mecânico ao chegar):</p>
                         <div class="pin-box">
                             <div class="pin-code-text" id="display-client-pin">----</div>
                         </div>
@@ -241,7 +241,7 @@
                         </div>
 
                         <button type="button" class="btn-cancel" onclick="openCancelModal()">
-                            <i class="fa-solid fa-ban"></i> Desistir e Reaver Reembolso
+                            <i class="fa-solid fa-ban"></i> Desistir e Reaver Reembolso Integral
                         </button>
                     </div>
 
@@ -286,7 +286,7 @@
 
                         <label>Forma de Pagamento:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix Chave Mercado Pago (Taxa Mínima R$ 35,50)</option>
+                            <option value="pix_online">Pix Chave Aleatória Plataforma (R$ 35,50)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                         </select>
 
@@ -303,7 +303,7 @@
                         <input type="text" id="reference" placeholder="Ex: KM 32 da Rodovia">
 
                         <button type="button" class="btn-sos" onclick="openConfirmationModal()">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro (A partir de R$ 35,50)
+                            <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro (R$ 35,50)
                         </button>
                     </div>
                 </div>
@@ -326,7 +326,7 @@
                         <input type="text" id="mech-doc-number" placeholder="00.000.000/0001-00" required>
                         <label>WhatsApp:</label>
                         <input type="tel" id="mech-phone" placeholder="11999998888" required>
-                        <label>Sua Chave Pix para Repasse:</label>
+                        <label>Sua Chave Pix para Repasse (R$ 30,00):</label>
                         <input type="text" id="mech-pix-key" placeholder="Ex: Chave CPF/E-mail/Telefone" required>
                         
                         <!-- CNH DO MECÂNICO (PDF ou Foto) -->
@@ -367,10 +367,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM CHAVE OFICIAL ACEITA NO NUBANK -->
+        <!-- MODAL DE PIX COM A SUA CHAVE ALEATÓRIA -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix Central)</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix Plataforma)</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -383,15 +383,15 @@
                         <span style="font-size: 11px; font-weight: bold; color: #333;">Fotos do Local:</span>
                         <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
                     </div>
-                    <p><b>Deslocamento Inicial:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* O valor garante o repasse de R$ 30,00 ao mecânico na conta central da plataforma.</p>
+                    <p><b>Valor Total:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p style="font-size: 11px; color: #666;">* O valor cai integralmente na conta da plataforma e, após a conclusão com o PIN do cliente, R$ 30,00 vão para o mecânico e R$ 5,50 ficam para você.</p>
                 </div>
 
-                <!-- SEÇÃO DA CHAVE PIX DIRETA COMPATÍVEL COM NUBANK E QUALQUER BANCO -->
+                <!-- SEÇÃO DA SUA CHAVE PIX ALEATÓRIA -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix da plataforma abaixo e cole na opção "Pix com Chave" do seu Nubank:</label>
-                    <div class="pix-code-box" id="pix-code">mercadopago@resgate24h.com</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix da Plataforma</button>
+                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix Aleatória abaixo e cole na opção "Pix com Chave" do seu banco:</label>
+                    <div class="pix-code-box" id="pix-code">54815982-4985-47e4-9e21-332994a6de91</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix Aleatória</button>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -410,8 +410,8 @@
         <!-- MODAL DE CANCELAMENTO / REEMBOLSO COM SENHA DE 4 DÍGITOS -->
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso por Desistência ou Raio Esgotado</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Para estorno seguro instantâneo, digite sua <b>Senha de Saque (4 dígitos)</b>:</p>
+                <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso Integral por Desistência ou Raio Esgotado</div>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Caso nenhum mecânico aceite e o raio máximo seja atingido, o estorno ao cliente é de <b>R$ 35,50 (valor integral pago)</b>. Digite sua <b>Senha de Saque (4 dígitos)</b> para autorizar:</p>
                 
                 <label>Senha de Reembolso (4 dígitos):</label>
                 <input type="password" id="cancel-withdrawal-pin" maxlength="4" placeholder="Ex: 9876" style="text-align:center; font-size:18px; letter-spacing:4px;">
@@ -421,7 +421,7 @@
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeCancelModal()">Voltar</button>
-                    <button type="button" class="btn-action" style="background: #d32f2f;" onclick="executeRefundCancellation()">Confirmar Estorno Automático</button>
+                    <button type="button" class="btn-action" style="background: #d32f2f;" onclick="executeRefundCancellation()">Confirmar Estorno Integral (R$ 35,50)</button>
                 </div>
             </div>
         </div>
@@ -471,11 +471,11 @@
         var radarInterval = null;
         var webhookListenerRef = null;
 
-        // CHAVE PIX OFICIAL DA PLATAFORMA PARA RECEBIMENTO:
-        var PLATFORM_PIX_KEY = "mercadopago@resgate24h.com";
+        // SUA CHAVE PIX ALEATÓRIA DA PLATAFORMA CONFIGURADA:
+        var PLATFORM_PIX_KEY = "54815982-4985-47e4-9e21-332994a6de91";
 
         window.onload = function() { 
-            // Mantém cadastros salvos do usuário e prestador intactos
+            // Mantém os cadastros salvos intactos
             var savedUser = localStorage.getItem('resgate_user');
             if (savedUser) currentUser = JSON.parse(savedUser);
 
@@ -725,7 +725,7 @@
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
                 
-                // Exibe a chave oficial da plataforma garantindo zero erro de formato no banco
+                // Exibe a sua chave aleatória exata no modal
                 document.getElementById('pix-code').innerText = PLATFORM_PIX_KEY;
             }
 
@@ -739,7 +739,7 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Chave Pix copiada com sucesso! Cole na opção 'Pix com Chave' (E-mail) do seu Nubank e digite o valor de R$ " + servicePrice.toFixed(2).replace('.', ','));
+                alert("✅ Chave Pix aleatória copiada com sucesso! Cole na opção 'Pix com Chave' do seu banco.");
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o texto manualmente.");
             });
@@ -755,7 +755,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Chave Plataforma (Aguardando Confirmação)";
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Chave Aleatória (Aguardando Confirmação)";
                     
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
@@ -843,7 +843,7 @@
                     if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos mais distantes com garantia de atendimento.`;
                 } else {
                     clearInterval(radarInterval);
-                    alert("⚠️ Nenhum prestador aceitou o chamado até o raio máximo de 30 km. Você pode solicitar o reembolso instantâneo usando sua senha.");
+                    alert("⚠️ Nenhum prestador aceitou o chamado até o raio máximo de 30 km. Você pode solicitar o estorno integral de R$ 35,50 usando sua senha.");
                     openCancelModal();
                 }
             }, 8000);
@@ -884,7 +884,7 @@
                     refundPin: refundPin,
                     cancelReason: reason
                 }).then(() => {
-                    alert("✅ Estorno de Pix realizado com sucesso com a senha de segurança!");
+                    alert("✅ Estorno integral de R$ 35,50 autorizado com sucesso para o cliente!");
                     closeCancelModal();
                     location.reload();
                 });
@@ -1027,7 +1027,7 @@
                                     <input type="file" id="proof-photo-${d.id}" accept="image/*" capture="environment" style="font-size:11px; padding:3px;">
                                     
                                     <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">
-                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Receber Repasse
+                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Liberar Repasse (R$ 30,00)
                                     </button>
                                 </div>
                             </div>
@@ -1089,16 +1089,16 @@
                 var target = snap.val();
 
                 if (!inputPin || inputPin.trim() !== target.clientPin) {
-                    alert("❌ PIN Incorreto!");
+                    alert("❌ PIN Incorreto! O mecânico precisa digitar o código correto informado pelo cliente.");
                     return;
                 }
                 if (!fileInput || fileInput.files.length === 0) {
-                    alert("⚠️ Envie a foto de comprovação!");
+                    alert("⚠️ Envie a foto de comprovação do serviço!");
                     return;
                 }
 
                 rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
-                    alert("✅ Serviço concluído com sucesso e repasse liberado!");
+                    alert("✅ Serviço concluído com sucesso! O repasse de R$ 30,00 foi autorizado para a chave Pix cadastrada pelo mecânico e R$ 5,50 foram creditados para a plataforma.");
                     location.reload();
                 });
             });
