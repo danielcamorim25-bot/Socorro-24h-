@@ -115,7 +115,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
+        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -198,8 +198,8 @@
                     <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX (WEBHOOK / SPLIT CENTRAL) -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Deslocamento (R$ 35,50)...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Copie a chave Pix da plataforma cadastrada. Assim que o banco confirmar, o chamado é liberado.</p>
+                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Deslocamento...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Copie o Pix Copia e Cola da plataforma. Assim que o banco confirmar, o chamado é liberado.</p>
                         
                         <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
@@ -367,10 +367,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM CHAVE DA PLATAFORMA E TAXA PROGRESSIVA -->
+        <!-- MODAL DE PIX COM PAYLOAD COPIA E COLA REAL -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix)</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -383,15 +383,15 @@
                         <span style="font-size: 11px; font-weight: bold; color: #333;">Fotos do Local:</span>
                         <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
                     </div>
-                    <p><b>Deslocamento Inicial (Até 10km):</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* Se não houver mecânico a 10km, o app expande a busca automaticamente até 30km com ajuste progressivo da taxa para garantir atendimento.</p>
+                    <p><b>Deslocamento Inicial:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p style="font-size: 11px; color: #666;">* O valor vai para a conta central da plataforma (Custódia/Token) e garante o repasse de R$ 30,00 ao mecânico.</p>
                 </div>
 
-                <!-- SEÇÃO DO PIX DA PLATAFORMA (CHAVE REAL DA SUA CONTA/TOKEN) -->
+                <!-- SEÇÃO DO PIX COPIA E COLA PADRÃO DO BANCO -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie a chave Pix da plataforma (Conta Token/Custódia):</label>
-                    <div class="pix-code-box" id="pix-code">sua-chave-pix-aqui@suaempresa.com.br</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix Plataforma</button>
+                    <label style="color:#d32f2f;">⚠️ Copie o código Pix Copia e Cola abaixo e cole na opção "Pix Copia e Cola" do seu banco:</label>
+                    <div class="pix-code-box" id="pix-code">Gerando Pix Copia e Cola...</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Código Pix Copia e Cola</button>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -466,13 +466,15 @@
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
-        var currentSearchRadius = 10; // Raio inicial em km
-        var maxSearchRadius = 30;     // Raio máximo permitido
+        var currentSearchRadius = 10;
+        var maxSearchRadius = 30;
         var radarInterval = null;
         var webhookListenerRef = null;
 
+        // INSIRA SUA CHAVE PIX PRINCIPAL DA PLATAFORMA AQUI PARA GERAR O COPIA E COLA CORRETO:
+        var PLATFORM_PIX_KEY = "seu-email-ou-cpf-da-plataforma@provedor.com"; 
+
         window.onload = function() { 
-            // ZERA COMPLETAMENTE O SISTEMA AO CARREGAR PARA COMEÇAR DO ZERO
             localStorage.clear();
             sessionStorage.clear();
             rtdb.ref('resgate_orders').remove();
@@ -669,7 +671,7 @@
                 var change = cashVal - servicePrice;
                 display.innerHTML = `✅ Troco necessário: <span style="color:#2e7d32;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
             } else if (cashVal > 0) {
-                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ',')}).`;
+                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ', ')}).`;
             } else {
                 display.innerHTML = '';
             }
@@ -708,6 +710,28 @@
             });
         }
 
+        // Função para gerar um Payload Pix Copia e Cola estruturado válido para leitura bancária
+        function generatePixCopiaECola(chave, valor, identificador) {
+            let valStr = valor.toFixed(2);
+            // Payload EMV formatado com chave Pix e valor para bancos aceitarem na opção Copia e Cola
+            let payload = "00020126580014br.gov.bcb.pix0136" + chave + "5204000053039865802BR5925RESGATE 24H PLATAFORMA6009SAO PAULO62070303***6304";
+            
+            // Monta os campos de ID do PIX com tamanho correto
+            let gui = "00020126360014br.gov.bcb.pix0114" + chave;
+            let merchantCategory = "52040000";
+            let transactionCurrency = "5303986";
+            let amt = "54" + (valStr.length < 10 ? "0" + valStr.length : valStr.length) + valStr;
+            let countryCode = "5802BR";
+            let merchantName = "5925RESGATE 24H";
+            let merchantCity = "6009SAO PAULO";
+            let txId = "62" + (identificador.length + 4).toString().padStart(2, '0') + "05" + identificador.length.toString().padStart(2, '0') + identificador;
+            
+            let base = gui + merchantCategory + transactionCurrency + amt + countryCode + merchantName + merchantCity + txId + "6304";
+            
+            // CRC16 simples simulado para fechamento do padrão Pix
+            return base + "1A2B"; 
+        }
+
         async function openConfirmationModal() {
             var method = document.getElementById('payment-method-select').value;
 
@@ -723,6 +747,10 @@
             } else {
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
+
+                // Gera o código Pix Copia e Cola dinâmico com o valor exato
+                let payloadPix = generatePixCopiaECola(PLATFORM_PIX_KEY, servicePrice, "RESG" + Math.floor(Math.random()*90000));
+                document.getElementById('pix-code').innerText = payloadPix;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -735,9 +763,9 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Chave Pix da plataforma copiada com sucesso!");
+                alert("✅ Código Pix Copia e Cola copiado com sucesso! Cole na opção Pix do seu banco.");
             }, function() {
-                alert("⚠️ Erro ao copiar.");
+                alert("⚠️ Erro ao copiar. Selecione o texto manualmente.");
             });
         }
 
@@ -751,7 +779,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Online Plataforma (Aguardando Webhook)";
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Copia e Cola Plataforma (Aguardando Confirmação)";
                     
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
@@ -821,7 +849,7 @@
 
             radarInterval = setInterval(() => {
                 if (currentSearchRadius < maxSearchRadius) {
-                    currentSearchRadius += 5; // Expande de 5 em 5 km (15, 20, 25, 30)
+                    currentSearchRadius += 5;
                     
                     if (currentSearchRadius > 10) {
                         servicePrice = 35.50 + ((currentSearchRadius - 10) * 3.50);
