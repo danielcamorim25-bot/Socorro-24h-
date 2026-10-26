@@ -115,7 +115,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
+        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -199,7 +199,7 @@
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
                         <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Deslocamento...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Copie o Pix Copia e Cola da plataforma. Assim que o banco confirmar, o chamado é liberado.</p>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Transfira para a chave Pix do Nubank da plataforma. Assim que o banco confirmar, o chamado é liberado.</p>
                         
                         <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
@@ -286,7 +286,7 @@
 
                         <label>Forma de Pagamento:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix Online Plataforma (Taxa Mínima R$ 35,50)</option>
+                            <option value="pix_online">Pix Nubank Plataforma (Taxa Mínima R$ 35,50)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                         </select>
 
@@ -367,10 +367,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM PAYLOAD COPIA E COLA REAL -->
+        <!-- MODAL DE PIX COM CHAVE DO NUBANK DA PLATAFORMA -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix)</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix Nubank)</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -384,14 +384,14 @@
                         <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
                     </div>
                     <p><b>Deslocamento Inicial:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* O valor vai para a conta central da plataforma (Custódia/Token) e garante o repasse de R$ 30,00 ao mecânico.</p>
+                    <p style="font-size: 11px; color: #666;">* O valor vai para a conta Nubank central da plataforma e garante o repasse de R$ 30,00 ao mecânico.</p>
                 </div>
 
-                <!-- SEÇÃO DO PIX COPIA E COLA PADRÃO DO BANCO -->
+                <!-- SEÇÃO DO PIX COMPATÍVEL COM NUBANK -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie o código Pix Copia e Cola abaixo e cole na opção "Pix Copia e Cola" do seu banco:</label>
-                    <div class="pix-code-box" id="pix-code">Gerando Pix Copia e Cola...</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Código Pix Copia e Cola</button>
+                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix Nubank da plataforma abaixo:</label>
+                    <div class="pix-code-box" id="pix-code">sua-chave-nubank@suaempresa.com.br</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix Nubank</button>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -458,8 +458,8 @@
         var selectedProblem = 'Pneu Furado';
         var locationContext = 'Cidade Urbana';
         var activeOrderId = null;
-        var servicePrice = 35.50; // Taxa mínima inicial (até 10km)
-        var mechanicRepase = 30.00; // Repasse base para o mecânico
+        var servicePrice = 35.50; 
+        var mechanicRepase = 30.00; 
         
         var isOnline = false;
         var mapClient, mapMechanic, orderMarkersGroup;
@@ -471,17 +471,16 @@
         var radarInterval = null;
         var webhookListenerRef = null;
 
-        // INSIRA SUA CHAVE PIX PRINCIPAL DA PLATAFORMA AQUI PARA GERAR O COPIA E COLA CORRETO:
-        var PLATFORM_PIX_KEY = "seu-email-ou-cpf-da-plataforma@provedor.com"; 
+        // INSIRA SUA CHAVE PIX NUBANK DA PLATAFORMA AQUI:
+        var PLATFORM_NUBANK_PIX_KEY = "sua-chave-nubank@suaempresa.com.br"; 
 
         window.onload = function() { 
-            localStorage.clear();
-            sessionStorage.clear();
-            rtdb.ref('resgate_orders').remove();
-            rtdb.ref('resgate_chats').remove();
+            // Mantém os cadastros salvos (não limpa o localStorage), apenas recupera o estado se houver
+            var savedUser = localStorage.getItem('resgate_user');
+            if (savedUser) currentUser = JSON.parse(savedUser);
 
-            currentUser = null;
-            currentMechanic = null;
+            var savedMech = localStorage.getItem('resgate_mechanic');
+            if (savedMech) currentMechanic = JSON.parse(savedMech);
 
             goToWelcome();
             requestNotificationPermission();
@@ -671,7 +670,7 @@
                 var change = cashVal - servicePrice;
                 display.innerHTML = `✅ Troco necessário: <span style="color:#2e7d32;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
             } else if (cashVal > 0) {
-                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ', ')}).`;
+                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ',')}).`;
             } else {
                 display.innerHTML = '';
             }
@@ -710,28 +709,6 @@
             });
         }
 
-        // Função para gerar um Payload Pix Copia e Cola estruturado válido para leitura bancária
-        function generatePixCopiaECola(chave, valor, identificador) {
-            let valStr = valor.toFixed(2);
-            // Payload EMV formatado com chave Pix e valor para bancos aceitarem na opção Copia e Cola
-            let payload = "00020126580014br.gov.bcb.pix0136" + chave + "5204000053039865802BR5925RESGATE 24H PLATAFORMA6009SAO PAULO62070303***6304";
-            
-            // Monta os campos de ID do PIX com tamanho correto
-            let gui = "00020126360014br.gov.bcb.pix0114" + chave;
-            let merchantCategory = "52040000";
-            let transactionCurrency = "5303986";
-            let amt = "54" + (valStr.length < 10 ? "0" + valStr.length : valStr.length) + valStr;
-            let countryCode = "5802BR";
-            let merchantName = "5925RESGATE 24H";
-            let merchantCity = "6009SAO PAULO";
-            let txId = "62" + (identificador.length + 4).toString().padStart(2, '0') + "05" + identificador.length.toString().padStart(2, '0') + identificador;
-            
-            let base = gui + merchantCategory + transactionCurrency + amt + countryCode + merchantName + merchantCity + txId + "6304";
-            
-            // CRC16 simples simulado para fechamento do padrão Pix
-            return base + "1A2B"; 
-        }
-
         async function openConfirmationModal() {
             var method = document.getElementById('payment-method-select').value;
 
@@ -748,9 +725,8 @@
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
 
-                // Gera o código Pix Copia e Cola dinâmico com o valor exato
-                let payloadPix = generatePixCopiaECola(PLATFORM_PIX_KEY, servicePrice, "RESG" + Math.floor(Math.random()*90000));
-                document.getElementById('pix-code').innerText = payloadPix;
+                // Exibe diretamente a chave Pix limpa compatível com o Nubank para transferência ou colagem
+                document.getElementById('pix-code').innerText = PLATFORM_NUBANK_PIX_KEY;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -763,7 +739,7 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Código Pix Copia e Cola copiado com sucesso! Cole na opção Pix do seu banco.");
+                alert("✅ Chave Pix Nubank copiada com sucesso! Cole na opção 'Pix com Chave' do seu banco.");
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o texto manualmente.");
             });
@@ -779,7 +755,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Copia e Cola Plataforma (Aguardando Confirmação)";
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Nubank Plataforma (Aguardando Confirmação)";
                     
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
@@ -833,14 +809,12 @@
             }
         }
 
-        // SIMULAÇÃO DE PAGAMENTO VIA WEBHOOK
         function simulateWebhookPaymentConfirm() {
             if (activeOrderId) {
                 rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'in_custody' });
             }
         }
 
-        /* RADAR PROGRESSIVO COM EXPANSÃO ATÉ 30 KM E AJUSTE DE TAXA */
         function startProgressiveRadar(orderId) {
             currentSearchRadius = 10;
             document.getElementById('searching-radar').style.display = 'block';
@@ -894,7 +868,6 @@
         function openCancelModal() { document.getElementById('modal-cancel').classList.add('active'); }
         function closeCancelModal() { document.getElementById('modal-cancel').classList.remove('active'); }
 
-        /* REEMBOLSO INSTANTÂNEO COM SENHA DE 4 DÍGITOS */
         function executeRefundCancellation() {
             var refundPin = document.getElementById('cancel-withdrawal-pin').value;
             var reason = document.getElementById('cancel-reason').value;
