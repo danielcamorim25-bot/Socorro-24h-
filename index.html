@@ -115,7 +115,7 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
+        .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -198,8 +198,8 @@
                     <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX (WEBHOOK / SPLIT CENTRAL) -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Mercado Pago...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Pague usando o Pix Copia e Cola. Assim que o pagamento for aprovado, o chamado é liberado.</p>
+                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Pix...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Transfira para a chave Pix da plataforma. Assim que o pagamento for aprovado, o chamado é liberado.</p>
                         
                         <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
@@ -286,7 +286,7 @@
 
                         <label>Forma de Pagamento:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix Mercado Pago (Taxa Mínima R$ 35,50)</option>
+                            <option value="pix_online">Pix Chave Mercado Pago (Taxa Mínima R$ 35,50)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                         </select>
 
@@ -367,10 +367,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM PAYLOAD OFICIAL VALIDADOR EMV -->
+        <!-- MODAL DE PIX COM CHAVE OFICIAL ACEITA NO NUBANK -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Mercado Pago)</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix Central)</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -387,11 +387,11 @@
                     <p style="font-size: 11px; color: #666;">* O valor garante o repasse de R$ 30,00 ao mecânico na conta central da plataforma.</p>
                 </div>
 
-                <!-- SEÇÃO DO PIX COPIA E COLA FORMATADO E VÁLIDO PARA BANCOS -->
+                <!-- SEÇÃO DA CHAVE PIX DIRETA COMPATÍVEL COM NUBANK E QUALQUER BANCO -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie o Pix Copia e Cola válido abaixo:</label>
-                    <div class="pix-code-box" id="pix-code">Gerando Pix Copia e Cola...</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Código Pix Copia e Cola</button>
+                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix da plataforma abaixo e cole na opção "Pix com Chave" do seu Nubank:</label>
+                    <div class="pix-code-box" id="pix-code">mercadopago@resgate24h.com</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix da Plataforma</button>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -471,11 +471,11 @@
         var radarInterval = null;
         var webhookListenerRef = null;
 
-        // TOKEN CONFIGURADO NO SISTEMA:
-        var MP_ACCESS_TOKEN = "APP_USR-4473911271421064-102313-8adce932ee43b2bcb3811eee6a20e44a-394061967";
+        // CHAVE PIX OFICIAL DA PLATAFORMA PARA RECEBIMENTO:
+        var PLATFORM_PIX_KEY = "mercadopago@resgate24h.com";
 
         window.onload = function() { 
-            // Mantém cadastros salvos do usuário e prestador
+            // Mantém cadastros salvos do usuário e prestador intactos
             var savedUser = localStorage.getItem('resgate_user');
             if (savedUser) currentUser = JSON.parse(savedUser);
 
@@ -709,16 +709,6 @@
             });
         }
 
-        // Função geradora de Pix Copia e Cola EMV corrigida sem estouro de tamanho de campo
-        function generateValidPixPayload(valor) {
-            let amountStr = valor.toFixed(2);
-            let amtLen = amountStr.length < 10 ? "0" + amountStr.length : "" + amountStr.length;
-            
-            // Payload padrão oficial do Banco Central corrigido com tamanhos exatos permitidos pelos bancos
-            let payload = "00020126360014br.gov.bcb.pix0114mercadopago@resgate24h.com52040000530398654" + amtLen + amountStr + "5802BR5925RESGATE 24H PAGAMENTOS6009SAO PAULO62070303***6304E2A1";
-            return payload;
-        }
-
         async function openConfirmationModal() {
             var method = document.getElementById('payment-method-select').value;
 
@@ -735,9 +725,8 @@
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
                 
-                // Gera o código Pix Copia e Cola válido estruturado para o valor exato
-                let validPixCode = generateValidPixPayload(servicePrice);
-                document.getElementById('pix-code').innerText = validPixCode;
+                // Exibe a chave oficial da plataforma garantindo zero erro de formato no banco
+                document.getElementById('pix-code').innerText = PLATFORM_PIX_KEY;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -750,7 +739,7 @@
         function copyPixCode() {
             var pixText = document.getElementById('pix-code').innerText;
             navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Código Pix Copia e Cola copiado com sucesso! Cole na opção Pix Copia e Cola do seu banco.");
+                alert("✅ Chave Pix copiada com sucesso! Cole na opção 'Pix com Chave' (E-mail) do seu Nubank e digite o valor de R$ " + servicePrice.toFixed(2).replace('.', ','));
             }, function() {
                 alert("⚠️ Erro ao copiar. Selecione o texto manualmente.");
             });
@@ -766,7 +755,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Mercado Pago (Aguardando Confirmação)";
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Chave Plataforma (Aguardando Confirmação)";
                     
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
