@@ -68,6 +68,11 @@
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
+        /* Caixa de Carteira do Mecânico */
+        .wallet-card { background: linear-gradient(135deg, #1e88e5, #1565c0); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
+        .btn-withdraw { background: #25d366; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
+
         /* Caixa de Pergunta Dinâmica */
         .dynamic-question-box { background: #eefbe8; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; margin-top: 12px; }
         .dynamic-question-box label { color: #2e7d32; margin-top: 0; font-size: 12px; }
@@ -195,11 +200,11 @@
 
                 <div id="client-main-content" style="display: none;">
                     
-                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO AUTOMÁTICA DO PIX -->
+                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO DO LINK DE PAGAMENTO -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Pix...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Transfira para a chave Pix da plataforma. Assim que o pagamento for aprovado, o chamado é liberado.</p>
+                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Pagamento...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Conclua o pagamento no link do Mercado Pago. Assim que aprovado, o chamado será liberado no radar.</p>
                         
                         <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
@@ -241,7 +246,7 @@
                         </div>
 
                         <button type="button" class="btn-cancel" onclick="openCancelModal()">
-                            <i class="fa-solid fa-ban"></i> Desistir e Reaver Reembolso Integral
+                            <i class="fa-solid fa-ban"></i> Desistir e Solicitar Estorno Integral (R$ 35,50)
                         </button>
                     </div>
 
@@ -286,7 +291,7 @@
 
                         <label>Forma de Pagamento:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix Chave Aleatória Plataforma (R$ 35,50)</option>
+                            <option value="pix_online">Link de Pagamento Mercado Pago (Automático)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                         </select>
 
@@ -303,7 +308,7 @@
                         <input type="text" id="reference" placeholder="Ex: KM 32 da Rodovia">
 
                         <button type="button" class="btn-sos" onclick="openConfirmationModal()">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro (R$ 35,50)
+                            <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro <span id="btn-price-label">(R$ 35,50)</span>
                         </button>
                     </div>
                 </div>
@@ -326,7 +331,7 @@
                         <input type="text" id="mech-doc-number" placeholder="00.000.000/0001-00" required>
                         <label>WhatsApp:</label>
                         <input type="tel" id="mech-phone" placeholder="11999998888" required>
-                        <label>Sua Chave Pix para Repasse (R$ 30,00):</label>
+                        <label>Sua Chave Pix para Receber o Saque (R$ 30,00):</label>
                         <input type="text" id="mech-pix-key" placeholder="Ex: Chave CPF/E-mail/Telefone" required>
                         
                         <!-- CNH DO MECÂNICO (PDF ou Foto) -->
@@ -345,6 +350,20 @@
                 </div>
 
                 <div id="mech-main-content" style="display: none;">
+                    
+                    <!-- CARTEIRA DIGITAL ESTILO 99 -->
+                    <div class="wallet-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira Resgate 24h</span>
+                            <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">Estilo 99</span>
+                        </div>
+                        <div class="wallet-balance" id="mech-wallet-balance">R$ 0,00</div>
+                        <p style="font-size: 11px; opacity: 0.85;">Ganhos acumulados com resgates concluídos.</p>
+                        <button type="button" class="btn-withdraw" onclick="requestWalletWithdrawal()">
+                            <i class="fa-solid fa-money-bill-transfer"></i> Solicitar Saque Pix
+                        </button>
+                    </div>
+
                     <div class="status-toggle">
                         <div>
                             <span style="font-size: 11px; color: #666;">Status (Fundo / Sobre Apps):</span>
@@ -367,31 +386,32 @@
             </div>
         </main>
 
-        <!-- MODAL DE PIX COM A SUA CHAVE ALEATÓRIA -->
+        <!-- MODAL COM O LINK DE PAGAMENTO DO MERCADO PAGO -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Taxa de Deslocamento (Pix Plataforma)</div>
+                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento via Mercado Pago</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
                         <div>
-                            <p><b id="modal-mech-name">Oficina Parceira</b></p>
-                            <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Endereço da Oficina</p>
+                            <p><b id="modal-mech-name">Resgate 24h Oficial</b></p>
+                            <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Plataforma Central de Socorro</p>
                         </div>
                     </div>
                     <div>
                         <span style="font-size: 11px; font-weight: bold; color: #333;">Fotos do Local:</span>
                         <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
                     </div>
-                    <p><b>Valor Total:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* O valor cai integralmente na conta da plataforma e, após a conclusão com o PIN do cliente, R$ 30,00 vão para o mecânico e R$ 5,50 ficam para você.</p>
+                    <p><b>Valor Total Automático:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p style="font-size: 11px; color: #666;">* O pagamento é feito com segurança pelo Mercado Pago. Após a conclusão com o PIN, o saldo vai para a carteira do prestador e a taxa fica para a empresa.</p>
                 </div>
 
-                <!-- SEÇÃO DA SUA CHAVE PIX ALEATÓRIA -->
+                <!-- SEÇÃO DO LINK DE PAGAMENTO -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Copie a Chave Pix Aleatória abaixo e cole na opção "Pix com Chave" do seu banco:</label>
-                    <div class="pix-code-box" id="pix-code">54815982-4985-47e4-9e21-332994a6de91</div>
-                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 10px;" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Chave Pix Aleatória</button>
+                    <label style="color:#d32f2f;">⚠️ Clique no botão abaixo para abrir o link oficial de pagamento seguro:</label>
+                    <a href="https://mpago.la/2YbVskC" target="_blank" class="btn-action" style="background: #009ee3; text-decoration: none; margin-bottom: 10px; text-align: center; display: block; padding: 12px; font-size: 14px;">
+                        <i class="fa-solid fa-credit-card"></i> Pagar com Link do Mercado Pago
+                    </a>
                 </div>
 
                 <!-- SEÇÃO DE AVISO EM DINHEIRO -->
@@ -401,8 +421,7 @@
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <!-- BOTÃO QUE GERA O PEDIDO E ENTRA NO MODO DE ESPERA DA NOTIFICAÇÃO DO BANCO -->
-                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Gerar Pedido & Aguardar Banco</button>
+                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Já Paguei & Aguardar Banco</button>
                 </div>
             </div>
         </div>
@@ -411,7 +430,7 @@
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso Integral por Desistência ou Raio Esgotado</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Caso nenhum mecânico aceite e o raio máximo seja atingido, o estorno ao cliente é de <b>R$ 35,50 (valor integral pago)</b>. Digite sua <b>Senha de Saque (4 dígitos)</b> para autorizar:</p>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Caso nenhum mecânico aceite e o raio máximo seja atingido, o estorno integral devido ao cliente é o <b>valor total pago (R$ 35,50)</b>. Digite sua <b>Senha de Saque (4 dígitos)</b> para registrar a solicitação:</p>
                 
                 <label>Senha de Reembolso (4 dígitos):</label>
                 <input type="password" id="cancel-withdrawal-pin" maxlength="4" placeholder="Ex: 9876" style="text-align:center; font-size:18px; letter-spacing:4px;">
@@ -427,7 +446,7 @@
         </div>
 
         <footer>
-            <p>&copy; 2026 Resgate 24h</p>
+            <p>&copy; 2026 Resgate 24h - Sistema de Carteira Integrada</p>
         </footer>
     </div>
 
@@ -471,11 +490,10 @@
         var radarInterval = null;
         var webhookListenerRef = null;
 
-        // SUA CHAVE PIX ALEATÓRIA DA PLATAFORMA CONFIGURADA:
-        var PLATFORM_PIX_KEY = "54815982-4985-47e4-9e21-332994a6de91";
+        // LINK DE PAGAMENTO DO MERCADO PAGO INTEGRADO:
+        var MP_PAYMENT_LINK = "https://mpago.la/2YbVskC";
 
         window.onload = function() { 
-            // Mantém os cadastros salvos intactos
             var savedUser = localStorage.getItem('resgate_user');
             if (savedUser) currentUser = JSON.parse(savedUser);
 
@@ -484,7 +502,14 @@
 
             goToWelcome();
             requestNotificationPermission();
+            updatePriceDisplay();
         };
+
+        function updatePriceDisplay() {
+            var priceStr = "R$ " + servicePrice.toFixed(2).replace('.', ',');
+            var labelEl = document.getElementById('btn-price-label');
+            if (labelEl) labelEl.innerText = "(" + priceStr + ")";
+        }
 
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted") {
@@ -547,6 +572,7 @@
                     document.getElementById('mech-main-content').style.display = 'block';
                     initMechanicMap();
                     listenLiveOrders();
+                    loadMechanicWalletBalance();
                 } else {
                     document.getElementById('mech-register-card').style.display = 'block';
                     document.getElementById('mech-main-content').style.display = 'none';
@@ -612,6 +638,7 @@
         function saveMechanicAccount(e) {
             e.preventDefault();
             currentMechanic = {
+                id: 'MECH-' + document.getElementById('mech-doc-number').value.replace(/\D/g,''),
                 name: document.getElementById('mech-name').value,
                 shopAddress: document.getElementById('mech-shop-address').value,
                 docNumber: document.getElementById('mech-doc-number').value,
@@ -626,9 +653,46 @@
             document.getElementById('mech-main-content').style.display = 'block';
             initMechanicMap();
             listenLiveOrders();
+            loadMechanicWalletBalance();
             updateLogoutButton();
             
             alert("✅ Perfil profissional criado com sucesso!");
+        }
+
+        function loadMechanicWalletBalance() {
+            if (!currentMechanic) return;
+            var mechKey = currentMechanic.id || 'MECH-DEFAULT';
+            rtdb.ref('resgate_wallets/' + mechKey).on('value', (snap) => {
+                var bal = snap.val() || 0;
+                document.getElementById('mech-wallet-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
+            });
+        }
+
+        function requestWalletWithdrawal() {
+            if (!currentMechanic) return;
+            var mechKey = currentMechanic.id || 'MECH-DEFAULT';
+            
+            rtdb.ref('resgate_wallets/' + mechKey).once('value', (snap) => {
+                var currentBal = snap.val() || 0;
+                if (currentBal <= 0) {
+                    alert("⚠️ Você não possui saldo acumulado para saque no momento.");
+                    return;
+                }
+
+                var withdrawId = 'SAQUE-' + Math.floor(Math.random() * 90000 + 10000);
+                rtdb.ref('resgate_withdrawals/' + withdrawId).set({
+                    mechanicId: mechKey,
+                    mechanicName: currentMechanic.name,
+                    mechanicPhone: currentMechanic.phone,
+                    pixKey: currentMechanic.pixKey,
+                    amount: currentBal,
+                    status: 'pending',
+                    timestamp: Date.now()
+                }).then(() => {
+                    rtdb.ref('resgate_wallets/' + mechKey).set(0);
+                    alert(`✅ Solicitação de saque de R$ ${parseFloat(currentBal).toFixed(2).replace('.', ',')} realizada com sucesso!\nO valor será enviado para sua chave Pix: ${currentMechanic.pixKey}`);
+                });
+            });
         }
 
         function selectVehicle(vehicle, element) {
@@ -646,6 +710,7 @@
         function setLocationType(type, rate, element) {
             locationContext = type;
             servicePrice = rate * 10 + 5.50;
+            updatePriceDisplay();
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
         }
@@ -724,9 +789,6 @@
             } else {
                 document.getElementById('modal-pix-section').style.display = 'block';
                 document.getElementById('modal-cash-section').style.display = 'none';
-                
-                // Exibe a sua chave aleatória exata no modal
-                document.getElementById('pix-code').innerText = PLATFORM_PIX_KEY;
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
@@ -735,15 +797,6 @@
         }
 
         function closeModal() { document.getElementById('modal-confirm').classList.remove('active'); }
-        
-        function copyPixCode() {
-            var pixText = document.getElementById('pix-code').innerText;
-            navigator.clipboard.writeText(pixText).then(function() {
-                alert("✅ Chave Pix aleatória copiada com sucesso! Cole na opção 'Pix com Chave' do seu banco.");
-            }, function() {
-                alert("⚠️ Erro ao copiar. Selecione o texto manualmente.");
-            });
-        }
 
         function registerOrderAndListenWebhook() {
             closeModal();
@@ -755,8 +808,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Chave Aleatória (Aguardando Confirmação)";
-                    
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Link Mercado Pago (Aguardando Confirmação)";
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
                     var newOrder = {
@@ -800,7 +852,7 @@
                                     document.getElementById('client-active-code-card').style.display = 'block';
                                     document.getElementById('display-client-pin').innerText = pin;
                                     listenChatMessages(orderId, 'client-chat-messages');
-                                    alert("✅ Pagamento de deslocamento confirmado! Iniciando radar progressivo.");
+                                    alert("✅ Pagamento confirmado via Mercado Pago! Iniciando radar progressivo.");
                                 }
                             });
                         }
@@ -828,6 +880,7 @@
                     if (currentSearchRadius > 10) {
                         servicePrice = 35.50 + ((currentSearchRadius - 10) * 3.50);
                         mechanicRepase = 30.00 + ((currentSearchRadius - 10) * 3.00);
+                        updatePriceDisplay();
                     }
 
                     rtdb.ref('resgate_orders/' + orderId).update({
@@ -843,7 +896,7 @@
                     if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos mais distantes com garantia de atendimento.`;
                 } else {
                     clearInterval(radarInterval);
-                    alert("⚠️ Nenhum prestador aceitou o chamado até o raio máximo de 30 km. Você pode solicitar o estorno integral de R$ 35,50 usando sua senha.");
+                    alert("⚠️ Nenhum prestador aceitou o chamado até o raio máximo de 30 km. Você pode solicitar o estorno integral do valor usando sua senha.");
                     openCancelModal();
                 }
             }, 8000);
@@ -884,7 +937,7 @@
                     refundPin: refundPin,
                     cancelReason: reason
                 }).then(() => {
-                    alert("✅ Estorno integral de R$ 35,50 autorizado com sucesso para o cliente!");
+                    alert("✅ Estorno integral solicitado com sucesso para o cliente!");
                     closeCancelModal();
                     location.reload();
                 });
@@ -1002,7 +1055,7 @@
                                     <b>Veículo:</b> ${d.vehicleModel} | Placa: ${d.vehiclePlate}<br>
                                     <b>OCORRÊNCIA:</b> <strong style="color:#d32f2f;">${d.problem}</strong><br>
                                     <b>Raio de Atendimento:</b> ${d.radius || 10} km<br>
-                                    <b>Seu Repasse de Deslocamento:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong><br>
+                                    <b>Crédito na Carteira:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong><br>
                                     <span style="font-size: 11px; color: #555;">💡 <i>Negocie mão de obra e peças diretamente no chat.</i></span>
                                 </div>
                                 
@@ -1027,7 +1080,7 @@
                                     <input type="file" id="proof-photo-${d.id}" accept="image/*" capture="environment" style="font-size:11px; padding:3px;">
                                     
                                     <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">
-                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Liberar Repasse (R$ 30,00)
+                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Creditar R$ ${d.mechPay} na Carteira
                                     </button>
                                 </div>
                             </div>
@@ -1053,7 +1106,7 @@
                                 </div>
                                 <div class="order-details">
                                     <b>Cliente:</b> ${d.clientName}<br>
-                                    <b>Seu Repasse de Deslocamento:</b> R$ ${d.mechPay}
+                                    <b>Ganho na Carteira:</b> R$ ${d.mechPay}
                                 </div>
                                 <button class="btn-action" onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')">
                                     <i class="fa-solid fa-check"></i> Aceitar Chamado
@@ -1075,7 +1128,8 @@
             activeOrderId = orderId;
             rtdb.ref('resgate_orders/' + orderId).update({ 
                 status: 'accepted', 
-                mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira" 
+                mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira",
+                mechanicId: currentMechanic ? (currentMechanic.id || 'MECH-DEFAULT') : 'MECH-DEFAULT'
             });
             alert("✅ Chamado aceito! Negocie a mão de obra e peças diretamente com o cliente pelo chat.");
         }
@@ -1097,9 +1151,18 @@
                     return;
                 }
 
-                rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
-                    alert("✅ Serviço concluído com sucesso! O repasse de R$ 30,00 foi autorizado para a chave Pix cadastrada pelo mecânico e R$ 5,50 foram creditados para a plataforma.");
-                    location.reload();
+                var mechKey = target.mechanicId || (currentMechanic ? currentMechanic.id : 'MECH-DEFAULT');
+                var earnedValue = parseFloat(target.mechPay) || 30.00;
+
+                rtdb.ref('resgate_wallets/' + mechKey).transaction((currentBalance) => {
+                    return (currentBalance || 0) + earnedValue;
+                }, (error, committed) => {
+                    if (committed) {
+                        rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
+                            alert(`✅ Serviço concluído com sucesso!\nO valor de R$ ${earnedValue.toFixed(2).replace('.', ',')} foi creditado na Carteira do Prestador e os R$ 5,50 permaneceram na sua conta.`);
+                            location.reload();
+                        });
+                    }
                 });
             });
         }
