@@ -6,7 +6,7 @@
     <title>Resgate 24h - Socorro Rápido</title>
     <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS (Mapa Interativo Gratuito) -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
@@ -37,7 +37,7 @@
         /* Mapas */
         .map-box { width: 100%; height: 250px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
 
-        /* Tela Inicial de Escolha Centralizada */
+        /* Tela Inicial de Escolha */
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .welcome-title { font-size: 22px; color: #333; margin-bottom: 8px; font-weight: bold; }
         .welcome-subtitle { font-size: 13px; color: #666; margin-bottom: 25px; }
@@ -61,7 +61,7 @@
         .photo-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ff9800; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .mech-avatar-large { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid #ff9800; margin-right: 10px; }
 
-        /* Chat Estilo WhatsApp no App */
+        /* Chat Estilo WhatsApp */
         .chat-box-container { background: #efeae2; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
         .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; padding-right: 4px; }
         .chat-msg { background: #fff; padding: 6px 10px; border-radius: 6px; max-width: 80%; word-break: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -73,7 +73,6 @@
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
         .btn-withdraw { background: #25d366; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
 
-        /* Caixa de Pergunta Dinâmica */
         .dynamic-question-box { background: #eefbe8; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; margin-top: 12px; }
         .dynamic-question-box label { color: #2e7d32; margin-top: 0; font-size: 12px; }
 
@@ -82,17 +81,14 @@
         .btn-cancel { width: 100%; background: #d32f2f; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         
-        /* Status Mecânico */
         .status-toggle { display: flex; align-items: center; justify-content: space-between; background: #f0f0f0; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
         .status-btn { background: #757575; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .status-btn.online { background: #25d366; }
 
-        /* Radar Progressivo */
         .searching-radar-box { text-align: center; padding: 25px 15px; background: #fff3e0; border: 2px dashed #ffb300; border-radius: 10px; margin-bottom: 15px; display: none; }
         .searching-radar-box i { font-size: 40px; color: #e65100; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
         @keyframes pulseRadar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* Pedidos */
         .order-card { background: #fffde7; border-left: 5px solid #ff9800; border: 1px solid #ffe082; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
         .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
         .order-title { font-weight: bold; font-size: 13px; color: #d32f2f; }
@@ -109,18 +105,17 @@
         .pin-box { background: #e3f2fd; border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
 
-        /* Ícones Customizados do Mapa */
         .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
         .blue-marker-icon { background-color: #0288d1; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(2,136,209,0.8); }
 
-        /* JANELA MODAL */
+        /* JANELA MODAL DE PAGAMENTO */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; }
+        .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; user-select: all; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
@@ -200,15 +195,13 @@
 
                 <div id="client-main-content" style="display: none;">
                     
-                    <!-- TELA DE AGUARDANDO CONFIRMAÇÃO DO LINK DE PAGAMENTO -->
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Confirmação do Pagamento...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Conclua o pagamento no link do Mercado Pago. Assim que aprovado, o chamado será liberado no radar.</p>
+                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Pix...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Efetue o Pix no seu banco. Assim que enviado, clique no botão abaixo para liberar o radar.</p>
                         
-                        <!-- BOTÃO DE SIMULAÇÃO DE PAGAMENTO PARA TESTES -->
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
-                            <i class="fa-solid fa-check-circle"></i> [TESTE] Simular Pagamento Aprovado
+                            <i class="fa-solid fa-check-circle"></i> Já Paguei no meu Banco
                         </button>
 
                         <button type="button" class="btn-cancel" onclick="cancelWaitingPayment()" style="background:#757575; max-width: 200px; margin: 0 auto;">Cancelar / Fechar</button>
@@ -224,7 +217,6 @@
                         <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                     </div>
 
-                    <!-- CARD DO CÓDIGO PIN E CHAT ATIVO -->
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Atendimento em Andamento</h2>
                         <p style="font-size: 12px; color: #444;">Código PIN de Liberação (Passe para o mecânico ao chegar):</p>
@@ -232,7 +224,6 @@
                             <div class="pin-code-text" id="display-client-pin">----</div>
                         </div>
 
-                        <!-- CHAT COM O MECÂNICO PARA NEGOCIAÇÃO DE MÃO DE OBRA E PEÇAS -->
                         <h3 style="font-size: 13px; color: #0288d1; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Negociação de Mão de Obra e Peças</h3>
                         <p style="font-size: 11px; color: #555; margin-bottom: 6px;">O valor do deslocamento cobriu apenas a ida. Combine o valor exato da mão de obra e peças diretamente com o mecânico.</p>
                         <div class="chat-box-container">
@@ -291,11 +282,10 @@
 
                         <label>Forma de Pagamento:</label>
                         <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Link de Pagamento Mercado Pago (Automático)</option>
+                            <option value="pix_online">Pix (Copiar e Colar em Qualquer Banco)</option>
                             <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                         </select>
 
-                        <!-- CAMPO DE TROCO EM DINHEIRO -->
                         <div id="change-box-container" style="display: none; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 10px; border-radius: 6px; margin-top: 10px;">
                             <label style="margin-top:0; color:#2e7d32;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro para o deslocamento. Quanto tem em mãos?</label>
                             <input type="text" id="client-cash-amount" placeholder="Ex: R$ 50,00" oninput="calculateChangeNeeded()">
@@ -314,7 +304,7 @@
                 </div>
             </div>
 
-            <!-- TELA DO MECÂNICO / GUINCHO -->
+            <!-- TELA DO MECÂNICO -->
             <div id="role-mechanic" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
@@ -334,7 +324,6 @@
                         <label>Sua Chave Pix para Receber o Saque (R$ 30,00):</label>
                         <input type="text" id="mech-pix-key" placeholder="Ex: Chave CPF/E-mail/Telefone" required>
                         
-                        <!-- CNH DO MECÂNICO (PDF ou Foto) -->
                         <label><i class="fa-solid fa-id-card"></i> CNH do Mecânico (PDF ou Foto):</label>
                         <input type="file" id="mech-cnh-doc" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
 
@@ -351,7 +340,6 @@
 
                 <div id="mech-main-content" style="display: none;">
                     
-                    <!-- CARTEIRA DIGITAL ESTILO 99 -->
                     <div class="wallet-card">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira Resgate 24h</span>
@@ -372,7 +360,6 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- MAPA DO MECÂNICO COM PONTO AZUL (MECÂNICO) E VERMELHO (CLIENTE) -->
                     <div class="card" style="padding: 8px;">
                         <span id="mech-map-title" style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio até 30km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
@@ -386,10 +373,10 @@
             </div>
         </main>
 
-        <!-- MODAL COM O LINK DE PAGAMENTO DO MERCADO PAGO -->
+        <!-- MODAL DE PAGAMENTO VIA PIX -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Pagamento via Mercado Pago</div>
+                <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa de Deslocamento</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -398,45 +385,43 @@
                             <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Plataforma Central de Socorro</p>
                         </div>
                     </div>
-                    <div>
-                        <span style="font-size: 11px; font-weight: bold; color: #333;">Fotos do Local:</span>
-                        <div class="photos-preview-gallery" id="modal-shop-gallery"></div>
-                    </div>
-                    <p><b>Valor Total Automático:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* O pagamento é feito com segurança pelo Mercado Pago. Após a conclusão com o PIN, o saldo vai para a carteira do prestador e a taxa fica para a empresa.</p>
+                    <p><b>Valor da Taxa:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p style="font-size: 11px; color: #666;">* A taxa de deslocamento garante a ida do mecânico até seu local. A mão de obra e peças são combinadas diretamente no chat.</p>
                 </div>
 
-                <!-- SEÇÃO DO LINK DE PAGAMENTO -->
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">⚠️ Clique no botão abaixo para abrir o link oficial de pagamento seguro:</label>
-                    <a href="https://mpago.la/2YbVskC" target="_blank" class="btn-action" style="background: #009ee3; text-decoration: none; margin-bottom: 10px; text-align: center; display: block; padding: 12px; font-size: 14px;">
-                        <i class="fa-solid fa-credit-card"></i> Pagar com Link do Mercado Pago
-                    </a>
+                    <label style="color:#d32f2f;">1. Copie a chave Pix abaixo:</label>
+                    <div class="pix-code-box" id="pix-key-display">2YbVskC</div>
+                    
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
+                        <i class="fa-solid fa-copy"></i> Copiar Chave Pix
+                    </button>
+
+                    <label style="color:#333; font-size: 11px;">2. Abra o app do seu banco (Nubank, Itaú, Bradesco, etc.), escolha <b>Pix</b> e cole o código para realizar o pagamento.</label>
                 </div>
 
-                <!-- SEÇÃO DE AVISO EM DINHEIRO -->
                 <div id="modal-cash-section" style="display: none; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
                     <p style="font-size: 12px; color: #2e7d32; font-weight: bold;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro para o deslocamento selecionado.</p>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Já Paguei & Aguardar Banco</button>
+                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Já Paguei no Banco</button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL DE CANCELAMENTO / REEMBOLSO COM SENHA DE 4 DÍGITOS -->
+        <!-- MODAL DE CANCELAMENTO / REEMBOLSO -->
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso Integral por Desistência ou Raio Esgotado</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Caso nenhum mecânico aceite e o raio máximo seja atingido, o estorno integral devido ao cliente é o <b>valor total pago (R$ 35,50)</b>. Digite sua <b>Senha de Saque (4 dígitos)</b> para registrar a solicitação:</p>
+                <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso Integral por Desistência</div>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Digite sua <b>Senha de Saque (4 dígitos)</b> para registrar a solicitação de reembolso do valor total (R$ 35,50):</p>
                 
                 <label>Senha de Reembolso (4 dígitos):</label>
                 <input type="password" id="cancel-withdrawal-pin" maxlength="4" placeholder="Ex: 9876" style="text-align:center; font-size:18px; letter-spacing:4px;">
                 
-                <label style="margin-top:10px;">Motivo da Desistência / Raio Máximo Atingido:</label>
-                <textarea id="cancel-reason" placeholder="Ex: Nenhum prestador encontrado até 30km..."></textarea>
+                <label style="margin-top:10px;">Motivo da Desistência:</label>
+                <textarea id="cancel-reason" placeholder="Ex: Não preciso mais do socorro..."></textarea>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeCancelModal()">Voltar</button>
@@ -490,8 +475,8 @@
         var radarInterval = null;
         var webhookListenerRef = null;
 
-        // LINK DE PAGAMENTO DO MERCADO PAGO INTEGRADO:
-        var MP_PAYMENT_LINK = "https://mpago.la/2YbVskC";
+        // CHAVE PIX CENTRAL OFICIAL
+        var PLATFORM_PIX_KEY = "2YbVskC";
 
         window.onload = function() { 
             var savedUser = localStorage.getItem('resgate_user');
@@ -741,6 +726,15 @@
             }
         }
 
+        function copyPixKeyToClipboard() {
+            var keyText = document.getElementById('pix-key-display').innerText;
+            navigator.clipboard.writeText(keyText).then(() => {
+                alert("📋 Chave Pix copiada para a área de transferência!\nAbra o aplicativo do seu banco e cole para efetuar o pagamento.");
+            }).catch(() => {
+                alert("Copie a chave Pix manualmente: " + keyText);
+            });
+        }
+
         function initClientMap() {
             if (navigator.geolocation && !mapClient) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
@@ -754,7 +748,7 @@
         function loadNearbyMechanics() {
             document.getElementById('mechanics-list').innerHTML = `
                 <div class="mechanic-item">
-                    <span><i class="fa-solid fa-wrench"></i> <b>Nenhum prestador cadastrado no momento</b></span>
+                    <span><i class="fa-solid fa-wrench"></i> <b>Busca de mecânicos ativa na região</b></span>
                     <span class="badge">Aguardando</span>
                 </div>
             `;
@@ -792,7 +786,6 @@
             }
 
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
-            document.getElementById('modal-shop-gallery').innerHTML = `<img src="${mechShopImgUrl}" class="photo-thumb">`;
             document.getElementById('modal-confirm').classList.add('active');
         }
 
@@ -808,7 +801,7 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Link Mercado Pago (Aguardando Confirmação)";
+                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Central (Aguardando Confirmação)";
                     var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
 
                     var newOrder = {
@@ -852,7 +845,7 @@
                                     document.getElementById('client-active-code-card').style.display = 'block';
                                     document.getElementById('display-client-pin').innerText = pin;
                                     listenChatMessages(orderId, 'client-chat-messages');
-                                    alert("✅ Pagamento confirmado via Mercado Pago! Iniciando radar progressivo.");
+                                    alert("✅ Pagamento Pix confirmado! Iniciando busca de mecânicos na região.");
                                 }
                             });
                         }
@@ -893,10 +886,10 @@
                     var descText = document.getElementById('radar-desc-text');
                     
                     if (titleText) titleText.innerHTML = `Expandindo Busca... (Raio: ${currentSearchRadius} km)`;
-                    if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos mais distantes com garantia de atendimento.`;
+                    if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos mais distantes.`;
                 } else {
                     clearInterval(radarInterval);
-                    alert("⚠️ Nenhum prestador aceitou o chamado até o raio máximo de 30 km. Você pode solicitar o estorno integral do valor usando sua senha.");
+                    alert("⚠️ Nenhum prestador aceitou o chamado no raio máximo de 30 km. Você pode solicitar o reembolso.");
                     openCancelModal();
                 }
             }, 8000);
@@ -937,7 +930,7 @@
                     refundPin: refundPin,
                     cancelReason: reason
                 }).then(() => {
-                    alert("✅ Estorno integral solicitado com sucesso para o cliente!");
+                    alert("✅ Reembolso solicitado com sucesso!");
                     closeCancelModal();
                     location.reload();
                 });
@@ -984,7 +977,7 @@
                 localStorage.setItem('resgate_mech_online', 'true');
                 btn.className = 'status-btn online'; 
                 btn.innerText = 'Online (Fundo Ativo)';
-                text.innerText = 'ONLINE (Sobre Outros Apps)';
+                text.innerText = 'ONLINE';
                 text.style.color = '#25d366';
                 alert("🟢 Você está Online!");
                 listenLiveOrders();
@@ -1040,8 +1033,7 @@
                             mapMechanic.setView([d.lat, d.lng], 16);
                             L.marker([d.lat, d.lng], {
                                 icon: L.divIcon({className: 'red-marker-icon', iconSize: [24, 24]})
-                            }).addTo(orderMarkersGroup).bindPopup("<b>Local exato do Cliente:</b> " + d.clientName).openPopup();
-                            document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Rota Exata para o Local do Cliente';
+                            }).addTo(orderMarkersGroup).bindPopup("<b>Local do Cliente:</b> " + d.clientName).openPopup();
                         }
 
                         html += `
@@ -1054,16 +1046,14 @@
                                     <b>Cliente:</b> ${d.clientName} (${d.clientPhone})<br>
                                     <b>Veículo:</b> ${d.vehicleModel} | Placa: ${d.vehiclePlate}<br>
                                     <b>OCORRÊNCIA:</b> <strong style="color:#d32f2f;">${d.problem}</strong><br>
-                                    <b>Raio de Atendimento:</b> ${d.radius || 10} km<br>
-                                    <b>Crédito na Carteira:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong><br>
-                                    <span style="font-size: 11px; color: #555;">💡 <i>Negocie mão de obra e peças diretamente no chat.</i></span>
+                                    <b>Crédito na Carteira:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong>
                                 </div>
                                 
                                 <button class="btn-route" onclick="openGpsRoute('${d.lat}', '${d.lng}')">
                                     <i class="fa-solid fa-location-arrow"></i> Abrir Navegação GPS
                                 </button>
 
-                                <h3 style="font-size: 13px; color: #2e7d32; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Negociação de Mão de Obra e Peças</h3>
+                                <h3 style="font-size: 13px; color: #2e7d32; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Chat com Cliente</h3>
                                 <div class="chat-box-container">
                                     <div class="chat-messages" id="mech-chat-messages"></div>
                                     <div class="chat-input-row">
@@ -1080,18 +1070,17 @@
                                     <input type="file" id="proof-photo-${d.id}" accept="image/*" capture="environment" style="font-size:11px; padding:3px;">
                                     
                                     <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">
-                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Creditar R$ ${d.mechPay} na Carteira
+                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Creditar R$ ${d.mechPay}
                                     </button>
                                 </div>
                             </div>
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
                     } else if (!foundActiveOrder) {
-                        document.getElementById('mech-map-title').innerHTML = '<i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio até 30km)';
                         if (mapMechanic && d.lat && d.lng) {
                             L.marker([d.lat, d.lng], {
                                 icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})
-                            }).addTo(orderMarkersGroup).bindPopup(`<b>${d.problem} (${d.clientName})</b><br><button onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')" style="background:#25d366;color:#fff;border:none;padding:5px;border-radius:4px;margin-top:4px;cursor:pointer;">Aceitar Chamado</button>`);
+                            }).addTo(orderMarkersGroup).bindPopup(`<b>${d.problem} (${d.clientName})</b>`);
                         }
 
                         if (isOnline) {
@@ -1131,7 +1120,7 @@
                 mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira",
                 mechanicId: currentMechanic ? (currentMechanic.id || 'MECH-DEFAULT') : 'MECH-DEFAULT'
             });
-            alert("✅ Chamado aceito! Negocie a mão de obra e peças diretamente com o cliente pelo chat.");
+            alert("✅ Chamado aceito!");
         }
 
         function completeOrderWithPin(orderId) {
@@ -1143,7 +1132,7 @@
                 var target = snap.val();
 
                 if (!inputPin || inputPin.trim() !== target.clientPin) {
-                    alert("❌ PIN Incorreto! O mecânico precisa digitar o código correto informado pelo cliente.");
+                    alert("❌ PIN Incorreto!");
                     return;
                 }
                 if (!fileInput || fileInput.files.length === 0) {
@@ -1159,7 +1148,7 @@
                 }, (error, committed) => {
                     if (committed) {
                         rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
-                            alert(`✅ Serviço concluído com sucesso!\nO valor de R$ ${earnedValue.toFixed(2).replace('.', ',')} foi creditado na Carteira do Prestador e os R$ 5,50 permaneceram na sua conta.`);
+                            alert(`✅ Serviço concluído com sucesso!\nR$ ${earnedValue.toFixed(2).replace('.', ',')} creditado na carteira.`);
                             location.reload();
                         });
                     }
