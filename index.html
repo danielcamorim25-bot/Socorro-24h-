@@ -58,7 +58,6 @@
 
         /* Galeria de Fotos */
         .photos-preview-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 5px; }
-        .photo-thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ff9800; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .mech-avatar-large { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid #ff9800; margin-right: 10px; }
 
         /* Chat Estilo WhatsApp */
@@ -68,10 +67,11 @@
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
-        /* Caixa de Carteira do Mecânico */
-        .wallet-card { background: linear-gradient(135deg, #1e88e5, #1565c0); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        /* Caixa de Carteira do Cliente e Mecânico */
+        .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .wallet-card-mech { background: linear-gradient(135deg, #1e88e5, #1565c0); }
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
-        .btn-withdraw { background: #25d366; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
+        .btn-withdraw { background: #ff9800; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
 
         .dynamic-question-box { background: #eefbe8; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; margin-top: 12px; }
         .dynamic-question-box label { color: #2e7d32; margin-top: 0; font-size: 12px; }
@@ -179,6 +179,8 @@
                         <input type="text" id="reg-cpf" placeholder="Ex: 123.456.789-00" required>
                         <label>Seu WhatsApp:</label>
                         <input type="tel" id="reg-phone" placeholder="Ex: 11988887777" required>
+                        <label>Sua Chave Pix (Para caso queira solicitar saque do saldo digital):</label>
+                        <input type="text" id="reg-pix-key" placeholder="Ex: CPF ou E-mail ou Telefone" required>
                         <label>Modelo do Veículo:</label>
                         <input type="text" id="reg-vehicle" placeholder="Ex: Honda CG 160" required>
                         <label>Placa:</label>
@@ -195,10 +197,23 @@
 
                 <div id="client-main-content" style="display: none;">
                     
+                    <!-- CARTEIRA DIGITAL DO CLIENTE -->
+                    <div class="wallet-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Conta Digital (Créditos)</span>
+                            <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">Resgate Cash</span>
+                        </div>
+                        <div class="wallet-balance" id="client-wallet-balance">R$ 0,00</div>
+                        <p style="font-size: 11px; opacity: 0.85;">Use para novos socorros ou peça o saque do valor a qualquer momento.</p>
+                        <button type="button" class="btn-withdraw" onclick="requestClientWithdrawal()">
+                            <i class="fa-solid fa-money-bill-transfer"></i> Solicitar Saque Pix do Saldo
+                        </button>
+                    </div>
+
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
                         <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Pix...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Efetue o Pix no seu banco. Assim que enviado, clique no botão abaixo para liberar o radar.</p>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Efetue o Pix no seu banco (o alerta sonoro tocará no seu banco PJ). Assim que enviado, clique abaixo:</p>
                         
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
                             <i class="fa-solid fa-check-circle"></i> Já Paguei no meu Banco
@@ -237,7 +252,7 @@
                         </div>
 
                         <button type="button" class="btn-cancel" onclick="openCancelModal()">
-                            <i class="fa-solid fa-ban"></i> Desistir e Solicitar Estorno Integral (R$ 35,50)
+                            <i class="fa-solid fa-ban"></i> Desistir e Salvar como Crédito na Conta Digital
                         </button>
                     </div>
 
@@ -251,6 +266,14 @@
 
                     <div class="card" id="client-form-card">
                         <h2>Detalhes da Emergência</h2>
+
+                        <!-- OPÇÃO DE USAR SALDO DA CONTA DIGITAL SE HOUVER -->
+                        <div id="use-digital-balance-box" style="display:none; background:#e8f5e9; border:1px solid #c8e6c9; padding:10px; border-radius:6px; margin-bottom:12px;">
+                            <label style="margin-top:0; color:#2e7d32; font-size:12px;">
+                                <input type="checkbox" id="check-use-balance" onchange="toggleUseBalance()"> Usar saldo da Conta Digital para pagar o deslocamento (<span id="span-available-balance">R$ 0,00</span>)
+                            </label>
+                        </div>
+
                         <label>Onde você está localizado?</label>
                         <div class="options-grid-3" id="location-type">
                             <button type="button" class="option-btn active" onclick="setLocationType('Cidade Urbana', 3.50, this)"><i class="fa-solid fa-city"></i> Urbana</button>
@@ -280,11 +303,13 @@
                             </select>
                         </div>
 
-                        <label>Forma de Pagamento:</label>
-                        <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                            <option value="pix_online">Pix (Copiar e Colar em Qualquer Banco)</option>
-                            <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
-                        </select>
+                        <div id="payment-method-box-wrapper">
+                            <label>Forma de Pagamento:</label>
+                            <select id="payment-method-select" onchange="checkPaymentMethodChange()">
+                                <option value="pix_online">Pix (Copiar e Colar em Qualquer Banco)</option>
+                                <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
+                            </select>
+                        </div>
 
                         <div id="change-box-container" style="display: none; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 10px; border-radius: 6px; margin-top: 10px;">
                             <label style="margin-top:0; color:#2e7d32;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro para o deslocamento. Quanto tem em mãos?</label>
@@ -340,14 +365,14 @@
 
                 <div id="mech-main-content" style="display: none;">
                     
-                    <div class="wallet-card">
+                    <div class="wallet-card wallet-card-mech">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira Resgate 24h</span>
                             <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">Estilo 99</span>
                         </div>
                         <div class="wallet-balance" id="mech-wallet-balance">R$ 0,00</div>
                         <p style="font-size: 11px; opacity: 0.85;">Ganhos acumulados com resgates concluídos.</p>
-                        <button type="button" class="btn-withdraw" onclick="requestWalletWithdrawal()">
+                        <button type="button" class="btn-withdraw" style="background:#25d366;" onclick="requestWalletWithdrawal()">
                             <i class="fa-solid fa-money-bill-transfer"></i> Solicitar Saque Pix
                         </button>
                     </div>
@@ -386,24 +411,24 @@
                         </div>
                     </div>
                     <p><b>Valor da Taxa:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* A taxa de deslocamento garante a ida do mecânico até seu local. A mão de obra e peças são combinadas diretamente no chat.</p>
+                    <p style="font-size: 11px; color: #666;">* A taxa garante a ida do mecânico até seu local. Em caso de cancelamento, o valor vira saldo na sua conta digital interna.</p>
                 </div>
 
                 <!-- AVISO DE TRANSPARÊNCIA E SEGURANÇA NO MODAL -->
                 <div style="background: #fdf6e2; border: 1px solid #f0d080; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px; color: #555;">
                     <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Pagamento Seguro Resgate 24h</p>
-                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_2](start_span)[span_2](end_span). O valor é recebido instantaneamente na conta central da nossa plataforma.</p>
+                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_0](start_span)[span_0](end_span). O valor é recebido na conta central e gera alerta sonoro no seu banco PJ.</p>
                 </div>
 
                 <div id="modal-pix-section">
                     <label style="color:#d32f2f;">1. Copie a chave Pix abaixo (CNPJ):</label>
-                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>
+                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>[span_1](start_span)[span_1](end_span)
                     
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copiar Chave Pix (CNPJ)
                     </button>
 
-                    <label style="color:#333; font-size: 11px;">2. Abra o app do seu banco (Nubank, Itaú, Bradesco, etc.), escolha <b>Pix</b> e cole a chave para realizar o pagamento.</label>
+                    <label style="color:#333; font-size: 11px;">2. Abra o aplicativo do seu banco (ex: Nubank PJ), cole a chave e realize o pagamento. O seu banco vai emitir o alerta sonoro e notificação de entrada na mesma hora.</label>
                 </div>
 
                 <div id="modal-cash-section" style="display: none; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
@@ -417,21 +442,18 @@
             </div>
         </div>
 
-        <!-- MODAL DE CANCELAMENTO / REEMBOLSO -->
+        <!-- MODAL DE CANCELAMENTO / CRÉDITO NA CONTA DIGITAL -->
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title" style="color:#d32f2f;"><i class="fa-solid fa-shield-halved"></i> Reembolso Integral por Desistência</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Digite sua <b>Senha de Saque (4 dígitos)</b> para registrar a solicitação de reembolso do valor total (R$ 35,50):</p>
+                <div class="modal-title" style="color:#2e7d32;"><i class="fa-solid fa-wallet"></i> Conversão em Saldo Digital</div>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Ao cancelar, o valor total de <b>R$ 35,50</b> não será estornado via Pix bancário. Ele será creditado integralmente na sua <b>Conta Digital do App</b> para você usar em um futuro socorro ou solicitar o saque quando quiser.</p>
                 
-                <label>Senha de Reembolso (4 dígitos):</label>
-                <input type="password" id="cancel-withdrawal-pin" maxlength="4" placeholder="Ex: 9876" style="text-align:center; font-size:18px; letter-spacing:4px;">
-                
-                <label style="margin-top:10px;">Motivo da Desistência:</label>
-                <textarea id="cancel-reason" placeholder="Ex: Não preciso mais do socorro..."></textarea>
+                <label>Motivo da Desistência:</label>
+                <textarea id="cancel-reason" placeholder="Ex: Consegui resolver por conta própria..."></textarea>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeCancelModal()">Voltar</button>
-                    <button type="button" class="btn-action" style="background: #d32f2f;" onclick="executeRefundCancellation()">Confirmar Estorno Integral (R$ 35,50)</button>
+                    <button type="button" class="btn-action" style="background: #2e7d32;" onclick="executeDigitalCreditCancellation()">Confirmar e Salvar como Crédito</button>
                 </div>
             </div>
         </div>
@@ -480,9 +502,10 @@
         var maxSearchRadius = 30;
         var radarInterval = null;
         var webhookListenerRef = null;
+        var useDigitalBalance = false;
 
         // CHAVE PIX CENTRAL OFICIAL (CNPJ MEI DO DANIEL)
-        var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_3](start_span)[span_3](end_span)
+        var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_2](start_span)[span_2](end_span)
 
         window.onload = function() { 
             var savedUser = localStorage.getItem('resgate_user');
@@ -508,27 +531,6 @@
             }
         }
 
-        function triggerEmergencyNotification(title, bodyText) {
-            try {
-                var ctx = new (window.AudioContext || window.webkitAudioContext)();
-                var osc = ctx.createOscillator();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(880, ctx.currentTime);
-                osc.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 1.5);
-            } catch(e){}
-
-            if ("Notification" in window && Notification.permission === "granted") {
-                var notif = new Notification("🚨 " + title, {
-                    body: bodyText,
-                    icon: "https://cdn-icons-png.flaticon.com/512/1048/1048315.png",
-                    requireInteraction: true
-                });
-                notif.onclick = function() { window.focus(); };
-            }
-        }
-
         function selectRole(role) {
             currentRole = role;
             document.getElementById('screen-welcome').classList.remove('active');
@@ -544,6 +546,7 @@
                     document.getElementById('user-greeting').innerText = "Olá, " + currentUser.name;
                     initClientMap();
                     loadNearbyMechanics();
+                    loadClientWalletBalance();
                     checkClientActiveCode();
                 } else {
                     document.getElementById('client-register-card').style.display = 'block';
@@ -554,9 +557,7 @@
                 roleMechanic.classList.add('active');
                 
                 var savedMech = localStorage.getItem('resgate_mechanic');
-                if (savedMech) {
-                    currentMechanic = JSON.parse(savedMech);
-                }
+                if (savedMech) currentMechanic = JSON.parse(savedMech);
 
                 if (currentMechanic) {
                     document.getElementById('mech-register-card').style.display = 'none';
@@ -603,6 +604,7 @@
                 name: document.getElementById('reg-name').value,
                 cpf: document.getElementById('reg-cpf').value,
                 phone: document.getElementById('reg-phone').value,
+                pixKey: document.getElementById('reg-pix-key').value,
                 vehicle: document.getElementById('reg-vehicle').value,
                 plate: document.getElementById('reg-plate').value
             };
@@ -613,8 +615,63 @@
             document.getElementById('user-greeting').innerText = "Olá, " + currentUser.name;
             initClientMap();
             loadNearbyMechanics();
+            loadClientWalletBalance();
             updateLogoutButton();
             alert("✅ Cadastro de usuário criado com sucesso!");
+        }
+
+        function loadClientWalletBalance() {
+            if (!currentUser) return;
+            var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
+            rtdb.ref('resgate_client_wallets/' + userKey).on('value', (snap) => {
+                var bal = snap.val() || 0;
+                document.getElementById('client-wallet-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
+                document.getElementById('span-available-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
+                
+                var balanceBox = document.getElementById('use-digital-balance-box');
+                if (bal > 0) {
+                    balanceBox.style.display = 'block';
+                } else {
+                    balanceBox.style.display = 'none';
+                    useDigitalBalance = false;
+                }
+            });
+        }
+
+        function toggleUseBalance() {
+            useDigitalBalance = document.getElementById('check-use-balance').checked;
+            var paymentWrapper = document.getElementById('payment-method-box-wrapper');
+            if (useDigitalBalance) {
+                paymentWrapper.style.display = 'none';
+            } else {
+                paymentWrapper.style.display = 'block';
+            }
+        }
+
+        function requestClientWithdrawal() {
+            if (!currentUser) return;
+            var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
+
+            rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snap) => {
+                var currentBal = snap.val() || 0;
+                if (currentBal <= 0) {
+                    alert("⚠️ Você não possui saldo na sua conta digital para saque.");
+                    return;
+                }
+
+                var withdrawId = 'SAQUE-CLIENTE-' + Math.floor(Math.random() * 90000 + 10000);
+                rtdb.ref('resgate_client_withdrawals/' + withdrawId).set({
+                    clientPhone: currentUser.phone,
+                    clientName: currentUser.name,
+                    pixKey: currentUser.pixKey,
+                    amount: currentBal,
+                    status: 'pending',
+                    timestamp: Date.now()
+                }).then(() => {
+                    rtdb.ref('resgate_client_wallets/' + userKey).set(0);
+                    alert(`✅ Solicitação de saque de R$ ${parseFloat(currentBal).toFixed(2).replace('.', ',')} enviada!\nO administrador fará a transferência para sua chave Pix: ${currentUser.pixKey}`);
+                });
+            });
         }
 
         function previewMechPhotos(event, type) {
@@ -735,7 +792,7 @@
         function copyPixKeyToClipboard() {
             var keyText = document.getElementById('pix-key-display').innerText;
             navigator.clipboard.writeText(keyText).then(() => {
-                alert("📋 Chave Pix (CNPJ) copiada para a área de transferência!\nAbra o aplicativo do seu banco e cole para efetuar o pagamento.");
+                alert("📋 Chave Pix (CNPJ) copiada para a área de transferência!\nAbra o aplicativo do seu banco (ex: Nubank PJ) e cole para efetuar o pagamento. O alerta sonoro do banco tocará na mesma hora.");
             }).catch(() => {
                 alert("Copie a chave Pix manualmente: " + keyText);
             });
@@ -775,6 +832,12 @@
         }
 
         async function openConfirmationModal() {
+            if (useDigitalBalance) {
+                // Pagar direto com saldo digital sem abrir modal de Pix
+                processOrderWithDigitalBalance();
+                return;
+            }
+
             var method = document.getElementById('payment-method-select').value;
 
             if (method === 'cash_direct') {
@@ -796,6 +859,59 @@
         }
 
         function closeModal() { document.getElementById('modal-confirm').classList.remove('active'); }
+
+        function processOrderWithDigitalBalance() {
+            var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
+            rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snap) => {
+                var currentBal = snap.val() || 0;
+                if (currentBal < servicePrice) {
+                    alert("⚠️ Saldo insuficiente na sua conta digital para cobrir este valor.");
+                    return;
+                }
+
+                // Desconta do saldo do cliente
+                rtdb.ref('resgate_client_wallets/' + userKey).set(currentBal - servicePrice).then(() => {
+                    registerOrderDirectly('in_custody', 'Pago com Conta Digital');
+                });
+            });
+        }
+
+        function registerOrderDirectly(initialStatus, paymentInfoText) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    var pin = Math.floor(1000 + Math.random() * 9000).toString();
+                    var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
+                    activeOrderId = orderId;
+
+                    var newOrder = {
+                        id: orderId,
+                        clientName: currentUser.name,
+                        clientPhone: currentUser.phone,
+                        vehicleModel: currentUser.vehicle,
+                        vehiclePlate: currentUser.plate,
+                        problem: selectedProblem,
+                        clientPin: pin,
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        status: initialStatus,
+                        clientTotal: servicePrice.toFixed(2),
+                        mechPay: mechanicRepase.toFixed(2),
+                        radius: 10,
+                        paymentInfo: paymentInfoText
+                    };
+
+                    rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
+                        startProgressiveRadar(orderId);
+                        document.getElementById('client-form-card').style.display = 'none';
+                        document.getElementById('nearby-mech-box-card').style.display = 'none';
+                        document.getElementById('client-active-code-card').style.display = 'block';
+                        document.getElementById('display-client-pin').innerText = pin;
+                        listenChatMessages(orderId, 'client-chat-messages');
+                        alert("✅ Socorro solicitado com sucesso usando sua Conta Digital!");
+                    });
+                });
+            }
+        }
 
         function registerOrderAndListenWebhook() {
             closeModal();
@@ -851,7 +967,7 @@
                                     document.getElementById('client-active-code-card').style.display = 'block';
                                     document.getElementById('display-client-pin').innerText = pin;
                                     listenChatMessages(orderId, 'client-chat-messages');
-                                    alert("✅ Pagamento Pix confirmado! Iniciando busca de mecânicos na região.");
+                                    alert("✅ Pagamento Pix confirmado pelo banco PJ! Iniciando busca de mecânicos.");
                                 }
                             });
                         }
@@ -892,10 +1008,10 @@
                     var descText = document.getElementById('radar-desc-text');
                     
                     if (titleText) titleText.innerHTML = `Expandindo Busca... (Raio: ${currentSearchRadius} km)`;
-                    if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos mais distantes.`;
+                    if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair mecânicos distantes.`;
                 } else {
                     clearInterval(radarInterval);
-                    alert("⚠️ Nenhum prestador aceitou o chamado no raio máximo de 30 km. Você pode solicitar o reembolso.");
+                    alert("⚠️ Nenhum prestador aceitou no raio de 30 km. Você pode cancelar e o valor virará crédito na sua conta digital.");
                     openCancelModal();
                 }
             }, 8000);
@@ -920,25 +1036,27 @@
         function openCancelModal() { document.getElementById('modal-cancel').classList.add('active'); }
         function closeCancelModal() { document.getElementById('modal-cancel').classList.remove('active'); }
 
-        function executeRefundCancellation() {
-            var refundPin = document.getElementById('cancel-withdrawal-pin').value;
+        function executeDigitalCreditCancellation() {
             var reason = document.getElementById('cancel-reason').value;
 
-            if (!refundPin || refundPin.length !== 4) {
-                alert("⚠️ Digite uma senha válida de 4 dígitos para autorizar o estorno.");
-                return;
-            }
-
-            if (activeOrderId) {
+            if (activeOrderId && currentUser) {
                 stopProgressiveRadar();
-                rtdb.ref('resgate_orders/' + activeOrderId).update({
-                    status: 'cancelled',
-                    refundPin: refundPin,
-                    cancelReason: reason
-                }).then(() => {
-                    alert("✅ Reembolso solicitado com sucesso!");
-                    closeCancelModal();
-                    location.reload();
+                var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
+
+                // Credita o valor na conta digital do cliente
+                rtdb.ref('resgate_client_wallets/' + userKey).transaction((currentBalance) => {
+                    return (currentBalance || 0) + servicePrice;
+                }, (error, committed) => {
+                    if (committed) {
+                        rtdb.ref('resgate_orders/' + activeOrderId).update({
+                            status: 'cancelled',
+                            cancelReason: reason
+                        }).then(() => {
+                            alert("✅ Cancelamento efetuado! O valor de R$ " + servicePrice.toFixed(2).replace('.', ',') + " foi adicionado à sua Conta Digital como crédito.");
+                            closeCancelModal();
+                            location.reload();
+                        });
+                    }
                 });
             }
         }
