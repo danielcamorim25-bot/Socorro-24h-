@@ -170,17 +170,17 @@
                 </div>
             </div>
 
-            <!-- MODAL DE LOGIN DO ADMINISTRADOR (VIA CELULAR 11947852640 E SENHA 7847) -->
+            <!-- MODAL DE LOGIN DO ADMINISTRADOR (CAMPOS VAZIOS) -->
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Acesso do Administrador</div>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Identifique-se com seu número celular de admin e digite a senha (7847).</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Identifique-se com suas credenciais de administrador.</p>
                     
                     <label>Número de Celular:</label>
-                    <input type="tel" id="admin-login-phone" value="11947852640" style="text-align:center; font-weight:bold;">
+                    <input type="tel" id="admin-login-phone" placeholder="Digite seu celular..." style="text-align:center;">
 
                     <label>Senha Admin:</label>
-                    <input type="password" id="admin-login-pass" placeholder="Digite a senha (7847)" style="text-align:center; font-size:16px;" maxlength="4">
+                    <input type="password" id="admin-login-pass" placeholder="Digite sua senha..." style="text-align:center; font-size:16px;" maxlength="4">
 
                     <div style="display: flex; gap: 8px; margin-top: 15px;">
                         <button type="button" class="btn-action" style="background: #757575;" onclick="closeAdminLoginModal()">Voltar</button>
@@ -197,7 +197,7 @@
                 <div class="wallet-card" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-chart-line"></i> Conta Central (Faturamento Total)</span>
-                        <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 55.775.292/0001-26</span>[span_3](start_span)[span_3](end_span)
+                        <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 55.775.292/0001-26</span>[span_0](start_span)[span_0](end_span)
                     </div>
                     <div class="wallet-balance" id="admin-total-revenue">R$ 0,00</div>
                     <p style="font-size: 11px; opacity: 0.85;">Soma de todas as taxas de deslocamento recebidas na plataforma.</p>
@@ -466,12 +466,12 @@
 
                 <div style="background: #fdf6e2; border: 1px solid #f0d080; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px; color: #555;">
                     <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Pagamento Seguro Resgate 24h</p>
-                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_4](start_span)[span_4](end_span). O valor é recebido na conta central e gera alerta sonoro no seu banco PJ.</p>
+                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_1](start_span)[span_1](end_span). O valor é recebido na conta central e gera alerta sonoro no seu banco PJ.</p>
                 </div>
 
                 <div id="modal-pix-section">
                     <label style="color:#d32f2f;">1. Copie a chave Pix abaixo (CNPJ):</label>
-                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>[span_5](start_span)[span_5](end_span)
+                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>[span_2](start_span)[span_2](end_span)
                     
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copiar Chave Pix (CNPJ)
@@ -553,7 +553,7 @@
         var webhookListenerRef = null;
         var useDigitalBalance = false;
 
-        var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_6](start_span)[span_6](end_span)
+        var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_3](start_span)[span_3](end_span)
 
         window.onload = function() { 
             var savedUser = localStorage.getItem('resgate_user');
@@ -627,6 +627,8 @@
         }
 
         function openAdminLoginModal() {
+            document.getElementById('admin-login-phone').value = '';
+            document.getElementById('admin-login-pass').value = '';
             document.getElementById('modal-admin-login').classList.add('active');
         }
 
@@ -647,12 +649,11 @@
                 updateLogoutButton();
                 alert("✅ Login de Administrador efetuado com sucesso!");
             } else {
-                alert("❌ Celular ou Senha incorretos! (Use 11947852640 e senha 7847)");
+                alert("❌ Celular ou Senha incorretos!");
             }
         }
 
         function loadAdminDataAndRevenue() {
-            // Soma total das taxas recebidas na conta central (faturamento total)
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var totalRevenue = 0;
                 snap.forEach((child) => {
@@ -664,7 +665,6 @@
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRevenue.toFixed(2).replace('.', ',');
             });
 
-            // Carrega saques de mecânicos
             rtdb.ref('resgate_withdrawals').on('value', (snap) => {
                 var container = document.getElementById('admin-mech-withdrawals-list');
                 if (!snap.exists()) {
@@ -690,7 +690,6 @@
                 container.innerHTML = html || '<p style="font-size: 12px; color: #666;">Nenhum saque pendente de mecânicos.</p>';
             });
 
-            // Carrega saques de clientes
             rtdb.ref('resgate_client_withdrawals').on('value', (snap) => {
                 var container = document.getElementById('admin-client-withdrawals-list');
                 if (!snap.exists()) {
@@ -934,7 +933,7 @@
                 var change = cashVal - servicePrice;
                 display.innerHTML = `✅ Troco necessário: <span style="color:#2e7d32;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
             } else if (cashVal > 0) {
-                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ', ')}).`;
+                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ',')}).`;
             } else {
                 display.innerHTML = '';
             }
