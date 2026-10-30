@@ -174,7 +174,7 @@
                 </div>
             </div>
 
-            <!-- MODAL DE LOGIN DO ADMINISTRADOR (CAMPOS VAZIOS) -->
+            <!-- MODAL DE LOGIN DO ADMINISTRADOR -->
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Acesso do Administrador</div>
@@ -193,11 +193,10 @@
                 </div>
             </div>
 
-            <!-- TELA DO PAINEL DO ADMINISTRADOR (GERENCIADOR DE SAQUES + SOMA DE TAXAS) -->
+            <!-- TELA DO PAINEL DO ADMINISTRADOR -->
             <div id="role-admin-dashboard" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Sair do Painel Admin</button>
                 
-                <!-- CARD DE RESUMO FINANCEIRO CENTRAL -->
                 <div class="wallet-card" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-chart-line"></i> Conta Central (Faturamento Total)</span>
@@ -267,11 +266,11 @@
 
                     <div id="waiting-payment-box" class="searching-radar-box" style="background: #e3f2fd; border-color: #2196f3; display: none;">
                         <i class="fa-solid fa-spinner fa-spin" style="color: #0288d1;"></i>
-                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Pix...</h3>
-                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Efetue o Pix no seu banco (o alerta sonoro tocará no seu banco PJ). Assim que enviado, clique abaixo:</p>
+                        <h3 id="waiting-title-text" style="color: #0288d1; font-size: 16px; margin-bottom: 5px;">Aguardando Pagamento do Valor Exato...</h3>
+                        <p style="font-size: 12px; color: #444; margin-bottom: 10px;">Efetue o Pix correspondente no seu banco. Assim que o valor exato for validado na conta central, o radar disparará:</p>
                         
                         <button type="button" class="btn-action" style="background: #25d366; margin-bottom: 10px;" onclick="simulateWebhookPaymentConfirm()">
-                            <i class="fa-solid fa-check-circle"></i> Já Paguei no meu Banco
+                            <i class="fa-solid fa-check-circle"></i> Verificar Pagamento Realizado
                         </button>
 
                         <button type="button" class="btn-cancel" onclick="cancelWaitingPayment()" style="background:#757575; max-width: 200px; margin: 0 auto;">Cancelar / Fechar</button>
@@ -295,7 +294,6 @@
                         </div>
 
                         <h3 style="font-size: 13px; color: #0288d1; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Negociação de Mão de Obra e Peças</h3>
-                        <p style="font-size: 11px; color: #555; margin-bottom: 6px;">O valor do deslocamento cobriu apenas a ida. Combine o valor exato da mão de obra e peças diretamente com o mecânico.</p>
                         <div class="chat-box-container">
                             <div class="chat-messages" id="client-chat-messages">
                                 <div class="chat-msg">Conexão estabelecida. Alinhe os detalhes da mão de obra e peças com o prestador.</div>
@@ -360,7 +358,7 @@
                         <div id="payment-method-box-wrapper">
                             <label>Forma de Pagamento:</label>
                             <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                                <option value="pix_online">Pix (Copiar e Colar em Qualquer Banco)</option>
+                                <option value="pix_online">Pix (Valor Exato Obrigatório)</option>
                                 <option value="cash_direct">Dinheiro direto ao Mecânico (Deslocamento)</option>
                             </select>
                         </div>
@@ -452,10 +450,10 @@
             </div>
         </main>
 
-        <!-- MODAL DE PAGAMENTO VIA PIX -->
+        <!-- MODAL DE PAGAMENTO VIA PIX COM VALOR EXATO OBRIGATÓRIO -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa de Deslocamento</div>
+                <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa Exata</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; align-items: center;">
                         <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
@@ -464,24 +462,24 @@
                             <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Plataforma Central de Socorro</p>
                         </div>
                     </div>
-                    <p><b>Valor da Taxa:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* A taxa garante a ida do prestador até seu local. Em caso de cancelamento, o valor vira saldo na sua conta digital interna.</p>
+                    <p><b>Valor Exato Obrigatório:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p style="font-size: 11px; color: #666;">* O sistema exige o pagamento exato para disparar o radar. Se faltar valor, o saldo da sua conta digital será usado automaticamente para complementar.</p>
                 </div>
 
                 <div style="background: #fdf6e2; border: 1px solid #f0d080; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px; color: #555;">
-                    <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Pagamento Seguro Resgate 24h</p>
-                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_0](start_span)[span_0](end_span). O valor é recebido na conta central e gera alerta sonoro no seu banco PJ.</p>
+                    <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Validação Financeira Automática</p>
+                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_0](start_span)[span_0](end_span). Certifique-se de transferir o valor exato no seu banco PJ.</p>
                 </div>
 
                 <div id="modal-pix-section">
-                    <label style="color:#d32f2f;">1. Copie a chave Pix abaixo (CNPJ):</label>
+                    <label style="color:#d32f2f;">1. Chave Pix Oficial (CNPJ):</label>
                     <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>[span_1](start_span)[span_1](end_span)
                     
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copiar Chave Pix (CNPJ)
                     </button>
 
-                    <label style="color:#333; font-size: 11px;">2. Abra o aplicativo do seu banco (ex: Nubank PJ), cole a chave e realize o pagamento. O seu banco vai emitir o alerta sonoro e notificação de entrada na mesma hora.</label>
+                    <label style="color:#333; font-size: 11px;">2. Digite o valor exato no seu banco. Valores menores que a taxa não liberarão o chamado automaticamente.</label>
                 </div>
 
                 <div id="modal-cash-section" style="display: none; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
@@ -490,7 +488,7 @@
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Já Paguei no Banco</button>
+                    <button type="button" class="btn-action" onclick="registerOrderAndListenWebhook()"><i class="fa-solid fa-satellite-dish"></i> Já Paguei o Valor Exato</button>
                 </div>
             </div>
         </div>
@@ -499,7 +497,7 @@
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title" style="color:#2e7d32;"><i class="fa-solid fa-wallet"></i> Conversão em Saldo Digital</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Ao cancelar, o valor total de <b>R$ 35,50</b> não será estornado via Pix bancário. Ele será creditado integralmente na sua <b>Conta Digital do App</b> para você usar em um futuro socorro ou solicitar o saque quando quiser.</p>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Ao cancelar, o valor total correspondente será creditado integralmente na sua <b>Conta Digital do App</b> para uso em futuros socorros.</p>
                 
                 <label>Motivo da Desistência:</label>
                 <textarea id="cancel-reason" placeholder="Ex: Consegui resolver por conta própria..."></textarea>
@@ -950,7 +948,7 @@
         function copyPixKeyToClipboard() {
             var keyText = document.getElementById('pix-key-display').innerText;
             navigator.clipboard.writeText(keyText).then(() => {
-                alert("📋 Chave Pix (CNPJ) copiada para a área de transferência!\nAbra o aplicativo do seu banco (ex: Nubank PJ) e cole para efetuar o pagamento. O alerta sonoro do banco tocará na mesma hora.");
+                alert("📋 Chave Pix (CNPJ) copiada para a área de transferência!\nAbra o aplicativo do seu banco e cole para efetuar o pagamento exato de R$ " + servicePrice.toFixed(2).replace('.', ',') + ".");
             }).catch(() => {
                 alert("Copie a chave Pix manualmente: " + keyText);
             });
@@ -1022,12 +1020,12 @@
             rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snap) => {
                 var currentBal = snap.val() || 0;
                 if (currentBal < servicePrice) {
-                    alert("⚠️ Saldo insuficiente na sua conta digital para cobrir este valor.");
+                    alert("⚠️ Saldo insuficiente na sua conta digital para cobrir este valor integral.");
                     return;
                 }
 
                 rtdb.ref('resgate_client_wallets/' + userKey).set(currentBal - servicePrice).then(() => {
-                    registerOrderDirectly('in_custody', 'Pago com Conta Digital');
+                    registerOrderDirectly('in_custody', 'Pago integralmente com Conta Digital');
                 });
             });
         }
@@ -1069,9 +1067,11 @@
             }
         }
 
+        // FUNÇÃO BLINDADA: VERIFICA SE O VALOR INTEGRAL FOI PAGO OU COMPLEMENTADO COM A CONTA DIGITAL
         function registerOrderAndListenWebhook() {
             closeModal();
             var paymentMethod = document.getElementById('payment-method-select').value;
+            var userKey = currentUser ? ('CLIENT-' + currentUser.phone.replace(/\D/g,'')) : null;
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
@@ -1079,54 +1079,75 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    var paymentInfoText = paymentMethod === 'cash_direct' ? "Dinheiro Deslocamento (Troco para: " + document.getElementById('client-cash-amount').value + ")" : "Pix Central (Aguardando Confirmação)";
-                    var initialStatus = paymentMethod === 'cash_direct' ? 'in_custody' : 'waiting_payment';
+                    // Verifica se o cliente tem saldo parcial na conta digital para abater do total exato
+                    rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snapWallet) => {
+                        var digitalBalance = snapWallet.val() || 0;
+                        var requiredTotal = servicePrice;
+                        var pixNeeded = requiredTotal;
+                        var infoText = "Pix Central (Valor Exato R$ " + requiredTotal.toFixed(2).replace('.', ',') + ")";
 
-                    var newOrder = {
-                        id: orderId,
-                        clientName: currentUser.name,
-                        clientPhone: currentUser.phone,
-                        vehicleModel: currentUser.vehicle,
-                        vehiclePlate: currentUser.plate,
-                        problem: selectedProblem,
-                        clientPin: pin,
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude,
-                        status: initialStatus,
-                        clientTotal: servicePrice.toFixed(2),
-                        mechPay: mechanicRepase.toFixed(2),
-                        radius: 10,
-                        paymentInfo: paymentInfoText
-                    };
-
-                    rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
-                        if (paymentMethod === 'cash_direct') {
-                            startProgressiveRadar(orderId);
-                            document.getElementById('client-form-card').style.display = 'none';
-                            document.getElementById('nearby-mech-box-card').style.display = 'none';
-                            document.getElementById('client-active-code-card').style.display = 'block';
-                            document.getElementById('display-client-pin').innerText = pin;
-                            listenChatMessages(orderId, 'client-chat-messages');
-                        } else {
-                            document.getElementById('client-form-card').style.display = 'none';
-                            document.getElementById('nearby-mech-box-card').style.display = 'none';
-                            document.getElementById('waiting-payment-box').style.display = 'block';
-
-                            if(webhookListenerRef) webhookListenerRef.off();
-                            webhookListenerRef = rtdb.ref('resgate_orders/' + orderId + '/status');
-                            
-                            webhookListenerRef.on('value', (snap) => {
-                                var currentDbStatus = snap.val();
-                                if (currentDbStatus === 'in_custody') {
-                                    document.getElementById('waiting-payment-box').style.display = 'none';
-                                    startProgressiveRadar(orderId);
-                                    document.getElementById('client-active-code-card').style.display = 'block';
-                                    document.getElementById('display-client-pin').innerText = pin;
-                                    listenChatMessages(orderId, 'client-chat-messages');
-                                    alert("✅ Pagamento Pix confirmado pelo banco PJ! Iniciando busca de mecânicos.");
-                                }
-                            });
+                        if (digitalBalance > 0 && digitalBalance < requiredTotal) {
+                            pixNeeded = requiredTotal - digitalBalance;
+                            infoText = `Pix Parcial (R$ ${pixNeeded.toFixed(2).replace('.', ',')}) + Saldo Digital (R$ ${digitalBalance.toFixed(2).replace('.', ',')})`;
+                            // Zera o saldo usado da carteira do cliente
+                            rtdb.ref('resgate_client_wallets/' + userKey).set(0);
+                        } else if (digitalBalance >= requiredTotal) {
+                            // Se tiver saldo total, desconta e aprova direto
+                            rtdb.ref('resgate_client_wallets/' + userKey).set(digitalBalance - requiredTotal);
+                            pixNeeded = 0;
+                            infoText = "Pago com Saldo da Conta Digital";
                         }
+
+                        var initialStatus = (paymentMethod === 'cash_direct' || pixNeeded === 0) ? 'in_custody' : 'waiting_payment';
+
+                        var newOrder = {
+                            id: orderId,
+                            clientName: currentUser.name,
+                            clientPhone: currentUser.phone,
+                            vehicleModel: currentUser.vehicle,
+                            vehiclePlate: currentUser.plate,
+                            problem: selectedProblem,
+                            clientPin: pin,
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude,
+                            status: initialStatus,
+                            clientTotal: servicePrice.toFixed(2),
+                            mechPay: mechanicRepase.toFixed(2),
+                            radius: 10,
+                            paymentInfo: infoText,
+                            exactPixRequired: pixNeeded.toFixed(2)
+                        };
+
+                        rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
+                            if (initialStatus === 'in_custody') {
+                                startProgressiveRadar(orderId);
+                                document.getElementById('client-form-card').style.display = 'none';
+                                document.getElementById('nearby-mech-box-card').style.display = 'none';
+                                document.getElementById('client-active-code-card').style.display = 'block';
+                                document.getElementById('display-client-pin').innerText = pin;
+                                listenChatMessages(orderId, 'client-chat-messages');
+                            } else {
+                                document.getElementById('client-form-card').style.display = 'none';
+                                document.getElementById('nearby-mech-box-card').style.display = 'none';
+                                document.getElementById('waiting-payment-box').style.display = 'block';
+                                document.getElementById('waiting-title-text').innerText = "Aguardando Pix Exato de R$ " + pixNeeded.toFixed(2).replace('.', ',') + " ...";
+
+                                if(webhookListenerRef) webhookListenerRef.off();
+                                webhookListenerRef = rtdb.ref('resgate_orders/' + orderId + '/status');
+                                
+                                webhookListenerRef.on('value', (snap) => {
+                                    var currentDbStatus = snap.val();
+                                    if (currentDbStatus === 'in_custody') {
+                                        document.getElementById('waiting-payment-box').style.display = 'none';
+                                        startProgressiveRadar(orderId);
+                                        document.getElementById('client-active-code-card').style.display = 'block';
+                                        document.getElementById('display-client-pin').innerText = pin;
+                                        listenChatMessages(orderId, 'client-chat-messages');
+                                        alert("✅ Pagamento do valor exato confirmado! Iniciando busca de mecânicos.");
+                                    }
+                                });
+                            }
+                        });
                     });
                 });
             }
