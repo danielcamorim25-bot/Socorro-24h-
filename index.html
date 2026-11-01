@@ -72,6 +72,9 @@
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
+        /* Botão de Suporte Invisível */
+        .btn-support-whatsapp { width: 100%; background: #25d366; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; }
+
         /* Carteiras */
         .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .wallet-card-mech { background: linear-gradient(135deg, #1e88e5, #1565c0); }
@@ -303,8 +306,13 @@
                                 <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('client')">Enviar</button>
                             </div>
                         </div>
+                        
+                        <!-- BOTÃO DE SUPORTE SUPREMO INVISÍVEL PARA SUPORTE (CLIENTE) -->
+                        <button type="button" class="btn-support-whatsapp" onclick="openSupportWhatsApp()">
+                            <i class="fa-brands fa-whatsapp"></i> Falar com o Suporte Oficial 24h
+                        </button>
 
-                        <button type="button" class="btn-cancel" onclick="openCancelModal()">
+                        <button type="button" class="btn-cancel" onclick="openCancelModal()" style="margin-top: 8px;">
                             <i class="fa-solid fa-ban"></i> Desistir e Salvar como Crédito na Conta Digital
                         </button>
                     </div>
@@ -450,7 +458,7 @@
             </div>
         </main>
 
-        <!-- MODAL DE PAGAMENTO VIA PIX COM VALOR EXATO OBRIGATÓRIO -->
+        <!-- MODAL DE PAGAMENTO VIA PIX -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa Exata</div>
@@ -560,6 +568,14 @@
         var useDigitalBalance = false;
 
         var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_2](start_span)[span_2](end_span)
+
+        // SUPORTE INVISÍVEL (Número codificado por trás do botão)
+        var SUPPORT_PHONE_SECRET = "5511947852640";
+
+        function openSupportWhatsApp() {
+            var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=Olá%2C%20preciso%20de%20suporte%20no%20app%20Resgate%2024h.";
+            window.open(url, '_blank');
+        }
 
         window.onload = function() { 
             var savedUser = localStorage.getItem('resgate_user');
@@ -939,7 +955,7 @@
                 var change = cashVal - servicePrice;
                 display.innerHTML = `✅ Troco necessário: <span style="color:#2e7d32;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
             } else if (cashVal > 0) {
-                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ',')}).`;
+                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ', ')}).`;
             } else {
                 display.innerHTML = '';
             }
@@ -1067,7 +1083,6 @@
             }
         }
 
-        // FUNÇÃO BLINDADA: VERIFICA SE O VALOR INTEGRAL FOI PAGO OU COMPLEMENTADO COM A CONTA DIGITAL
         function registerOrderAndListenWebhook() {
             closeModal();
             var paymentMethod = document.getElementById('payment-method-select').value;
@@ -1079,7 +1094,6 @@
                     var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                     activeOrderId = orderId;
 
-                    // Verifica se o cliente tem saldo parcial na conta digital para abater do total exato
                     rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snapWallet) => {
                         var digitalBalance = snapWallet.val() || 0;
                         var requiredTotal = servicePrice;
@@ -1089,10 +1103,8 @@
                         if (digitalBalance > 0 && digitalBalance < requiredTotal) {
                             pixNeeded = requiredTotal - digitalBalance;
                             infoText = `Pix Parcial (R$ ${pixNeeded.toFixed(2).replace('.', ',')}) + Saldo Digital (R$ ${digitalBalance.toFixed(2).replace('.', ',')})`;
-                            // Zera o saldo usado da carteira do cliente
                             rtdb.ref('resgate_client_wallets/' + userKey).set(0);
                         } else if (digitalBalance >= requiredTotal) {
-                            // Se tiver saldo total, desconta e aprova direto
                             rtdb.ref('resgate_client_wallets/' + userKey).set(digitalBalance - requiredTotal);
                             pixNeeded = 0;
                             infoText = "Pago com Saldo da Conta Digital";
@@ -1361,6 +1373,11 @@
                                         <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('mech')">Enviar</button>
                                     </div>
                                 </div>
+                                
+                                <!-- BOTÃO DE SUPORTE SUPREMO INVISÍVEL PARA SUPORTE (MECÂNICO) -->
+                                <button type="button" class="btn-support-whatsapp" onclick="openSupportWhatsApp()">
+                                    <i class="fa-brands fa-whatsapp"></i> Falar com o Suporte Oficial 24h
+                                </button>
 
                                 <div style="background:#fff; border:1px dashed #2e7d32; padding:10px; border-radius:6px; margin-top:10px;">
                                     <label style="margin-top:0; font-size:11px; color:#2e7d32;"><i class="fa-solid fa-key"></i> Digite o PIN de 4 dígitos do Cliente:</label>
