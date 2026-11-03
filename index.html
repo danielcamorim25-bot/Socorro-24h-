@@ -331,7 +331,15 @@
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
                         <h3 id="radar-title-text" style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos (Raio: 10 km)...</h3>
-                        <p id="radar-desc-text" style="font-size: 12px; color: #666;">Buscando profissionais disponíveis na região.</p>
+                        <p id="radar-desc-text" style="font-size: 12px; color: #666; margin-bottom: 10px;">Buscando profissionais disponíveis na região.</p>
+
+                        <!-- Opção dinâmica para aumentar o valor do resgate / bônus caso demore -->
+                        <div id="boost-rescue-container" style="background: #fff; border: 1px solid #ffb300; padding: 10px; border-radius: 6px; margin-top: 10px;">
+                            <p style="font-size: 11px; color: #e65100; font-weight: bold; margin-bottom: 6px;">⚡ Demorando a achar mecânico? Aumente o valor do resgate para atrair prestadores mais longe:</p>
+                            <button type="button" class="btn-action" style="background: #e65100; font-size: 11px;" onclick="manualBoostRescueValue()">
+                                <i class="fa-solid fa-arrow-trend-up"></i> Adicionar +R$ 20,00 de Urgência ao Chamado
+                            </button>
+                        </div>
                     </div>
 
                     <div id="client-map-container" class="map-box">
@@ -1442,6 +1450,22 @@
                     openCancelModal();
                 }
             }, 8000);
+        }
+
+        // Função solicitada: Opção para o cliente aumentar manualmente o valor do resgate por emergência
+        function manualBoostRescueValue() {
+            servicePrice += 20.00;
+            mechanicRepase += 15.00;
+            updatePriceDisplay();
+
+            if (activeOrderId) {
+                rtdb.ref('resgate_orders/' + activeOrderId).update({
+                    clientTotal: servicePrice.toFixed(2),
+                    mechPay: mechanicRepase.toFixed(2)
+                });
+            }
+
+            alert("🚀 Valor de urgência aumentado em +R$ 20,00 com sucesso!\nO chamado foi re-transmitido com prioridade máxima e ganho atrativo para os mecânicos.");
         }
 
         function stopProgressiveRadar() {
