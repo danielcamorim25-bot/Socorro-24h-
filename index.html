@@ -82,7 +82,7 @@
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
-        /* Botão de Suporte Flutuante Permanente (Visível/Invisível conforme preferência) */
+        /* Botão de Suporte Flutuante Permanente */
         .floating-support-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; cursor: pointer; text-decoration: none; }
         .floating-support-btn:hover { background: #1ebe5d; }
 
@@ -376,20 +376,7 @@
                         </h2>
                         
                         <div id="mechanics-list" style="max-height: 180px; overflow-y: auto; margin-top: 5px;">
-                            <div class="mechanic-profile-card">
-                                <div class="mechanic-profile-header">
-                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Mecânico">
-                                    <div class="mechanic-profile-info">
-                                        <h4>Carlos Oliveira (Auto Socorro)</h4>
-                                        <div class="stars">★★★★★ (4.9/5)</div>
-                                        <span class="badge-rescue">⚡ 142 Socorros Realizados</span>
-                                    </div>
-                                </div>
-                                <div class="mechanic-gallery">
-                                    <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300" alt="Moto Socorro">
-                                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300" alt="Oficina Base">
-                                </div>
-                            </div>
+                            <!-- Injetado dinamicamente via Firebase -->
                         </div>
                     </div>
 
@@ -708,7 +695,7 @@
         var mechanicRepase = 30.00; 
         
         var isOnline = false;
-        var mapClient, mapMechanic, orderMarkersGroup;
+        var mapClient, mapMechanic, orderMarkersGroup, mechanicMarkersGroup;
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
@@ -1130,8 +1117,24 @@
 
         function saveMechanicAccount(e) {
             e.preventDefault();
+            
+            // Captura a geolocalização do mecânico / oficina ao cadastrar
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    salvarPerfilNoFirebase(pos.coords.latitude, pos.coords.longitude);
+                }, function(error) {
+                    // Fallback caso o GPS falhe (ex: Arujá/SP)
+                    salvarPerfilNoFirebase(-23.3995, -46.3241);
+                });
+            } else {
+                salvarPerfilNoFirebase(-23.3995, -46.3241);
+            }
+        }
+
+        function salvarPerfilNoFirebase(lat, lng) {
+            var mechId = 'MECH-' + document.getElementById('mech-doc-number').value.replace(/\D/g,'');
             currentMechanic = {
-                id: 'MECH-' + document.getElementById('mech-doc-number').value.replace(/\D/g,''),
+                id: mechId,
                 name: document.getElementById('mech-name').value,
                 shopAddress: document.getElementById('mech-shop-address').value,
                 zone: document.getElementById('mech-zone').value,
@@ -1139,18 +1142,23 @@
                 phone: document.getElementById('mech-phone').value,
                 pixKey: document.getElementById('mech-pix-key').value,
                 profileImg: mechProfileImgUrl,
-                shopImg: mechShopImgUrl
+                shopImg: mechShopImgUrl,
+                lat: lat,
+                lng: lng
             };
-            localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             
-            document.getElementById('mech-register-card').style.display = 'none';
-            document.getElementById('mech-main-content').style.display = 'block';
-            initMechanicMap();
-            listenLiveOrders();
-            loadMechanicWalletBalance();
-            updateLogoutButton();
-            
-            alert("✅ Perfil profissional criado com sucesso!");
+            rtdb.ref('resgate_mechanics/' + mechId).set(currentMechanic).then(() => {
+                localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
+                
+                document.getElementById('mech-register-card').style.display = 'none';
+                document.getElementById('mech-main-content').style.display = 'block';
+                initMechanicMap();
+                listenLiveOrders();
+                loadMechanicWalletBalance();
+                updateLogoutButton();
+                
+                alert("✅ Perfil profissional e geolocalização salvos com sucesso!");
+            });
         }
 
         function loadMechanicWalletBalance() {
@@ -1250,11 +1258,76 @@
                     mapClient = L.map('map-client').setView([pos.coords.latitude, pos.coords.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapClient);
                     L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Você").openPopup();
+                    mechanicMarkersGroup = L.layerGroup().addTo(mapClient);
                 });
             }
         }
 
-        function loadNearbyMechanics() {}
+        // Função que carrega e atualiza os mecânicos próximos no mapa e na lista do cliente dinamicamente
+        function loadNearbyMechanics() {
+            if (!mapClient) return;
+
+            rtdb.ref('resgate_mechanics').on('value', (snap) => {
+                var mechanicsListContainer = document.getElementById('mechanics-list');
+                if (!mechanicsListContainer) return;
+                mechanicsListContainer.innerHTML = '';
+
+                if (mechanicMarkersGroup) mechanicMarkersGroup.clearLayers();
+
+                if (!snap.exists()) {
+                    mechanicsListContainer.innerHTML = '<p style="font-size: 12px; color: #666; text-align:center;">Nenhum profissional próximo cadastrado.</p>';
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(function(clientPos) {
+                    var clientLat = clientPos.coords.latitude;
+                    var clientLng = clientPos.coords.longitude;
+                    var html = '';
+
+                    snap.forEach((child) => {
+                        var mech = child.val();
+                        if (!mech.lat || !mech.lng) return;
+
+                        var distKm = calculateDistance(clientLat, clientLng, mech.lat, mech.lng);
+
+                        if (distKm <= 30) {
+                            // Plota no mapa do cliente
+                            L.marker([mech.lat, mech.lng], {
+                                icon: L.divIcon({className: 'blue-marker-icon', iconSize: [22, 22]})
+                            }).addTo(mechanicMarkersGroup).bindPopup(`<b>${mech.name}</b><br>Distância: ${distKm.toFixed(1)} km`);
+
+                            html += `
+                                <div class="mechanic-profile-card">
+                                    <div class="mechanic-profile-header">
+                                        <img src="${mech.profileImg || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}" alt="Mecânico">
+                                        <div class="mechanic-profile-info">
+                                            <h4>${mech.name}</h4>
+                                            <div class="stars">★★★★★ (5.0/5)</div>
+                                            <span class="badge-rescue">📍 Aprox. ${distKm.toFixed(1)} km de você</span>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 11px; color: #555; margin-top: 4px;"><i class="fa-solid fa-map-pin"></i> ${mech.shopAddress}</p>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    mechanicsListContainer.innerHTML = html || '<p style="font-size: 12px; color: #666; text-align:center;">Nenhum mecânico num raio de 30km.</p>';
+                });
+            });
+        }
+
+        // Cálculo de distância (Haversine)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371; 
+            var dLat = deg2rad(lat2 - lat1);
+            var dLon = deg2rad(lon2 - lon1);
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            return R * c;
+        }
+
+        function deg2rad(deg) { return deg * (Math.PI/180); }
 
         function checkClientActiveCode() {
             rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
