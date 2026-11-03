@@ -82,7 +82,7 @@
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
-        /* Botão de Suporte Flutuante Permanente */
+        /* Botão de Suporte Flutuante Permanente (Visível/Invisível conforme preferência) */
         .floating-support-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; cursor: pointer; text-decoration: none; }
         .floating-support-btn:hover { background: #1ebe5d; }
 
@@ -622,12 +622,12 @@
 
                 <div style="background: #fdf6e2; border: 1px solid #f0d080; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px; color: #555;">
                     <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Validação Financeira Automática</p>
-                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>[span_0](start_span)[span_0](end_span). Certifique-se de transferir o valor exato no seu banco PJ.</p>
+                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>. Certifique-se de transferir o valor exato no seu banco PJ.</p>
                 </div>
 
                 <div id="modal-pix-section">
                     <label style="color:#d32f2f;">1. Chave Pix Oficial (CNPJ):</label>
-                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>[span_1](start_span)[span_1](end_span)
+                    <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>
                     
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copiar Chave Pix (CNPJ)
@@ -663,7 +663,7 @@
             </div>
         </div>
 
-        <!-- BOTÃO DE SUPORTE PERMANENTE FLUTUANTE -->
+        <!-- BOTÃO DE SUPORTE PERMANENTE FLUTUANTE COM MENSAGEM AUTOMÁTICA -->
         <a href="javascript:void(0)" onclick="openSupportWhatsApp()" class="floating-support-btn" title="Falar com o Suporte 24h">
             <i class="fa-brands fa-whatsapp"></i>
         </a>
@@ -719,10 +719,10 @@
         var useDigitalBalance = false;
         var selectedRatingStars = 5;
 
-        var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_2](start_span)[span_2](end_span)
-        var SUPPORT_PHONE_SECRET = "5511947852640";
+        var PLATFORM_PIX_KEY = "55.775.292/0001-26";
+        var SUPPORT_PHONE_SECRET = "5511947852640"; // Seu número configurado para receber o suporte
 
-        // Função de Suporte Inteligente com Identificação Automática do Usuário/Prestador
+        // Função para abrir o WhatsApp automaticamente preenchendo a mensagem e identificando o usuário
         function openSupportWhatsApp() {
             var identification = "Visitante / Não Logado";
             var contactPhone = "Não informado";
@@ -744,9 +744,9 @@
 
             var message = `Olá! Preciso de suporte no aplicativo Resgate 24h.\n\n` +
                           `👤 *Nome:* ${identification}\n` +
-                          `📞 *Telefone de Contato:* ${contactPhone}\n` +
-                          `🛠️ *Perfil/Tela:* ${perfilType}\n\n` +
-                          `*Detalhes da ajuda necessária:* `;
+                          `📞 *Telefone Cadastrado:* ${contactPhone}\n` +
+                          `🛠️ *Perfil/Tela Atual:* ${perfilType}\n\n` +
+                          `*Dúvida / Ajuda necessária:* `;
 
             var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=" + encodeURIComponent(message);
             window.open(url, '_blank');
