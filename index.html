@@ -722,8 +722,33 @@
         var PLATFORM_PIX_KEY = "55.775.292/0001-26";[span_2](start_span)[span_2](end_span)
         var SUPPORT_PHONE_SECRET = "5511947852640";
 
+        // Função de Suporte Inteligente com Identificação Automática do Usuário/Prestador
         function openSupportWhatsApp() {
-            var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=Olá%2C%20preciso%20de%20suporte%20no%20app%20Resgate%2024h.";
+            var identification = "Visitante / Não Logado";
+            var contactPhone = "Não informado";
+            var perfilType = "Início / Tela Inicial";
+
+            if (currentRole === 'client' && currentUser) {
+                perfilType = "Cliente / Motorista";
+                identification = currentUser.name;
+                contactPhone = currentUser.phone;
+            } else if ((currentRole === 'mechanic' || currentRole === 'winch') && currentMechanic) {
+                perfilType = currentRole === 'winch' ? "Guincho / Reboque" : "Mecânico / Profissional";
+                identification = currentMechanic.name;
+                contactPhone = currentMechanic.phone;
+            } else if (currentRole === 'admin-dashboard') {
+                perfilType = "Administrador";
+                identification = "Daniel (Admin)";
+                contactPhone = "11947852640";
+            }
+
+            var message = `Olá! Preciso de suporte no aplicativo Resgate 24h.\n\n` +
+                          `👤 *Nome:* ${identification}\n` +
+                          `📞 *Telefone de Contato:* ${contactPhone}\n` +
+                          `🛠️ *Perfil/Tela:* ${perfilType}\n\n` +
+                          `*Detalhes da ajuda necessária:* `;
+
+            var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=" + encodeURIComponent(message);
             window.open(url, '_blank');
         }
 
@@ -1452,7 +1477,6 @@
             }, 8000);
         }
 
-        // Função solicitada: Opção para o cliente aumentar manualmente o valor do resgate por emergência
         function manualBoostRescueValue() {
             servicePrice += 20.00;
             mechanicRepase += 15.00;
