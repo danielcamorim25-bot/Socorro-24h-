@@ -117,7 +117,6 @@
         .btn-route { width: 100%; background: #0288d1; color: white; border: none; padding: 9px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 5px; }
         .btn-complete { width: 100%; background: #ed6c02; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
 
-        /* Estrelas de Avaliação Interativa */
         .interactive-stars { display: flex; gap: 5px; color: #ccc; font-size: 18px; cursor: pointer; margin: 5px 0; }
         .interactive-stars span.active { color: #ffc107; }
 
@@ -127,7 +126,6 @@
         .red-marker-icon { background-color: #d32f2f; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(211,47,47,0.8); }
         .blue-marker-icon { background-color: #0288d1; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(2,136,209,0.8); }
 
-        /* JANELA MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -137,7 +135,6 @@
         .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; user-select: all; cursor: pointer; }
         .pix-code-box:active { background: #d0e8f2; }
 
-        /* Tabela de Preços e Transparência de Ganhos */
         .gains-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
         .gains-table th, .gains-table td { border: 1px solid #eee; padding: 6px 8px; text-align: left; }
         .gains-table th { background: #fff3e0; color: #e65100; }
@@ -218,9 +215,7 @@
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-chart-pie"></i> Origem do Faturamento</div>
                     <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Detalhamento das entradas de Pix na Conta Central divididas por Zonas/Cidades:</p>
-                    <div id="admin-revenue-zones-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; font-size: 12px;">
-                        <!-- Injetado via JS -->
-                    </div>
+                    <div id="admin-revenue-zones-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; font-size: 12px;"></div>
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeAdminRevenueModal()">Fechar</button>
                 </div>
             </div>
@@ -235,36 +230,28 @@
                         <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 55.775.292/0001-26</span>
                     </div>
                     <div class="wallet-balance" id="admin-total-revenue">R$ 0,00</div>
-                    <p style="font-size: 11px; opacity: 0.85;">Clique neste card para ver faturamento separado por zonas (Arujá, Suzano, Itaquá, Poá...).</p>
+                    <p style="font-size: 11px; opacity: 0.85;">Clique neste card para ver faturamento separado por zonas.</p>
                 </div>
 
-                <!-- NOVO CARD: AUDITORIA DE CADASTROS DE MECÂNICOS E GUINCHOS -->
                 <div class="card" style="margin-top: 15px;">
                     <h2 style="color: #e65100;"><i class="fa-solid fa-users-gear"></i> Auditoria de Cadastros (Profissionais & Guinchos)</h2>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Visualização completa de todos os dados, chaves Pix, telefones e fotos enviadas:</p>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Visualização completa de dados, documentos CNH e fotos enviadas:</p>
                     <div id="admin-mechanics-directory-list" style="max-height: 250px; overflow-y: auto;">
                         <p style="font-size: 12px; color: #666;">Nenhum profissional cadastrado no momento.</p>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h2 style="color: #2e7d32;"><i class="fa-solid fa-money-bill-transfer"></i> Saques Pendentes de Mecânicos / Guinchos</h2>
+                    <h2 style="color: #2e7d32;"><i class="fa-solid fa-money-bill-transfer"></i> Saques Pendentes de Profissionais</h2>
                     <div id="admin-mech-withdrawals-list" style="margin-top: 10px;">
                         <p style="font-size: 12px; color: #666;">Nenhum saque pendente.</p>
                     </div>
                 </div>
 
                 <div class="card" style="margin-top: 15px;">
-                    <h2 style="color: #1e88e5;"><i class="fa-solid fa-history"></i> Histórico de Depósitos / Saques Pagos</h2>
+                    <h2 style="color: #1e88e5;"><i class="fa-solid fa-history"></i> Histórico de Pagamentos Realizados</h2>
                     <div id="admin-paid-history-list" style="margin-top: 10px; max-height: 200px; overflow-y: auto;">
-                        <p style="font-size: 12px; color: #666;">Nenhum histórico de pagamento registrado ainda.</p>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top: 15px;">
-                    <h2 style="color: #d32f2f;"><i class="fa-solid fa-wallet"></i> Saques Pendentes de Clientes</h2>
-                    <div id="admin-client-withdrawals-list" style="margin-top: 10px;">
-                        <p style="font-size: 12px; color: #666;">Nenhum saque de cliente pendente.</p>
+                        <p style="font-size: 12px; color: #666;">Nenhum histórico registrado ainda.</p>
                     </div>
                 </div>
             </div>
@@ -274,22 +261,24 @@
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
                 <div id="client-register-card" class="card">
-                    <h2><i class="fa-solid fa-user-shield"></i> Cadastro Seguro do Usuário</h2>
+                    <h2><i class="fa-solid fa-user-shield"></i> Identificação Segura (Cliente)</h2>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Para sua segurança e a dos prestadores, preencha seus dados reais e envie a foto do seu documento oficial com foto e sua selfie.</p>
+                    
                     <form onsubmit="saveUserAccount(event)">
                         <label>Seu Nome Completo:</label>
                         <input type="text" id="reg-name" placeholder="Ex: Carlos Silva" required>
-                        <label>Seu CPF:</label>
+                        <label>Seu CPF (Exigido para validação):</label>
                         <input type="text" id="reg-cpf" placeholder="Ex: 123.456.789-00" required>
                         <label>Seu WhatsApp:</label>
                         <input type="tel" id="reg-phone" placeholder="Ex: 11988887777" required>
                         <label>Sua Chave Pix (Para saque do saldo digital):</label>
-                        <input type="text" id="reg-pix-key" placeholder="Ex: CPF ou E-mail ou Telefone" required>
+                        <input type="text" id="reg-pix-key" placeholder="Ex: CPF, E-mail ou Telefone" required>
                         <label>Modelo do Veículo:</label>
                         <input type="text" id="reg-vehicle" placeholder="Ex: Honda CG 160" required>
                         <label>Placa:</label>
                         <input type="text" id="reg-plate" placeholder="Ex: ABC-1234" required>
                         
-                        <label>Sua Cidade / Zona de Atuação:</label>
+                        <label>Cidade / Zona:</label>
                         <select id="reg-zone">
                             <option value="Arujá">Arujá</option>
                             <option value="Suzano">Suzano</option>
@@ -300,12 +289,13 @@
                             <option value="São Paulo">São Paulo (Capital)</option>
                         </select>
                         
-                        <label>Documento (CNH / RG em PDF ou Foto):</label>
-                        <input type="file" id="reg-doc-photo" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
-                        
-                        <label>Selfie:</label>
-                        <input type="file" id="reg-selfie" accept="image/*" capture="user" style="font-size: 12px; padding: 4px;" required>
-                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Concluir Cadastro</button>
+                        <label><i class="fa-solid id-card"></i> Foto do Documento (CNH ou RG):</label>
+                        <input type="file" id="reg-doc-photo" accept="image/*" onchange="previewUserDoc(event)" style="font-size: 12px; padding: 4px;" required>
+
+                        <label><i class="fa-solid fa-camera"></i> Selfie de Confirmação:</label>
+                        <input type="file" id="reg-selfie" accept="image/*" capture="user" onchange="previewUserSelfie(event)" style="font-size: 12px; padding: 4px;" required>
+
+                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Validar Identidade e Concluir</button>
                     </form>
                 </div>
 
@@ -340,11 +330,10 @@
                         <h3 id="radar-title-text" style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Profissionais Próximos (Raio: 10 km)...</h3>
                         <p id="radar-desc-text" style="font-size: 12px; color: #666; margin-bottom: 10px;">Buscando profissionais disponíveis na região.</p>
 
-                        <!-- Opção dinâmica para aumentar o valor do resgate / bônus caso demore -->
                         <div id="boost-rescue-container" style="background: #fff; border: 1px solid #ffb300; padding: 10px; border-radius: 6px; margin-top: 10px;">
-                            <p style="font-size: 11px; color: #e65100; font-weight: bold; margin-bottom: 6px;">⚡ Demorando a achar prestador? Aumente o valor do resgate para atrair profissionais mais longe:</p>
+                            <p style="font-size: 11px; color: #e65100; font-weight: bold; margin-bottom: 6px;">⚡ Demorando a achar prestador? Aumente o valor do resgate:</p>
                             <button type="button" class="btn-action" style="background: #e65100; font-size: 11px;" onclick="manualBoostRescueValue()">
-                                <i class="fa-solid fa-arrow-trend-up"></i> Adicionar +R$ 20,00 de Urgência ao Chamado
+                                <i class="fa-solid fa-arrow-trend-up"></i> Adicionar +R$ 20,00 de Urgência
                             </button>
                         </div>
                     </div>
@@ -353,20 +342,33 @@
                         <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                     </div>
 
+                    <!-- CARD DE ATENDIMENTO ACEITO COM DADOS E FOTO DO MECÂNICO + CHAT -->
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
-                        <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Atendimento em Andamento</h2>
+                        <h2 style="color: #0288d1;"><i class="fa-solid fa-user-check"></i> Profissional a Caminho!</h2>
+                        
+                        <!-- Box com os dados do mecânico que aceitou -->
+                        <div id="accepted-mechanic-details-box" style="background: #fff; border: 1px solid #90caf9; padding: 10px; border-radius: 8px; margin: 10px 0; display: flex; gap: 10px; align-items: center;">
+                            <img id="accepted-mech-photo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #0288d1;">
+                            <div>
+                                <h4 id="accepted-mech-name" style="font-size: 14px; color: #0288d1; margin-bottom: 2px;">Nome do Prestador</h4>
+                                <p style="font-size: 11px; color: #555;"><i class="fa-solid fa-phone"></i> <span id="accepted-mech-phone">--</span></p>
+                                <p style="font-size: 11px; color: #555;"><i class="fa-solid fa-location-dot"></i> <span id="accepted-mech-address">--</span></p>
+                                <div style="color: #ffc107; font-size: 11px; margin-top: 2px;">★★★★★ (Avaliado)</div>
+                            </div>
+                        </div>
+
                         <p style="font-size: 12px; color: #444;">Código PIN de Liberação (Passe para o profissional ao chegar):</p>
                         <div class="pin-box">
                             <div class="pin-code-text" id="display-client-pin">----</div>
                         </div>
 
-                        <h3 style="font-size: 13px; color: #0288d1; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Negociação de Mão de Obra e Peças</h3>
+                        <h3 style="font-size: 13px; color: #0288d1; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Conversar com o Prestador</h3>
                         <div class="chat-box-container">
                             <div class="chat-messages" id="client-chat-messages">
-                                <div class="chat-msg">Conexão estabelecida. Alinhe os detalhes da mão de obra e peças com o prestador.</div>
+                                <div class="chat-msg">Conexão estabelecida com o prestador. Explique o que está acontecendo.</div>
                             </div>
                             <div class="chat-input-row">
-                                <input type="text" id="client-chat-input" placeholder="Digite sua mensagem ou orçamento...">
+                                <input type="text" id="client-chat-input" placeholder="Digite sua mensagem ou explique o caso...">
                                 <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('client')">Enviar</button>
                             </div>
                         </div>
@@ -381,36 +383,7 @@
                             <span><i class="fa-solid fa-location-crosshairs"></i> Profissionais Próximos na Região</span>
                             <span id="user-greeting" style="font-size: 11px; color: #666; font-weight: normal;"></span>
                         </h2>
-                        
-                        <div id="mechanics-list" style="max-height: 180px; overflow-y: auto; margin-top: 5px;">
-                            <!-- Injetado dinamicamente via Firebase -->
-                        </div>
-                    </div>
-
-                    <div class="card" id="history-card">
-                        <h2><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Socorros Recentes</h2>
-                        <div id="history-items-container">
-                            <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                                <div style="font-size: 0.8rem; color: #777;">Atendimento em Rua Principal</div>
-                                <div style="font-weight: bold; font-size: 0.9rem;">Socorrista: Carlos Oliveira</div>
-                                <div style="font-size: 0.8rem; margin: 4px 0;">Serviço: Carga rápida na bateria (R$ 30,00)</div>
-                                
-                                <div style="margin-top: 8px;">
-                                    <span style="font-size: 0.8rem; font-weight: bold;">Sua Avaliação:</span>
-                                    <div class="interactive-stars" id="stars-eval-1">
-                                        <span onclick="setRating(1)">★</span>
-                                        <span onclick="setRating(2)">★</span>
-                                        <span onclick="setRating(3)">★</span>
-                                        <span onclick="setRating(4)">★</span>
-                                        <span onclick="setRating(5)">★</span>
-                                    </div>
-                                </div>
-                                <input type="text" id="eval-comment-1" placeholder="Deixe seu comentário sobre o profissional..." style="font-size: 12px; margin-top: 4px;">
-                                <button type="button" class="btn-action" style="background:#555; margin-top:6px; font-size:11px;" onclick="submitEvaluation(1)">
-                                    <i class="fa-solid fa-paper-plane"></i> Enviar Avaliação
-                                </button>
-                            </div>
-                        </div>
+                        <div id="mechanics-list" style="max-height: 180px; overflow-y: auto; margin-top: 5px;"></div>
                     </div>
 
                     <div class="card" id="client-form-card">
@@ -418,7 +391,7 @@
 
                         <div id="use-digital-balance-box" style="display:none; background:#e8f5e9; border:1px solid #c8e6c9; padding:10px; border-radius:6px; margin-bottom:12px;">
                             <label style="margin-top:0; color:#2e7d32; font-size:12px;">
-                                <input type="checkbox" id="check-use-balance" onchange="toggleUseBalance()"> Usar saldo da Conta Digital para pagar o deslocamento (<span id="span-available-balance">R$ 0,00</span>)
+                                <input type="checkbox" id="check-use-balance" onchange="toggleUseBalance()"> Usar saldo da Conta Digital (<span id="span-available-balance">R$ 0,00</span>)
                             </label>
                         </div>
 
@@ -454,27 +427,11 @@
                             <button type="button" class="option-btn" onclick="selectProblem('Guincho', this, 120.00)"><i class="fa-solid fa-truck-ramp-box"></i> Guincho</button>
                         </div>
 
-                        <div class="dynamic-question-box" id="dynamic-questions">
-                            <label id="dynamic-label">Necessidade específica:</label>
-                            <select id="dynamic-answer">
-                                <option value="Câmara de Ar Nova">Câmara de Ar Nova</option>
-                                <option value="Conserto / Manchão">Conserto / Manchão</option>
-                            </select>
-                        </div>
-
-                        <div id="payment-method-box-wrapper">
-                            <label>Forma de Pagamento:</label>
-                            <select id="payment-method-select" onchange="checkPaymentMethodChange()">
-                                <option value="pix_online">Pix (Valor Exato Obrigatório)</option>
-                                <option value="cash_direct">Dinheiro direto ao Profissional (Deslocamento)</option>
-                            </select>
-                        </div>
-
-                        <div id="change-box-container" style="display: none; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 10px; border-radius: 6px; margin-top: 10px;">
-                            <label style="margin-top:0; color:#2e7d32;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro para o deslocamento. Quanto tem em mãos?</label>
-                            <input type="text" id="client-cash-amount" placeholder="Ex: R$ 50,00" oninput="calculateChangeNeeded()">
-                            <p id="change-calculated-display" style="font-size: 12px; color: #2e7d32; font-weight: bold; margin-top: 6px;"></p>
-                        </div>
+                        <label>Forma de Pagamento:</label>
+                        <select id="payment-method-select" onchange="checkPaymentMethodChange()">
+                            <option value="pix_online">Pix (Valor Exato Obrigatório)</option>
+                            <option value="cash_direct">Dinheiro direto ao Profissional (Deslocamento)</option>
+                        </select>
 
                         <label>Descreva o ocorrido:</label>
                         <textarea id="problem-desc" placeholder="Detalhes para orçamento prévio..."></textarea>
@@ -493,7 +450,9 @@
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
                 <div id="mech-register-card" class="card card-mech">
-                    <h2 id="mech-card-title"><i class="fa-solid fa-id-card"></i> Cadastro do Profissional (Repasse padrão)</h2>
+                    <h2 id="mech-card-title"><i class="fa-solid fa-id-card"></i> Identificação Segura (Profissional)</h2>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Preencha seus dados reais e envie a foto da sua CNH e selfie para liberação no sistema.</p>
+
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome / Oficina / Guincho:</label>
                         <input type="text" id="mech-name" placeholder="Ex: Guincho Rápido 24h" required>
@@ -519,17 +478,15 @@
                         <label>Sua Chave Pix para Receber o Saque:</label>
                         <input type="text" id="mech-pix-key" placeholder="Ex: Chave CPF/E-mail/Telefone" required>
                         
-                        <label><i class="fa-solid fa-id-card"></i> CNH do Condutor (PDF ou Foto):</label>
-                        <input type="file" id="mech-cnh-doc" accept=".pdf, image/*" style="font-size: 12px; padding: 4px;" required>
+                        <label><i class="fa-solid fa-id-card"></i> CNH do Condutor (Documento com foto):</label>
+                        <input type="file" id="mech-cnh-doc" accept="image/*" onchange="previewMechDoc(event)" style="font-size: 12px; padding: 4px;" required>
 
-                        <label>Foto do Perfil:</label>
+                        <label>Foto do Perfil (Profissional):</label>
                         <input type="file" id="mech-profile-photo" accept="image/*" capture="user" onchange="previewMechPhotos(event, 'profile')" required>
-                        <label>Foto do Veículo / Guincho:</label>
+                        <label>Foto do Veículo / Guincho / Oficina:</label>
                         <input type="file" id="mech-shop-photo" accept="image/*" capture="environment" onchange="previewMechPhotos(event, 'shop')" required>
-                        <div class="photos-preview-gallery" id="mech-gallery-preview"></div>
-                        <label>Selfie Anti-Fraude:</label>
-                        <input type="file" id="mech-selfie" accept="image/*" capture="user" required>
-                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Acessar Painel</button>
+                        
+                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Validar e Acessar Painel</button>
                     </form>
                 </div>
 
@@ -547,36 +504,6 @@
                         </button>
                     </div>
 
-                    <div class="card card-mech">
-                        <h2><i class="fa-solid fa-hand-holding-dollar"></i> Transparência de Ganhos (Valores Oficiais)</h2>
-                        <table class="gains-table">
-                            <thead>
-                                <tr>
-                                    <th>Serviço</th>
-                                    <th>Valor Base</th>
-                                    <th>Regra / Deslocamento</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Socorro Mecânico / Pneu / Bateria</strong></td>
-                                    <td>R$ 30,00</td>
-                                    <td>Garantido até 10 km (R$ 3,50/km extra)</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Guincho / Reboque Plataforma</strong></td>
-                                    <td>R$ 120,00</td>
-                                    <td>Saída padrão guincho até 10 km</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Pagamento</strong></td>
-                                    <td>Pix Direto</td>
-                                    <td>Concluiu o serviço, recebeu</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                     <div class="status-toggle">
                         <div>
                             <span style="font-size: 11px; color: #666;">Status (Fundo / Alertas):</span>
@@ -586,7 +513,7 @@
                     </div>
 
                     <div class="card" style="padding: 8px;">
-                        <span id="mech-map-title" style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio até 30km)</span>
+                        <span style="font-size: 11px; font-weight: bold; color: #d32f2f;"><i class="fa-solid fa-map-location-dot"></i> Mapa de Chamados (Raio até 30km)</span>
                         <div id="map-mechanic" class="map-box" style="margin-top: 5px; margin-bottom: 0;"></div>
                     </div>
 
@@ -595,7 +522,6 @@
                         <div id="orders-container" style="margin-top: 8px;"></div>
                     </div>
 
-                    <!-- HISTÓRICO DE SERVIÇOS DO PROFISSIONAL COM FOTO DE COMPROVAÇÃO -->
                     <div class="card card-mech" style="margin-top: 15px;">
                         <h2><span><i class="fa-solid fa-camera-retro"></i> Meus Serviços Concluídos (Comprovação)</span></h2>
                         <div id="mech-completed-services-list" style="margin-top: 8px;">
@@ -611,35 +537,16 @@
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa Exata</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; align-items: center;">
-                        <img id="modal-mech-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="mech-avatar-large" alt="Foto">
-                        <div>
-                            <p><b id="modal-mech-name">Resgate 24h Oficial</b></p>
-                            <p style="font-size:11px; color:#666;" id="modal-mech-address-display">Plataforma Central de Socorro</p>
-                        </div>
-                    </div>
                     <p><b>Valor Exato Obrigatório:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
-                    <p style="font-size: 11px; color: #666;">* O sistema exige o pagamento exato para disparar o radar. Se faltar valor, o saldo da sua conta digital será usado automaticamente para complementar.</p>
-                </div>
-
-                <div style="background: #fdf6e2; border: 1px solid #f0d080; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px; color: #555;">
-                    <p style="font-weight: bold; color: #b8860b; margin-bottom: 3px;"><i class="fa-solid fa-circle-info"></i> Validação Financeira Automática</p>
-                    <p>Operador Financeiro Oficial: <strong style="color:#222;">Daniel Carlos de Amorim Junior</strong>. Certifique-se de transferir o valor exato no seu banco PJ.</p>
+                    <p style="font-size: 11px; color: #666;">* O sistema exige o pagamento exato para disparar o radar.</p>
                 </div>
 
                 <div id="modal-pix-section">
                     <label style="color:#d32f2f;">1. Chave Pix Oficial (CNPJ):</label>
                     <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>
-                    
                     <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copiar Chave Pix (CNPJ)
                     </button>
-
-                    <label style="color:#333; font-size: 11px;">2. Digite o valor exato no seu banco. Valores menores que a taxa não liberarão o chamado automaticamente.</label>
-                </div>
-
-                <div id="modal-cash-section" style="display: none; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                    <p style="font-size: 12px; color: #2e7d32; font-weight: bold;"><i class="fa-solid fa-money-bill-wave"></i> Pagamento em dinheiro para o deslocamento selecionado.</p>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
@@ -649,33 +556,26 @@
             </div>
         </div>
 
-        <!-- MODAL DE CANCELAMENTO / CRÉDITO NA CONTA DIGITAL -->
+        <!-- MODAL DE CANCELAMENTO -->
         <div id="modal-cancel" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title" style="color:#2e7d32;"><i class="fa-solid fa-wallet"></i> Conversão em Saldo Digital</div>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Ao cancelar, o valor total correspondente será creditado integralmente na sua <b>Conta Digital do App</b> para uso em futuros socorros.</p>
-                
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">O valor correspondente será creditado na sua <b>Conta Digital do App</b>.</p>
                 <label>Motivo da Desistência:</label>
-                <textarea id="cancel-reason" placeholder="Ex: Consegui resolver por conta própria..."></textarea>
-
+                <textarea id="cancel-reason" placeholder="Ex: Resolvi por conta própria..."></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeCancelModal()">Voltar</button>
-                    <button type="button" class="btn-action" style="background: #2e7d32;" onclick="executeDigitalCreditCancellation()">Confirmar e Salvar como Crédito</button>
+                    <button type="button" class="btn-action" style="background: #2e7d32;" onclick="executeDigitalCreditCancellation()">Confirmar Crédito</button>
                 </div>
             </div>
         </div>
 
-        <!-- BOTÃO DE SUPORTE PERMANENTE FLUTUANTE COM MENSAGEM AUTOMÁTICA -->
         <a href="javascript:void(0)" onclick="openSupportWhatsApp()" class="floating-support-btn" title="Falar com o Suporte 24h">
             <i class="fa-brands fa-whatsapp"></i>
         </a>
 
         <footer>
             <p>&copy; 2026 Resgate 24h - Sistema de Carteira Integrada</p>
-            <p style="margin-top: 5px;">
-                <a href="privacidade.html" target="_blank">Política de Privacidade</a> | 
-                <a href="termos.html" target="_blank">Termos de Uso</a>
-            </p>
         </footer>
     </div>
 
@@ -711,6 +611,10 @@
         
         var isOnline = false;
         var mapClient, mapMechanic, orderMarkersGroup, mechanicMarkersGroup;
+        
+        var userDocBase64 = "";
+        var userSelfieBase64 = "";
+        var mechDocBase64 = "";
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
@@ -721,35 +625,10 @@
         var useDigitalBalance = false;
         var selectedRatingStars = 5;
 
-        var PLATFORM_PIX_KEY = "55.775.292/0001-26";
         var SUPPORT_PHONE_SECRET = "5511947852640";
 
         function openSupportWhatsApp() {
-            var identification = "Visitante / Não Logado";
-            var contactPhone = "Não informado";
-            var perfilType = "Início / Tela Inicial";
-
-            if (currentRole === 'client' && currentUser) {
-                perfilType = "Cliente / Motorista";
-                identification = currentUser.name;
-                contactPhone = currentUser.phone;
-            } else if ((currentRole === 'mechanic' || currentRole === 'winch') && currentMechanic) {
-                perfilType = currentRole === 'winch' ? "Guincho / Reboque" : "Mecânico / Profissional";
-                identification = currentMechanic.name;
-                contactPhone = currentMechanic.phone;
-            } else if (currentRole === 'admin-dashboard') {
-                perfilType = "Administrador";
-                identification = "Daniel (Admin)";
-                contactPhone = "11947852640";
-            }
-
-            var message = `Olá! Preciso de suporte no aplicativo Resgate 24h.\n\n` +
-                          `👤 *Nome:* ${identification}\n` +
-                          `📞 *Telefone Cadastrado:* ${contactPhone}\n` +
-                          `🛠️ *Perfil/Tela Atual:* ${perfilType}\n\n` +
-                          `*Dúvida / Ajuda necessária:* `;
-
-            var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=" + encodeURIComponent(message);
+            var url = "https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE_SECRET + "&text=" + encodeURIComponent("Olá! Preciso de suporte no Resgate 24h.");
             window.open(url, '_blank');
         }
 
@@ -761,37 +640,13 @@
             if (savedMech) currentMechanic = JSON.parse(savedMech);
 
             goToWelcome();
-            requestNotificationPermission();
             updatePriceDisplay();
         };
-
-        function setRating(rating) {
-            selectedRatingStars = rating;
-            const starSpans = document.querySelectorAll('#stars-eval-1 span');
-            starSpans.forEach((span, i) => {
-                if (i < rating) {
-                    span.classList.add('active');
-                } else {
-                    span.classList.remove('active');
-                }
-            });
-        }
-
-        function submitEvaluation(itemId) {
-            var comment = document.getElementById('eval-comment-' + itemId).value;
-            alert('⭐ Obrigado! Avaliação de ' + selectedRatingStars + ' estrelas registrada com sucesso.');
-        }
 
         function updatePriceDisplay() {
             var priceStr = "R$ " + servicePrice.toFixed(2).replace('.', ',');
             var labelEl = document.getElementById('btn-price-label');
             if (labelEl) labelEl.innerText = "(" + priceStr + ")";
-        }
-
-        function requestNotificationPermission() {
-            if ("Notification" in window && Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
         }
 
         function selectRole(role) {
@@ -830,40 +685,22 @@
                     initMechanicMap();
                     listenLiveOrders();
                     loadMechanicWalletBalance();
-                    loadMechanicCompletedServices();
                 } else {
                     document.getElementById('mech-register-card').style.display = 'block';
                     document.getElementById('mech-main-content').style.display = 'none';
-                    if(role === 'winch') {
-                        document.getElementById('mech-card-title').innerHTML = '<i class="fa-solid fa-truck-ramp-box"></i> Cadastro do Guincho / Reboque (Repasse R$ 120,00)';
-                    }
                 }
             }
             updateLogoutButton();
         }
 
-        function openAdminLoginModal() {
-            document.getElementById('admin-login-phone').value = '';
-            document.getElementById('admin-login-pass').value = '';
-            document.getElementById('modal-admin-login').classList.add('active');
-        }
-
-        function closeAdminLoginModal() {
-            document.getElementById('modal-admin-login').classList.remove('active');
-        }
-
-        function openAdminRevenueModal() {
-            document.getElementById('modal-admin-revenue-details').classList.add('active');
-        }
-
-        function closeAdminRevenueModal() {
-            document.getElementById('modal-admin-revenue-details').classList.remove('active');
-        }
+        function openAdminLoginModal() { document.getElementById('modal-admin-login').classList.add('active'); }
+        function closeAdminLoginModal() { document.getElementById('modal-admin-login').classList.remove('active'); }
+        function openAdminRevenueModal() { document.getElementById('modal-admin-revenue-details').classList.add('active'); }
+        function closeAdminRevenueModal() { document.getElementById('modal-admin-revenue-details').classList.remove('active'); }
 
         function verifyAdminLogin() {
             var phone = document.getElementById('admin-login-phone').value.trim();
             var pass = document.getElementById('admin-login-pass').value.trim();
-
             if (phone === "11947852640" && pass === "7847") {
                 closeAdminLoginModal();
                 document.getElementById('screen-welcome').classList.remove('active');
@@ -871,184 +708,49 @@
                 currentRole = 'admin-dashboard';
                 loadAdminDataAndRevenue();
                 updateLogoutButton();
-                alert("✅ Login de Administrador efetuado com sucesso!");
+                alert("✅ Login de Administrador efetuado!");
             } else {
-                alert("❌ Celular ou Senha incorretos!");
+                alert("❌ Credenciais incorretas!");
             }
         }
 
         function loadAdminDataAndRevenue() {
-            // Carrega faturamento total e por zona
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var totalRevenue = 0;
-                var zonesMap = {};
-
                 snap.forEach((child) => {
                     var ord = child.val();
                     if (ord.status === 'in_custody' || ord.status === 'completed' || ord.status === 'accepted') {
-                        var val = parseFloat(ord.clientTotal || 35.50);
-                        totalRevenue += val;
-                        
-                        var zone = ord.occurrenceZone || "Arujá";
-                        if (!zonesMap[zone]) zonesMap[zone] = { count: 0, total: 0 };
-                        zonesMap[zone].count += 1;
-                        zonesMap[zone].total += val;
+                        totalRevenue += parseFloat(ord.clientTotal || 35.50);
                     }
                 });
-
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRevenue.toFixed(2).replace('.', ',');
-
-                var zonesHtml = '';
-                for (var z in zonesMap) {
-                    zonesHtml += `
-                        <div style="background: #f9f9f9; border-left: 4px solid #ff9800; padding: 8px; margin-bottom: 6px; border-radius: 4px;">
-                            <b>📍 Zona / Cidade: ${z}</b><br>
-                            <span>Chamados: ${zonesMap[z].count} | Total arrecadado: <strong style="color: #2e7d32;">R$ ${zonesMap[z].total.toFixed(2).replace('.', ',')}</strong></span>
-                        </div>
-                    `;
-                }
-                document.getElementById('admin-revenue-zones-list').innerHTML = zonesHtml || '<p style="color:#666;">Nenhum faturamento registrado por zona ainda.</p>';
             });
 
-            // CARREGA A DIRETORIA E AUDITORIA DE CADASTROS DE PROFISSIONAIS / GUINCHOS NA TELA DO ADMIN
             rtdb.ref('resgate_mechanics').on('value', (snap) => {
                 var directoryContainer = document.getElementById('admin-mechanics-directory-list');
                 if (!snap.exists()) {
                     directoryContainer.innerHTML = '<p style="font-size: 12px; color: #666;">Nenhum profissional cadastrado.</p>';
                     return;
                 }
-
                 var dirHtml = '';
                 snap.forEach((child) => {
                     var m = child.val();
                     dirHtml += `
                         <div style="background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 12px;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-                                <img src="${m.profileImg || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc;">
-                                <div>
-                                    <b>${m.name}</b><br>
-                                    <span style="color: #666;">Doc/CPF: ${m.docNumber} | Zona: ${m.zone}</span>
-                                </div>
+                                <img src="${m.profileImg}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc;">
+                                <div><b>${m.name}</b><br><span style="color: #666;">CPF/CNPJ: ${m.docNumber} | Zona: ${m.zone}</span></div>
                             </div>
-                            <p><b>Telefone/WhatsApp:</b> ${m.phone}</p>
-                            <p><b>Endereço Base:</b> ${m.shopAddress}</p>
-                            <p><b>Chave Pix:</b> <span style="color: #0288d1; font-weight: bold;">${m.pixKey}</span></p>
+                            <p><b>Tel:</b> ${m.phone} | <b>Pix:</b> ${m.pixKey}</p>
                             <div style="display: flex; gap: 10px; margin-top: 6px;">
-                                <a href="${m.profileImg}" target="_blank" style="color: #0288d1; text-decoration: underline;">Ver Foto Perfil</a>
-                                <a href="${m.shopImg}" target="_blank" style="color: #0288d1; text-decoration: underline;">Ver Foto Veículo/Oficina</a>
+                                <a href="${m.cnhDoc}" target="_blank" style="color: #0288d1; text-decoration: underline;">Ver CNH/Doc</a>
+                                <a href="${m.profileImg}" target="_blank" style="color: #0288d1; text-decoration: underline;">Ver Perfil</a>
+                                <a href="${m.shopImg}" target="_blank" style="color: #0288d1; text-decoration: underline;">Ver Veículo</a>
                             </div>
                         </div>
                     `;
                 });
                 directoryContainer.innerHTML = dirHtml;
-            });
-
-            // Saques Pendentes de Mecânicos
-            rtdb.ref('resgate_withdrawals').on('value', (snap) => {
-                var container = document.getElementById('admin-mech-withdrawals-list');
-                if (!snap.exists()) {
-                    container.innerHTML = '<p style="font-size: 12px; color: #666;">Nenhum saque pendente.</p>';
-                    return;
-                }
-                var html = '';
-                snap.forEach((child) => {
-                    var w = child.val();
-                    if (w.status === 'pending') {
-                        var pixKeySafe = w.pixKey || '';
-                        html += `
-                            <div style="background:#e3f2fd; border:1px solid #90caf9; padding:10px; border-radius:6px; margin-bottom:8px; font-size:12px;">
-                                <b>Profissional:</b> ${w.mechanicName} (${w.mechanicPhone})<br>
-                                <b>Valor do Saque:</b> <strong style="color:#1565c0;">R$ ${parseFloat(w.amount).toFixed(2).replace('.', ',')}</strong><br>
-                                <b>Chave Pix (Clique para copiar):</b> 
-                                <div class="pix-code-box" onclick="copyCustomPixKey('${pixKeySafe}')" title="Clique para copiar">${pixKeySafe}</div>
-                                <button class="btn-action" style="background:#2e7d32; margin-top:8px;" onclick="markWithdrawalPaid('resgate_withdrawals', '${child.key}')">
-                                    <i class="fa-solid fa-check"></i> Marcar como Pago (Pix Feito)
-                                </button>
-                            </div>
-                        `;
-                    }
-                });
-                container.innerHTML = html || '<p style="font-size: 12px; color: #666;">Nenhum saque pendente.</p>';
-            });
-
-            // Saques Pendentes de Clientes
-            rtdb.ref('resgate_client_withdrawals').on('value', (snap) => {
-                var container = document.getElementById('admin-client-withdrawals-list');
-                if (!snap.exists()) {
-                    container.innerHTML = '<p style="font-size: 12px; color: #666;">Nenhum saque de cliente pendente.</p>';
-                    return;
-                }
-                var html = '';
-                snap.forEach((child) => {
-                    var w = child.val();
-                    if (w.status === 'pending') {
-                        var pixKeySafe = w.pixKey || '';
-                        html += `
-                            <div style="background:#ffebee; border:1px solid #ef9a9a; padding:10px; border-radius:6px; margin-bottom:8px; font-size:12px;">
-                                <b>Cliente:</b> ${w.clientName} (${w.clientPhone})<br>
-                                <b>Valor do Saque:</b> <strong style="color:#c62828;">R$ ${parseFloat(w.amount).toFixed(2).replace('.', ',')}</strong><br>
-                                <b>Chave Pix (Clique para copiar):</b> 
-                                <div class="pix-code-box" onclick="copyCustomPixKey('${pixKeySafe}')" title="Clique para copiar">${pixKeySafe}</div>
-                                <button class="btn-action" style="background:#2e7d32; margin-top:8px;" onclick="markWithdrawalPaid('resgate_client_withdrawals', '${child.key}')">
-                                    <i class="fa-solid fa-check"></i> Marcar como Pago (Pix Feito)
-                                </button>
-                            </div>
-                        `;
-                    }
-                });
-                container.innerHTML = html || '<p style="font-size: 12px; color: #666;">Nenhum saque de cliente pendente.</p>';
-            });
-
-            // Histórico de Pagamentos Realizados
-            var paidHistoryContainer = document.getElementById('admin-paid-history-list');
-            rtdb.ref('resgate_withdrawals').on('value', (snapMech) => {
-                rtdb.ref('resgate_client_withdrawals').on('value', (snapClient) => {
-                    var paidHtml = '';
-                    
-                    if (snapMech.exists()) {
-                        snapMech.forEach((child) => {
-                            var w = child.val();
-                            if (w.status === 'paid') {
-                                paidHtml += `
-                                    <div style="background:#f1f8e9; border:1px solid #c8e6c9; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;">
-                                        <b>[Profissional] Pago:</b> ${w.mechanicName} - R$ ${parseFloat(w.amount).toFixed(2).replace('.', ',')}<br>
-                                        <b>Chave Pix:</b> ${w.pixKey} | <span style="color:#2e7d32; font-weight:bold;">Status: Pago ✅</span>
-                                    </div>
-                                `;
-                            }
-                        });
-                    }
-
-                    if (snapClient.exists()) {
-                        snapClient.forEach((child) => {
-                            var w = child.val();
-                            if (w.status === 'paid') {
-                                paidHtml += `
-                                    <div style="background:#f1f8e9; border:1px solid #c8e6c9; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;">
-                                        <b>[Cliente] Pago:</b> ${w.clientName} - R$ ${parseFloat(w.amount).toFixed(2).replace('.', ',')}<br>
-                                        <b>Chave Pix:</b> ${w.pixKey} | <span style="color:#2e7d32; font-weight:bold;">Status: Pago ✅</span>
-                                    </div>
-                                `;
-                            }
-                        });
-                    }
-
-                    paidHistoryContainer.innerHTML = paidHtml || '<p style="font-size: 12px; color: #666;">Nenhum histórico de pagamento registrado ainda.</p>';
-                });
-            });
-        }
-
-        function copyCustomPixKey(key) {
-            navigator.clipboard.writeText(key).then(() => {
-                alert("📋 Chave Pix copiada com sucesso: " + key + "\nCole no aplicativo do seu banco para fazer o pagamento.");
-            }).catch(() => {
-                alert("Copie a chave manualmente: " + key);
-            });
-        }
-
-        function markWithdrawalPaid(path, key) {
-            rtdb.ref(path + '/' + key).update({ status: 'paid' }).then(() => {
-                alert("✅ Saque marcado como pago com sucesso!");
             });
         }
 
@@ -1078,8 +780,24 @@
             goToWelcome();
         }
 
+        function previewUserDoc(event) {
+            var reader = new FileReader();
+            reader.onload = function() { userDocBase64 = reader.result; };
+            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+        }
+        function previewUserSelfie(event) {
+            var reader = new FileReader();
+            reader.onload = function() { userSelfieBase64 = reader.result; };
+            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+        }
+
         function saveUserAccount(e) {
             e.preventDefault();
+            if (!userDocBase64 || !userSelfieBase64) {
+                alert("⚠️ Envie a foto do documento com foto e a selfie obrigatórias.");
+                return;
+            }
+
             currentUser = {
                 name: document.getElementById('reg-name').value,
                 cpf: document.getElementById('reg-cpf').value,
@@ -1087,7 +805,9 @@
                 pixKey: document.getElementById('reg-pix-key').value,
                 vehicle: document.getElementById('reg-vehicle').value,
                 plate: document.getElementById('reg-plate').value,
-                zone: document.getElementById('reg-zone').value
+                zone: document.getElementById('reg-zone').value,
+                docPhoto: userDocBase64,
+                selfiePhoto: userSelfieBase64
             };
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
             
@@ -1098,7 +818,7 @@
             loadNearbyMechanics();
             loadClientWalletBalance();
             updateLogoutButton();
-            alert("✅ Cadastro de usuário criado com sucesso!");
+            alert("✅ Identidade verificada e cadastro concluído!");
         }
 
         function loadClientWalletBalance() {
@@ -1108,51 +828,19 @@
                 var bal = snap.val() || 0;
                 document.getElementById('client-wallet-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
                 document.getElementById('span-available-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
-                
-                var balanceBox = document.getElementById('use-digital-balance-box');
-                if (bal > 0) {
-                    balanceBox.style.display = 'block';
-                } else {
-                    balanceBox.style.display = 'none';
-                    useDigitalBalance = false;
-                }
+                document.getElementById('use-digital-balance-box').style.display = bal > 0 ? 'block' : 'none';
             });
         }
 
         function toggleUseBalance() {
             useDigitalBalance = document.getElementById('check-use-balance').checked;
-            var paymentWrapper = document.getElementById('payment-method-box-wrapper');
-            if (useDigitalBalance) {
-                paymentWrapper.style.display = 'none';
-            } else {
-                paymentWrapper.style.display = 'block';
-            }
+            document.getElementById('payment-method-box-wrapper').style.display = useDigitalBalance ? 'none' : 'block';
         }
 
-        function requestClientWithdrawal() {
-            if (!currentUser) return;
-            var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
-
-            rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snap) => {
-                var currentBal = snap.val() || 0;
-                if (currentBal <= 0) {
-                    alert("⚠️ Você não possui saldo na sua conta digital para saque.");
-                    return;
-                }
-
-                var withdrawId = 'SAQUE-CLIENTE-' + Math.floor(Math.random() * 90000 + 10000);
-                rtdb.ref('resgate_client_withdrawals/' + withdrawId).set({
-                    clientPhone: currentUser.phone,
-                    clientName: currentUser.name,
-                    pixKey: currentUser.pixKey,
-                    amount: currentBal,
-                    status: 'pending',
-                    timestamp: Date.now()
-                }).then(() => {
-                    rtdb.ref('resgate_client_wallets/' + userKey).set(0);
-                    alert(`✅ Solicitação de saque de R$ ${parseFloat(currentBal).toFixed(2).replace('.', ',')} enviada!\nO administrador fará a transferência para sua chave Pix: ${currentUser.pixKey}`);
-                });
-            });
+        function previewMechDoc(event) {
+            var reader = new FileReader();
+            reader.onload = function() { mechDocBase64 = reader.result; };
+            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
         }
 
         function previewMechPhotos(event, type) {
@@ -1166,16 +854,16 @@
 
         function saveMechanicAccount(e) {
             e.preventDefault();
-            
+            if (!mechDocBase64) {
+                alert("⚠️ Envie a foto da CNH/Documento obrigatória.");
+                return;
+            }
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     salvarPerfilNoFirebase(pos.coords.latitude, pos.coords.longitude);
-                }, function(error) {
-                    salvarPerfilNoFirebase(-23.3995, -46.3241);
-                });
-            } else {
-                salvarPerfilNoFirebase(-23.3995, -46.3241);
-            }
+                }, function() { salvarPerfilNoFirebase(-23.3995, -46.3241); });
+            } else { salvarPerfilNoFirebase(-23.3995, -46.3241); }
         }
 
         function salvarPerfilNoFirebase(lat, lng) {
@@ -1188,6 +876,7 @@
                 docNumber: document.getElementById('mech-doc-number').value,
                 phone: document.getElementById('mech-phone').value,
                 pixKey: document.getElementById('mech-pix-key').value,
+                cnhDoc: mechDocBase64,
                 profileImg: mechProfileImgUrl,
                 shopImg: mechShopImgUrl,
                 lat: lat,
@@ -1196,16 +885,13 @@
             
             rtdb.ref('resgate_mechanics/' + mechId).set(currentMechanic).then(() => {
                 localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-                
                 document.getElementById('mech-register-card').style.display = 'none';
                 document.getElementById('mech-main-content').style.display = 'block';
                 initMechanicMap();
                 listenLiveOrders();
                 loadMechanicWalletBalance();
-                loadMechanicCompletedServices();
                 updateLogoutButton();
-                
-                alert("✅ Perfil profissional e geolocalização salvos com sucesso!");
+                alert("✅ Cadastro profissional validado com sucesso!");
             });
         }
 
@@ -1213,35 +899,7 @@
             if (!currentMechanic) return;
             var mechKey = currentMechanic.id || 'MECH-DEFAULT';
             rtdb.ref('resgate_wallets/' + mechKey).on('value', (snap) => {
-                var bal = snap.val() || 0;
-                document.getElementById('mech-wallet-balance').innerText = "R$ " + parseFloat(bal).toFixed(2).replace('.', ',');
-            });
-        }
-
-        function requestWalletWithdrawal() {
-            if (!currentMechanic) return;
-            var mechKey = currentMechanic.id || 'MECH-DEFAULT';
-            
-            rtdb.ref('resgate_wallets/' + mechKey).once('value', (snap) => {
-                var currentBal = snap.val() || 0;
-                if (currentBal <= 0) {
-                    alert("⚠️ Você não possui saldo acumulado para saque no momento.");
-                    return;
-                }
-
-                var withdrawId = 'SAQUE-' + Math.floor(Math.random() * 90000 + 10000);
-                rtdb.ref('resgate_withdrawals/' + withdrawId).set({
-                    mechanicId: mechKey,
-                    mechanicName: currentMechanic.name,
-                    mechanicPhone: currentMechanic.phone,
-                    pixKey: currentMechanic.pixKey,
-                    amount: currentBal,
-                    status: 'pending',
-                    timestamp: Date.now()
-                }).then(() => {
-                    rtdb.ref('resgate_wallets/' + mechKey).set(0);
-                    alert(`✅ Solicitação de saque de R$ ${parseFloat(currentBal).toFixed(2).replace('.', ',')} realizada com sucesso!\nO valor será enviado para sua chave Pix: ${currentMechanic.pixKey}`);
-                });
+                document.getElementById('mech-wallet-balance').innerText = "R$ " + parseFloat(snap.val() || 0).toFixed(2).replace('.', ',');
             });
         }
 
@@ -1255,14 +913,8 @@
             selectedProblem = problem;
             document.querySelectorAll('#problem-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
-
-            if (customPrice) {
-                servicePrice = customPrice;
-                mechanicRepase = customPrice - 5.50;
-            } else {
-                servicePrice = 35.50;
-                mechanicRepase = 30.00;
-            }
+            servicePrice = customPrice || 35.50;
+            mechanicRepase = customPrice ? (customPrice - 5.50) : 30.00;
             updatePriceDisplay();
         }
 
@@ -1277,38 +929,9 @@
             element.classList.add('active');
         }
 
-        function checkPaymentMethodChange() {
-            var method = document.getElementById('payment-method-select').value;
-            var changeContainer = document.getElementById('change-box-container');
-
-            if (method === 'cash_direct') {
-                changeContainer.style.display = 'block';
-            } else {
-                changeContainer.style.display = 'none';
-            }
-        }
-
-        function calculateChangeNeeded() {
-            var cashInput = document.getElementById('client-cash-amount').value.replace('R$', '').replace(',', '.').trim();
-            var cashVal = parseFloat(cashInput) || 0;
-            var display = document.getElementById('change-calculated-display');
-
-            if (cashVal >= servicePrice) {
-                var change = cashVal - servicePrice;
-                display.innerHTML = `✅ Troco necessário: <span style="color:#2e7d32;">R$ ${change.toFixed(2).replace('.', ',')}</span>`;
-            } else if (cashVal > 0) {
-                display.innerHTML = `⚠️ Valor abaixo da taxa (R$ ${servicePrice.toFixed(2).replace('.', ', ')}).`;
-            } else {
-                display.innerHTML = '';
-            }
-        }
-
         function copyPixKeyToClipboard() {
-            var keyText = document.getElementById('pix-key-display').innerText;
-            navigator.clipboard.writeText(keyText).then(() => {
-                alert("📋 Chave Pix (CNPJ) copiada para a área de transferência!\nAbra o aplicativo do seu banco e cole para efetuar o pagamento exato de R$ " + servicePrice.toFixed(2).replace('.', ',') + ".");
-            }).catch(() => {
-                alert("Copie a chave Pix manualmente: " + keyText);
+            navigator.clipboard.writeText("55.775.292/0001-26").then(() => {
+                alert("📋 Chave Pix (CNPJ) copiada!");
             });
         }
 
@@ -1325,66 +948,40 @@
 
         function loadNearbyMechanics() {
             if (!mapClient) return;
-
             rtdb.ref('resgate_mechanics').on('value', (snap) => {
                 var mechanicsListContainer = document.getElementById('mechanics-list');
                 if (!mechanicsListContainer) return;
                 mechanicsListContainer.innerHTML = '';
-
                 if (mechanicMarkersGroup) mechanicMarkersGroup.clearLayers();
 
                 if (!snap.exists()) {
-                    mechanicsListContainer.innerHTML = '<p style="font-size: 12px; color: #666; text-align:center;">Nenhum profissional próximo cadastrado.</p>';
+                    mechanicsListContainer.innerHTML = '<p style="font-size: 12px; color: #666; text-align:center;">Nenhum profissional próximo.</p>';
                     return;
                 }
 
                 navigator.geolocation.getCurrentPosition(function(clientPos) {
-                    var clientLat = clientPos.coords.latitude;
-                    var clientLng = clientPos.coords.longitude;
                     var html = '';
-
                     snap.forEach((child) => {
                         var mech = child.val();
                         if (!mech.lat || !mech.lng) return;
-
-                        var distKm = calculateDistance(clientLat, clientLng, mech.lat, mech.lng);
-
-                        if (distKm <= 30) {
-                            L.marker([mech.lat, mech.lng], {
-                                icon: L.divIcon({className: 'blue-marker-icon', iconSize: [22, 22]})
-                            }).addTo(mechanicMarkersGroup).bindPopup(`<b>${mech.name}</b><br>Distância: ${distKm.toFixed(1)} km`);
-
-                            html += `
-                                <div class="mechanic-profile-card">
-                                    <div class="mechanic-profile-header">
-                                        <img src="${mech.profileImg || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}" alt="Mecânico">
-                                        <div class="mechanic-profile-info">
-                                            <h4>${mech.name}</h4>
-                                            <div class="stars">★★★★★ (5.0/5)</div>
-                                            <span class="badge-rescue">📍 Aprox. ${distKm.toFixed(1)} km de você</span>
-                                        </div>
+                        html += `
+                            <div class="mechanic-profile-card">
+                                <div class="mechanic-profile-header">
+                                    <img src="${mech.profileImg}" alt="Mecânico">
+                                    <div class="mechanic-profile-info">
+                                        <h4>${mech.name}</h4>
+                                        <div class="stars">★★★★★ (5.0/5)</div>
+                                        <span class="badge-rescue">📍 Profissional Validado</span>
                                     </div>
-                                    <p style="font-size: 11px; color: #555; margin-top: 4px;"><i class="fa-solid fa-map-pin"></i> ${mech.shopAddress}</p>
                                 </div>
-                            `;
-                        }
+                                <p style="font-size: 11px; color: #555; margin-top: 4px;"><i class="fa-solid fa-map-pin"></i> ${mech.shopAddress}</p>
+                            </div>
+                        `;
                     });
-
-                    mechanicsListContainer.innerHTML = html || '<p style="font-size: 12px; color: #666; text-align:center;">Nenhum profissional num raio de 30km.</p>';
+                    mechanicsListContainer.innerHTML = html;
                 });
             });
         }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            var R = 6371; 
-            var dLat = deg2rad(lat2 - lat1);
-            var dLon = deg2rad(lon2 - lon1);
-            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            return R * c;
-        }
-
-        function deg2rad(deg) { return deg * (Math.PI/180); }
 
         function checkClientActiveCode() {
             rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
@@ -1394,6 +991,15 @@
                         activeOrderId = order.id;
                         document.getElementById('client-active-code-card').style.display = 'block';
                         document.getElementById('display-client-pin').innerText = order.clientPin;
+                        
+                        if (order.status === 'accepted' && order.mechanicName) {
+                            document.getElementById('accepted-mech-name').innerText = order.mechanicName;
+                            document.getElementById('accepted-mech-phone').innerText = order.mechanicPhone || "Não informado";
+                            document.getElementById('accepted-mech-address').innerText = order.mechanicAddress || "Base Ativa";
+                            if (order.mechanicPhoto) {
+                                document.getElementById('accepted-mech-photo').src = order.mechanicPhoto;
+                            }
+                        }
                         listenChatMessages(order.id, 'client-chat-messages');
                     }
                 });
@@ -1401,27 +1007,7 @@
         }
 
         async function openConfirmationModal() {
-            if (useDigitalBalance) {
-                processOrderWithDigitalBalance();
-                return;
-            }
-
-            var method = document.getElementById('payment-method-select').value;
-
-            if (method === 'cash_direct') {
-                var cashInput = document.getElementById('client-cash-amount').value.replace('R$', '').replace(',', '.').trim();
-                var cashVal = parseFloat(cashInput) || 0;
-                if (cashVal < servicePrice) {
-                    alert("⚠️ Informe um valor em dinheiro válido.");
-                    return;
-                }
-                document.getElementById('modal-pix-section').style.display = 'none';
-                document.getElementById('modal-cash-section').style.display = 'block';
-            } else {
-                document.getElementById('modal-pix-section').style.display = 'block';
-                document.getElementById('modal-cash-section').style.display = 'none';
-            }
-
+            if (useDigitalBalance) { processOrderWithDigitalBalance(); return; }
             document.getElementById('modal-total-price').innerText = "R$ " + servicePrice.toFixed(2).replace('.', ',');
             document.getElementById('modal-confirm').classList.add('active');
         }
@@ -1433,231 +1019,71 @@
             rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snap) => {
                 var currentBal = snap.val() || 0;
                 if (currentBal < servicePrice) {
-                    alert("⚠️ Saldo insuficiente na sua conta digital para cobrir este valor integral.");
+                    alert("⚠️ Saldo insuficiente na Conta Digital.");
                     return;
                 }
-
                 rtdb.ref('resgate_client_wallets/' + userKey).set(currentBal - servicePrice).then(() => {
-                    registerOrderDirectly('in_custody', 'Pago integralmente com Conta Digital');
+                    registerOrderDirectly('in_custody', 'Pago com Conta Digital');
                 });
             });
         }
 
         function registerOrderDirectly(initialStatus, paymentInfoText) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    var pin = Math.floor(1000 + Math.random() * 9000).toString();
-                    var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
-                    activeOrderId = orderId;
-                    var occurrenceZone = document.getElementById('client-occurrence-zone').value;
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var pin = Math.floor(1000 + Math.random() * 9000).toString();
+                var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
+                activeOrderId = orderId;
 
-                    var newOrder = {
-                        id: orderId,
-                        clientName: currentUser.name,
-                        clientPhone: currentUser.phone,
-                        vehicleModel: currentUser.vehicle,
-                        vehiclePlate: currentUser.plate,
-                        problem: selectedProblem,
-                        clientPin: pin,
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude,
-                        status: initialStatus,
-                        clientTotal: servicePrice.toFixed(2),
-                        mechPay: mechanicRepase.toFixed(2),
-                        radius: 10,
-                        paymentInfo: paymentInfoText,
-                        occurrenceZone: occurrenceZone
-                    };
+                var newOrder = {
+                    id: orderId,
+                    clientName: currentUser.name,
+                    clientPhone: currentUser.phone,
+                    vehicleModel: currentUser.vehicle,
+                    vehiclePlate: currentUser.plate,
+                    problem: selectedProblem,
+                    clientPin: pin,
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                    status: initialStatus,
+                    clientTotal: servicePrice.toFixed(2),
+                    mechPay: mechanicRepase.toFixed(2),
+                    radius: 10,
+                    paymentInfo: paymentInfoText,
+                    occurrenceZone: document.getElementById('client-occurrence-zone').value
+                };
 
-                    rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
-                        startProgressiveRadar(orderId);
-                        document.getElementById('client-form-card').style.display = 'none';
-                        document.getElementById('nearby-mech-box-card').style.display = 'none';
-                        document.getElementById('client-active-code-card').style.display = 'block';
-                        document.getElementById('display-client-pin').innerText = pin;
-                        listenChatMessages(orderId, 'client-chat-messages');
-                        alert("✅ Socorro solicitado com sucesso usando sua Conta Digital!");
-                    });
+                rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
+                    document.getElementById('client-form-card').style.display = 'none';
+                    document.getElementById('nearby-mech-box-card').style.display = 'none';
+                    document.getElementById('client-active-code-card').style.display = 'block';
+                    document.getElementById('display-client-pin').innerText = pin;
+                    listenChatMessages(orderId, 'client-chat-messages');
+                    alert("✅ Socorro solicitado!");
                 });
-            }
+            });
         }
 
         function registerOrderAndListenWebhook() {
             closeModal();
-            var paymentMethod = document.getElementById('payment-method-select').value;
-            var userKey = currentUser ? ('CLIENT-' + currentUser.phone.replace(/\D/g,'')) : null;
-            var occurrenceZone = document.getElementById('client-occurrence-zone').value;
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    var pin = Math.floor(1000 + Math.random() * 9000).toString();
-                    var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
-                    activeOrderId = orderId;
-
-                    rtdb.ref('resgate_client_wallets/' + userKey).once('value', (snapWallet) => {
-                        var digitalBalance = snapWallet.val() || 0;
-                        var requiredTotal = servicePrice;
-                        var pixNeeded = requiredTotal;
-                        var infoText = "Pix Central (Valor Exato R$ " + requiredTotal.toFixed(2).replace('.', ',') + ")";
-
-                        if (digitalBalance > 0 && digitalBalance < requiredTotal) {
-                            pixNeeded = requiredTotal - digitalBalance;
-                            infoText = `Pix Parcial (R$ ${pixNeeded.toFixed(2).replace('.', ',')}) + Saldo Digital (R$ ${digitalBalance.toFixed(2).replace('.', ',')})`;
-                            rtdb.ref('resgate_client_wallets/' + userKey).set(0);
-                        } else if (digitalBalance >= requiredTotal) {
-                            rtdb.ref('resgate_client_wallets/' + userKey).set(digitalBalance - requiredTotal);
-                            pixNeeded = 0;
-                            infoText = "Pago com Saldo da Conta Digital";
-                        }
-
-                        var initialStatus = (paymentMethod === 'cash_direct' || pixNeeded === 0) ? 'in_custody' : 'waiting_payment';
-
-                        var newOrder = {
-                            id: orderId,
-                            clientName: currentUser.name,
-                            clientPhone: currentUser.phone,
-                            vehicleModel: currentUser.vehicle,
-                            vehiclePlate: currentUser.plate,
-                            problem: selectedProblem,
-                            clientPin: pin,
-                            lat: pos.coords.latitude,
-                            lng: pos.coords.longitude,
-                            status: initialStatus,
-                            clientTotal: servicePrice.toFixed(2),
-                            mechPay: mechanicRepase.toFixed(2),
-                            radius: 10,
-                            paymentInfo: infoText,
-                            exactPixRequired: pixNeeded.toFixed(2),
-                            occurrenceZone: occurrenceZone
-                        };
-
-                        rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
-                            if (initialStatus === 'in_custody') {
-                                startProgressiveRadar(orderId);
-                                document.getElementById('client-form-card').style.display = 'none';
-                                document.getElementById('nearby-mech-box-card').style.display = 'none';
-                                document.getElementById('client-active-code-card').style.display = 'block';
-                                document.getElementById('display-client-pin').innerText = pin;
-                                listenChatMessages(orderId, 'client-chat-messages');
-                            } else {
-                                document.getElementById('client-form-card').style.display = 'none';
-                                document.getElementById('nearby-mech-box-card').style.display = 'none';
-                                document.getElementById('waiting-payment-box').style.display = 'block';
-                                document.getElementById('waiting-title-text').innerText = "Aguardando Pix Exato de R$ " + pixNeeded.toFixed(2).replace('.', ',') + " ...";
-
-                                if(webhookListenerRef) webhookListenerRef.off();
-                                webhookListenerRef = rtdb.ref('resgate_orders/' + orderId + '/status');
-                                
-                                webhookListenerRef.on('value', (snap) => {
-                                    var currentDbStatus = snap.val();
-                                    if (currentDbStatus === 'in_custody') {
-                                        document.getElementById('waiting-payment-box').style.display = 'none';
-                                        startProgressiveRadar(orderId);
-                                        document.getElementById('client-active-code-card').style.display = 'block';
-                                        document.getElementById('display-client-pin').innerText = pin;
-                                        listenChatMessages(orderId, 'client-chat-messages');
-                                        alert("✅ Pagamento do valor exato confirmado! Iniciando busca de profissionais.");
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-            }
+            registerOrderDirectly('in_custody', 'Pix Realizado');
         }
 
         function simulateWebhookPaymentConfirm() {
-            if (activeOrderId) {
-                rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'in_custody' });
-            }
-        }
-
-        function startProgressiveRadar(orderId) {
-            currentSearchRadius = 10;
-            document.getElementById('searching-radar').style.display = 'block';
-
-            if (radarInterval) clearInterval(radarInterval);
-
-            radarInterval = setInterval(() => {
-                if (currentSearchRadius < maxSearchRadius) {
-                    currentSearchRadius += 5;
-                    
-                    if (currentSearchRadius > 10) {
-                        servicePrice += 3.50;
-                        mechanicRepase += 3.00;
-                        updatePriceDisplay();
-                    }
-
-                    rtdb.ref('resgate_orders/' + orderId).update({
-                        radius: currentSearchRadius,
-                        clientTotal: servicePrice.toFixed(2),
-                        mechPay: mechanicRepase.toFixed(2)
-                    });
-
-                    var titleText = document.getElementById('radar-title-text');
-                    var descText = document.getElementById('radar-desc-text');
-                    
-                    if (titleText) titleText.innerHTML = `Expandindo Busca... (Raio: ${currentSearchRadius} km)`;
-                    if (descText) descText.innerHTML = `Taxa ajustada para R$ ${servicePrice.toFixed(2).replace('.', ',')} para atrair profissionais distantes.`;
-                } else {
-                    clearInterval(radarInterval);
-                    alert("⚠️ Nenhum prestador aceitou no raio de 30 km. Você pode cancelar e o valor virará crédito na sua conta digital.");
-                    openCancelModal();
-                }
-            }, 8000);
-        }
-
-        function manualBoostRescueValue() {
-            servicePrice += 20.00;
-            mechanicRepase += 15.00;
-            updatePriceDisplay();
-
-            if (activeOrderId) {
-                rtdb.ref('resgate_orders/' + activeOrderId).update({
-                    clientTotal: servicePrice.toFixed(2),
-                    mechPay: mechanicRepase.toFixed(2)
-                });
-            }
-
-            alert("🚀 Valor de urgência aumentado em +R$ 20,00 com sucesso!\nO chamado foi re-transmitido com prioridade máxima.");
-        }
-
-        function stopProgressiveRadar() {
-            if (radarInterval) {
-                clearInterval(radarInterval);
-                radarInterval = null;
-            }
-        }
-
-        function cancelWaitingPayment() {
-            if (activeOrderId) {
-                rtdb.ref('resgate_orders/' + activeOrderId).remove();
-            }
-            document.getElementById('waiting-payment-box').style.display = 'none';
-            document.getElementById('client-form-card').style.display = 'block';
-            document.getElementById('nearby-mech-box-card').style.display = 'block';
+            if (activeOrderId) rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'in_custody' });
         }
 
         function openCancelModal() { document.getElementById('modal-cancel').classList.add('active'); }
         function closeCancelModal() { document.getElementById('modal-cancel').classList.remove('active'); }
 
         function executeDigitalCreditCancellation() {
-            var reason = document.getElementById('cancel-reason').value;
-
             if (activeOrderId && currentUser) {
-                stopProgressiveRadar();
                 var userKey = 'CLIENT-' + currentUser.phone.replace(/\D/g,'');
-
-                rtdb.ref('resgate_client_wallets/' + userKey).transaction((currentBalance) => {
-                    return (currentBalance || 0) + servicePrice;
-                }, (error, committed) => {
+                rtdb.ref('resgate_client_wallets/' + userKey).transaction((curr) => {
+                    return (curr || 0) + servicePrice;
+                }, (err, committed) => {
                     if (committed) {
-                        rtdb.ref('resgate_orders/' + activeOrderId).update({
-                            status: 'cancelled',
-                            cancelReason: reason
-                        }).then(() => {
-                            alert("✅ Cancelamento efetuado! O valor de R$ " + servicePrice.toFixed(2).replace('.', ',') + " foi adicionado à sua Conta Digital como crédito.");
-                            closeCancelModal();
+                        rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'cancelled' }).then(() => {
+                            alert("✅ Cancelado e valor estornado como crédito!");
                             location.reload();
                         });
                     }
@@ -1666,8 +1092,7 @@
         }
 
         function sendChatMessage(sender) {
-            var currentActiveId = activeOrderId;
-            if (!currentActiveId) return;
+            if (!activeOrderId) return;
             var input = document.getElementById(sender + '-chat-input');
             var text = input.value.trim();
             if (!text) return;
@@ -1677,8 +1102,7 @@
                 text: text,
                 timestamp: Date.now()
             };
-
-            rtdb.ref('resgate_chats/' + currentActiveId).push(msgData);
+            rtdb.ref('resgate_chats/' + activeOrderId).push(msgData);
             input.value = '';
         }
 
@@ -1700,22 +1124,13 @@
             isOnline = !isOnline;
             var btn = document.getElementById('toggle-status-btn');
             var text = document.getElementById('status-text');
-
             if (isOnline) {
-                localStorage.setItem('resgate_mech_online', 'true');
-                btn.className = 'status-btn online'; 
-                btn.innerText = 'Online (Fundo Ativo)';
-                text.innerText = 'ONLINE';
-                text.style.color = '#25d366';
-                alert("🟢 Você está Online! Alertas e chamadas ativados.");
+                btn.className = 'status-btn online'; btn.innerText = 'Online'; text.innerText = 'ONLINE'; text.style.color = '#25d366';
+                alert("🟢 Online para receber chamados.");
                 listenLiveOrders();
             } else {
-                localStorage.removeItem('resgate_mech_online');
-                btn.className = 'status-btn'; 
-                btn.innerText = 'Ficar Online';
-                text.innerText = 'OFFLINE';
-                text.style.color = '#757575';
-                alert("🔴 Você está Offline.");
+                btn.className = 'status-btn'; btn.innerText = 'Ficar Online'; text.innerText = 'OFFLINE'; text.style.color = '#757575';
+                alert("🔴 Offline.");
             }
         }
 
@@ -1729,224 +1144,87 @@
             }
         }
 
-        var previousOrderCount = null;
-
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if (orderMarkersGroup) orderMarkersGroup.clearLayers();
-                
-                if (navigator.geolocation && mapMechanic) {
-                    navigator.geolocation.getCurrentPosition(function(pos) {
-                        L.marker([pos.coords.latitude, pos.coords.longitude], {
-                            icon: L.divIcon({className: 'blue-marker-icon', iconSize: [20, 20]})
-                        }).addTo(orderMarkersGroup).bindPopup("<b>Sua Base / Localização Atual</b>");
-                    });
-                }
-
                 if (!snap.exists()) {
-                    if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento.</p>';
-                    previousOrderCount = 0;
+                    if (container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado.</p>';
                     return;
                 }
 
-                var currentCount = 0;
-                snap.forEach(() => { currentCount++; });
-
-                if (isOnline && previousOrderCount !== null && currentCount > previousOrderCount) {
-                    triggerMechanicAlert();
-                }
-                previousOrderCount = currentCount;
-
                 var html = '';
-                var foundActiveOrder = false;
-
                 snap.forEach((child) => {
                     var d = child.val();
-                    if (d.status === 'waiting_payment' || d.status === 'completed' || d.status === 'cancelled') return;
+                    if (d.status === 'completed' || d.status === 'cancelled') return;
 
                     if (d.status === 'accepted' && currentMechanic && d.mechanicName === currentMechanic.name) {
-                        foundActiveOrder = true;
                         activeOrderId = d.id;
-
-                        if (mapMechanic && d.lat && d.lng) {
-                            mapMechanic.setView([d.lat, d.lng], 16);
-                            L.marker([d.lat, d.lng], {
-                                icon: L.divIcon({className: 'red-marker-icon', iconSize: [24, 24]})
-                            }).addTo(orderMarkersGroup).bindPopup("<b>Local do Cliente:</b> " + d.clientName).openPopup();
-                        }
-
                         html += `
-                            <div class="order-card" style="border-left-color: #25d366; background: #e8f5e9;">
-                                <div class="order-header">
-                                    <span class="order-title" style="color: #2e7d32;"><i class="fa-solid fa-circle-check"></i> ATENDIMENTO EM ANDAMENTO</span>
-                                    <span class="order-badge" style="background:#2e7d32;">Aceito</span>
-                                </div>
-                                <div class="order-details">
-                                    <b>Cliente:</b> ${d.clientName} (${d.clientPhone})<br>
-                                    <b>Veículo:</b> ${d.vehicleModel} | Placa: ${d.vehiclePlate}<br>
-                                    <b>OCORRÊNCIA:</b> <strong style="color:#d32f2f;">${d.problem}</strong><br>
-                                    <b>Crédito na Carteira:</b> <strong style="color:#2e7d32;">R$ ${d.mechPay}</strong>
-                                </div>
-                                
-                                <button class="btn-route" onclick="openGpsRoute('${d.lat}', '${d.lng}')">
-                                    <i class="fa-solid fa-location-arrow"></i> Abrir Navegação GPS
-                                </button>
-
-                                <h3 style="font-size: 13px; color: #2e7d32; margin-top: 10px;"><i class="fa-solid fa-comments"></i> Chat com Cliente</h3>
-                                <div class="chat-box-container">
+                            <div class="order-card" style="background: #e8f5e9;">
+                                <b>Atendimento em Andamento (${d.clientName})</b>
+                                <button class="btn-route" onclick="openGpsRoute('${d.lat}', '${d.lng}')"><i class="fa-solid fa-location-arrow"></i> Abrir GPS</button>
+                                <div class="chat-box-container" style="height: 130px;">
                                     <div class="chat-messages" id="mech-chat-messages"></div>
                                     <div class="chat-input-row">
-                                        <input type="text" id="mech-chat-input" placeholder="Digite sua proposta...">
+                                        <input type="text" id="mech-chat-input" placeholder="Explique ou envie mensagem...">
                                         <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('mech')">Enviar</button>
                                     </div>
                                 </div>
-
-                                <div style="background:#fff; border:1px dashed #2e7d32; padding:10px; border-radius:6px; margin-top:10px;">
-                                    <label style="margin-top:0; font-size:11px; color:#2e7d32;"><i class="fa-solid fa-key"></i> Digite o PIN de 4 dígitos do Cliente:</label>
-                                    <input type="text" id="input-pin-${d.id}" maxlength="4" placeholder="Ex: 4829" style="font-weight:bold; text-align:center; letter-spacing:3px;">
-
-                                    <label style="margin-top:8px; font-size:11px; color:#2e7d32;"><i class="fa-solid fa-camera"></i> Foto de Comprovação do Serviço:</label>
-                                    <input type="file" id="proof-photo-${d.id}" accept="image/*" capture="environment" onchange="previewProofPhoto(event)" style="font-size:11px; padding:3px;" required>
-                                    
-                                    <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">
-                                        <i class="fa-solid fa-money-bill-transfer"></i> Finalizar & Creditar R$ ${d.mechPay}
-                                    </button>
-                                </div>
+                                <label style="margin-top:8px; font-size:11px;">PIN do Cliente:</label>
+                                <input type="text" id="input-pin-${d.id}" maxlength="4" placeholder="Ex: 4829" style="text-align:center;">
+                                <button type="button" class="btn-complete" onclick="completeOrderWithPin('${d.id}')">Finalizar Serviço</button>
                             </div>
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
-                    } else if (!foundActiveOrder) {
-                        if (mapMechanic && d.lat && d.lng) {
-                            L.marker([d.lat, d.lng], {
-                                icon: L.divIcon({className: 'red-marker-icon', iconSize: [18, 18]})
-                            }).addTo(orderMarkersGroup).bindPopup(`<b>${d.problem} (${d.clientName})</b>`);
-                        }
-
+                    } else if (d.status === 'in_custody') {
                         html += `
                             <div class="order-card">
-                                <div class="order-header">
-                                    <span class="order-title">🚨 ${d.problem} (${d.vehicleModel})</span>
-                                    <span class="order-badge">Raio: ${d.radius || 10}km</span>
-                                </div>
-                                <div class="order-details">
-                                    <b>Cliente:</b> ${d.clientName}<br>
-                                    <b>Ganho na Carteira:</b> R$ ${d.mechPay}
-                                </div>
-                                <button class="btn-action" onclick="acceptOrder('${d.id}', '${d.clientPhone}', '${d.clientName}')">
-                                    <i class="fa-solid fa-check"></i> Aceitar Chamado
-                                </button>
+                                <b>🚨 ${d.problem} (${d.vehicleModel})</b><br>
+                                <span>Cliente: ${d.clientName} | Ganho: R$ ${d.mechPay}</span>
+                                <button class="btn-action" onclick="acceptOrder('${d.id}')"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>
                             </div>
                         `;
                     }
                 });
-                
-                if (container) container.innerHTML = html;
+                if (container) container.innerHTML = html || '<p style="font-size:12px; text-align:center;">Nenhum chamado no momento.</p>';
             });
         }
 
-        var tempProofPhotoBase64 = "";
-        function previewProofPhoto(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                tempProofPhotoBase64 = reader.result;
-            };
-            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
-        }
-
-        // CARREGA HISTÓRICO DE SERVIÇOS CONCLUÍDOS COM A FOTO NO PAINEL DO MECÂNICO
-        function loadMechanicCompletedServices() {
-            if (!currentMechanic) return;
-            rtdb.ref('resgate_orders').on('value', (snap) => {
-                var listContainer = document.getElementById('mech-completed-services-list');
-                if (!listContainer) return;
-
-                var html = '';
-                snap.forEach((child) => {
-                    var ord = child.val();
-                    if (ord.status === 'completed' && ord.mechanicName === currentMechanic.name) {
-                        html += `
-                            <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 12px;">
-                                <b>Serviço:</b> ${ord.problem} (${ord.vehicleModel})<br>
-                                <b>Cliente:</b> ${ord.clientName}<br>
-                                <b>Valor Recebido:</b> <strong style="color: #2e7d32;">R$ ${ord.mechPay}</strong><br>
-                                <div style="margin-top: 6px;">
-                                    <b>Foto de Comprovação:</b><br>
-                                    <img src="${ord.proofPhoto || 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150'}" style="width: 100px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; margin-top: 4px;">
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-                listContainer.innerHTML = html || '<p style="font-size: 12px; color: #666;">Nenhum atendimento finalizado com foto ainda.</p>';
+        function acceptOrder(orderId) {
+            activeOrderId = orderId;
+            rtdb.ref('resgate_orders/' + orderId).update({ 
+                status: 'accepted', 
+                mechanicName: currentMechanic.name,
+                mechanicPhone: currentMechanic.phone,
+                mechanicAddress: currentMechanic.shopAddress,
+                mechanicPhoto: currentMechanic.profileImg,
+                mechanicId: currentMechanic.id
             });
-        }
-
-        function triggerMechanicAlert() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = 800;
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.8);
-            } catch(e) {}
-
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("🚨 Novo Socorro Próximo!", {
-                    body: "Um motorista precisa de atendimento na sua região. Abra o app para aceitar!",
-                    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                });
-            }
+            alert("✅ Você aceitou o chamado! Os dados e a conversa já aparecem para o cliente.");
         }
 
         function openGpsRoute(lat, lng) {
             window.open("https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng, '_blank');
         }
 
-        function acceptOrder(orderId, clientPhone, clientName) {
-            activeOrderId = orderId;
-            rtdb.ref('resgate_orders/' + orderId).update({ 
-                status: 'accepted', 
-                mechanicName: currentMechanic ? currentMechanic.name : "Oficina Parceira",
-                mechanicId: currentMechanic ? (currentMechanic.id || 'MECH-DEFAULT') : 'MECH-DEFAULT'
-            });
-            alert("✅ Chamado aceito!");
-        }
-
         function completeOrderWithPin(orderId) {
-            var input_pin = document.getElementById('input-pin-' + orderId).value;
-            
+            var pin = document.getElementById('input-pin-' + orderId).value;
             rtdb.ref('resgate_orders/' + orderId).once('value', (snap) => {
-                if (!snap.exists()) return;
                 var target = snap.val();
-
-                if (!input_pin || input_pin.trim() !== target.clientPin) {
-                    alert("❌ PIN Incorreto!");
+                if (pin !== target.clientPin) {
+                    alert("❌ PIN incorreto!");
                     return;
                 }
-                if (!tempProofPhotoBase64) {
-                    alert("⚠️ Envie a foto de comprovação do serviço!");
-                    return;
-                }
-
-                var mechKey = target.mechanicId || (currentMechanic ? currentMechanic.id : 'MECH-DEFAULT');
-                var earnedValue = parseFloat(target.mechPay) || 30.00;
-
-                rtdb.ref('resgate_wallets/' + mechKey).transaction((currentBalance) => {
-                    return (currentBalance || 0) + earnedValue;
-                }, (error, committed) => {
+                var mechKey = target.mechanicId || currentMechanic.id;
+                var earned = parseFloat(target.mechPay) || 30.00;
+                
+                rtdb.ref('resgate_wallets/' + mechKey).transaction((curr) => {
+                    return (curr || 0) + earned;
+                }, (err, committed) => {
                     if (committed) {
-                        rtdb.ref('resgate_orders/' + orderId).update({ 
-                            status: 'completed',
-                            proofPhoto: tempProofPhotoBase64 
-                        }).then(() => {
-                            alert(`✅ Serviço concluído com sucesso!\nR$ ${earnedValue.toFixed(2).replace('.', ',')} creditado na carteira.`);
+                        rtdb.ref('resgate_orders/' + orderId).update({ status: 'completed' }).then(() => {
+                            alert("✅ Serviço finalizado e creditado na carteira!");
                             location.reload();
                         });
                     }
