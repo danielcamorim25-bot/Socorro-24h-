@@ -1,22 +1,13 @@
 {
-  "package_id": "com.resgate24horas.app",
-  "name": "Resgate 24h - Socorro Rápido",
-  "short_name": "Resgate 24h",
-  "description": "Aplicativo de socorro rápido e emergência 24 horas para motociclistas e motoristas.",
-  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#ff9800",
-  "theme_color": "#ff9800",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "name": "Resgate 24h",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Resgate 24h",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "com.resgate24horas.app",
+  "description": "Aplicativo de socorro rapido e emergencia 24h para motociclistas e motoristas."
+}
