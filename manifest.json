@@ -2,6 +2,7 @@
   "package_id": "com.resgate24horas.app",
   "name": "Resgate 24h - Socorro Rápido",
   "short_name": "Resgate 24h",
+  "description": "Aplicativo de socorro rápido e emergência 24 horas para motociclistas e motoristas.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ff9800",
