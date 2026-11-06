@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resgate 24h - Socorro Rápido</title>
-    <!-- Link do Manifesto PWA para a Play Store -->
     <link rel="manifest" href="./manifest.json">
-    <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
@@ -16,18 +13,13 @@
         body { background-color: #f4f4f9; color: #333; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 480px; background-color: #fff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; }
         
-        /* Cabeçalho Principal */
         header { background: #ff9800; color: #fff; padding: 15px 20px; text-align: center; position: relative; }
         header h1 { font-size: 22px; margin-bottom: 3px; }
         header p { font-size: 12px; opacity: 0.9; }
 
-        /* Botão Sair */
         .btn-logout { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.15); border: none; color: #fff; padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; display: none; align-items: center; gap: 4px; }
-
-        /* Acesso Admin Discreto no Canto */
         .admin-corner-btn { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,0.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
 
-        /* Seções e Cards */
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
@@ -39,10 +31,8 @@
         input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
         textarea { resize: vertical; height: 65px; }
 
-        /* Mapas */
         .map-box { width: 100%; height: 250px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
 
-        /* Tela Inicial de Escolha */
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .welcome-title { font-size: 22px; color: #333; margin-bottom: 8px; font-weight: bold; }
         .welcome-subtitle { font-size: 13px; color: #666; margin-bottom: 25px; }
@@ -54,14 +44,12 @@
 
         .btn-back { background: none; border: none; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
 
-        /* Grades de Opções */
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .option-btn { background-color: #f9f9f9; color: #333; border: 2px solid #ddd; padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
         .option-btn i { font-size: 16px; color: #ff9800; }
         .option-btn.active { background-color: #fff3e0; border-color: #ff9800; color: #e65100; font-weight: bold; }
 
-        /* Atendente Virtual Estilo Chatbot */
         .virtual-bot-card { background: #eef7fe; border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid #d1e9fc; padding-bottom: 6px; }
         .bot-avatar { width: 36px; height: 36px; background: #0288d1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
@@ -72,25 +60,24 @@
         .bot-chip { background: #fff; border: 1px solid #0288d1; color: #0288d1; padding: 5px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; font-weight: bold; }
         .bot-chip:hover { background: #0288d1; color: #fff; }
 
-        /* Chat Estilo WhatsApp */
         .chat-box-container { background: #efeae2; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
         .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; padding-right: 4px; }
         .chat-msg { background: #fff; padding: 6px 10px; border-radius: 6px; max-width: 80%; word-break: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
-        /* Botão de Suporte Flutuante Permanente */
-        .floating-support-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; cursor: pointer; text-decoration: none; }
+        /* Botão Flutuante com Rótulo "Suporte" */
+        .floating-support-container { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 8px; z-index: 9999; text-decoration: none; }
+        .floating-support-label { background: #fff; color: #25d366; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.2); border: 1px solid #25d366; }
+        .floating-support-btn { background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .floating-support-btn:hover { background: #1ebe5d; }
 
-        /* Carteiras */
         .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); cursor: pointer; transition: transform 0.1s; }
         .wallet-card:active { transform: scale(0.98); }
         .wallet-card-mech { background: linear-gradient(135deg, #1e88e5, #1565c0); }
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
         .btn-withdraw { background: #ff9800; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
 
-        /* Botões */
         .btn-sos { width: 100%; background: linear-gradient(135deg, #d32f2f, #f44336); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(244,67,54,0.4); text-transform: uppercase; }
         .btn-cancel { width: 100%; background: #d32f2f; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
@@ -116,13 +103,11 @@
         .pix-code-box { background: #eee; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; user-select: all; cursor: pointer; }
 
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
-        footer a { color: #e65100; text-decoration: none; margin: 0 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- CABEÇALHO -->
         <header>
             <button class="admin-corner-btn" onclick="openAdminLoginModal()" title="Painel Admin"><i class="fa-solid fa-lock"></i></button>
             <h1><i class="fa-solid fa-truck-fast"></i> Resgate 24h</h1>
@@ -170,13 +155,13 @@
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Acesso do Administrador</div>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Identifique-se com suas credenciais de administrador.</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Identifique-se com suas credenciais autorizadas.</p>
                     
                     <label>Número de Celular:</label>
-                    <input type="tel" id="admin-login-phone" placeholder="Digite seu celular..." style="text-align:center;">
+                    <input type="tel" id="admin-login-phone" placeholder="11947852640" style="text-align:center;">
 
                     <label>Senha Admin:</label>
-                    <input type="password" id="admin-login-pass" placeholder="Digite sua senha..." style="text-align:center; font-size:16px;" maxlength="4">
+                    <input type="password" id="admin-login-pass" placeholder="****" style="text-align:center; font-size:16px;" maxlength="4">
 
                     <div style="display: flex; gap: 8px; margin-top: 15px;">
                         <button type="button" class="btn-action" style="background: #757575;" onclick="closeAdminLoginModal()">Voltar</button>
@@ -192,14 +177,22 @@
                 <div class="wallet-card" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-chart-line"></i> Conta Central (Faturamento)</span>
-                        <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 55.775.292/0001-26</span>
+                        <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 70.004.251/0001-20</span>
                     </div>
                     <div class="wallet-balance" id="admin-total-revenue">R$ 0,00</div>
                 </div>
 
-                <div class="card" style="margin-top: 15px;">
-                    <h2 style="color: #e65100;"><i class="fa-solid fa-users-gear"></i> Auditoria de Cadastros</h2>
-                    <div id="admin-mechanics-directory-list" style="max-height: 250px; overflow-y: auto;">
+                <div class="card">
+                    <h2 style="color: #e65100;"><i class="fa-solid fa-map-location-dot"></i> Mapa Geral de Profissionais</h2>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 8px;">Visualização em tempo real de mecânicos e borracheiros ativos.</p>
+                    <div class="map-box">
+                        <div id="map-admin" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fa-solid fa-users-gear"></i> Diretório de Cadastros</h2>
+                    <div id="admin-mechanics-directory-list" style="max-height: 200px; overflow-y: auto;">
                         <p style="font-size: 12px; color: #666;">Nenhum profissional cadastrado.</p>
                     </div>
                 </div>
@@ -250,7 +243,6 @@
 
                 <div id="client-main-content" style="display: none;">
                     
-                    <!-- ATENDENTE VIRTUAL INTELIGENTE -->
                     <div class="virtual-bot-card">
                         <div class="bot-header">
                             <div class="bot-avatar"><i class="fa-solid fa-headset"></i></div>
@@ -260,12 +252,12 @@
                             </div>
                         </div>
                         <div class="bot-messages" id="bot-chat-stream">
-                            <div class="bot-msg">Olá! Sou a assistente virtual. No que podemos ajudar hoje? Escolha uma opção abaixo ou toque no WhatsApp flutuante para falar com o suporte humano.</div>
+                            <div class="bot-msg">Olá! Sou a assistente virtual. No que podemos ajudar hoje? Escolha uma opção abaixo ou toque no botão flutuante de suporte.</div>
                         </div>
                         <div class="bot-options-row" id="bot-chips-container">
                             <button class="bot-chip" onclick="botReply('como_funciona')">Como funciona o app?</button>
                             <button class="bot-chip" onclick="botReply('nao_acho_prestador')">Não acho prestador</button>
-                            <button class="bot-chip" onclick="botReply('problema_pagamento')">Dúvida sobre Pix</button>
+                            <button class="bot-chip" onclick="botReply('problema_pagamento')">Dúvida sobre Pix/Dinheiro</button>
                             <button class="bot-chip" onclick="openSupportWhatsApp()">Falar com Suporte WhatsApp</button>
                         </div>
                     </div>
@@ -285,14 +277,13 @@
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
                         <h3 style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Profissionais Próximos...</h3>
-                        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Buscando prestadores na região.</p>
+                        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Buscando prestadores online na região.</p>
                     </div>
 
                     <div class="map-box">
                         <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                     </div>
 
-                    <!-- CARD DE ATENDIMENTO ACEITO -->
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-user-check"></i> Profissional a Caminho!</h2>
                         
@@ -359,12 +350,21 @@
                             <button type="button" class="option-btn" onclick="selectProblem('Pane Seca', this)"><i class="fa-solid fa-gas-pump"></i> Combustível</button>
                             <button type="button" class="option-btn" onclick="selectProblem('Bateria', this)"><i class="fa-solid fa-car-battery"></i> Bateria</button>
                             <button type="button" class="option-btn" onclick="selectProblem('Guincho', this, 120.00)"><i class="fa-solid fa-truck-ramp-box"></i> Guincho</button>
+                            <button type="button" class="option-btn" style="grid-column: span 2;" onclick="selectProblem('Outros', this)"><i class="fa-solid fa-screwdriver-wrench"></i> Outros (Especificar)</button>
+                        </div>
+
+                        <div id="other-problem-container" style="display: none; margin-top: 8px;">
+                            <label>Especifique o serviço necessário:</label>
+                            <input type="text" id="other-problem-input" placeholder="Ex: Correia partida, chaveiro...">
                         </div>
 
                         <label>Descreva o ocorrido:</label>
                         <textarea id="problem-desc" placeholder="Detalhes..."></textarea>
                         <label>Referência:</label>
                         <input type="text" id="reference" placeholder="Ex: KM 32">
+
+                        <label>O que você acha que pode melhorar no aplicativo? (Opcional):</label>
+                        <textarea id="client-app-feedback" placeholder="Deixe sua sugestão..."></textarea>
 
                         <button type="button" class="btn-sos" onclick="openConfirmationModal()">
                             <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro <span id="btn-price-label">(R$ 35,50)</span>
@@ -379,7 +379,7 @@
                 
                 <div id="mech-register-card" class="card card-mech">
                     <h2 id="mech-card-title"><i class="fa-solid fa-id-card"></i> Identificação Segura (Profissional)</h2>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Preencha seus dados reais e envie CNH e fotos.</p>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Preencha seus dados reais e envie CNH e fotos da oficina.</p>
 
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome / Oficina / Guincho:</label>
@@ -411,9 +411,13 @@
 
                         <label>Foto do Perfil:</label>
                         <input type="file" id="mech-profile-photo" accept="image/*" capture="user" onchange="previewMechPhotos(event, 'profile')" required>
-                        <label>Foto do Veículo / Oficina:</label>
+                        
+                        <label>Foto da Oficina / Veículo:</label>
                         <input type="file" id="mech-shop-photo" accept="image/*" capture="environment" onchange="previewMechPhotos(event, 'shop')" required>
                         
+                        <label>O que você acha que pode melhorar no aplicativo? (Sugestão):</label>
+                        <textarea id="mech-app-feedback" placeholder="Sugestões para o app..."></textarea>
+
                         <button type="submit" class="btn-primary" style="margin-top: 15px;">Validar e Acessar Painel</button>
                     </form>
                 </div>
@@ -438,6 +442,10 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
+                    <div class="map-box">
+                        <div id="map-mechanic" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                    </div>
+
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-bell"></i> Gerenciador de Socorro</span></h2>
                         <div id="orders-container" style="margin-top: 8px;"></div>
@@ -446,23 +454,36 @@
             </div>
         </main>
 
-        <!-- MODAL DE PAGAMENTO VIA PIX -->
+        <!-- MODAL DE PAGAMENTO (PIX OU DINHEIRO COM TROCO) -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Pagamento da Taxa Exata</div>
+                <div class="modal-title"><i class="fa-solid fa-credit-card"></i> Forma de Pagamento</div>
                 <div class="mech-profile-box" style="display: flex; flex-direction: column; gap: 8px;">
-                    <p><b>Valor Exato Obrigatório:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
+                    <p><b>Valor Exato:</b> <strong style="color: #d32f2f; font-size: 16px;" id="modal-total-price">R$ 35,50</strong></p>
                 </div>
 
-                <label style="color:#d32f2f;">Chave Pix Oficial (CNPJ):</label>
-                <div class="pix-code-box" id="pix-key-display">55.775.292/0001-26</div>
-                <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
-                    <i class="fa-solid fa-copy"></i> Copiar Chave Pix
-                </button>
+                <label>Escolha como deseja pagar:</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <button type="button" class="option-btn active" id="pay-mode-pix" style="flex:1;" onclick="setPaymentMode('pix')"><i class="fa-solid fa-qrcode"></i> Pix</button>
+                    <button type="button" class="option-btn" id="pay-mode-cash" style="flex:1;" onclick="setPaymentMode('cash')"><i class="fa-solid fa-money-bill-wave"></i> Dinheiro</button>
+                </div>
+
+                <div id="pix-payment-box">
+                    <label style="color:#d32f2f;">Chave Pix Oficial (CNPJ):</label>
+                    <div class="pix-code-box" id="pix-key-display">70.004.251/0001-20</div>
+                    <button type="button" class="btn-action" style="background: #0288d1; margin-bottom: 12px;" onclick="copyPixKeyToClipboard()">
+                        <i class="fa-solid fa-copy"></i> Copiar Chave Pix
+                    </button>
+                </div>
+
+                <div id="cash-payment-box" style="display: none;">
+                    <label>Precisa de troco para quanto?</label>
+                    <input type="text" id="cash-change-input" placeholder="Ex: R$ 50,00 ou Sem troco">
+                </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
                     <button type="button" class="btn-action" style="background: #757575;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" onclick="registerOrderDirectly('in_custody', 'Pix Realizado')"><i class="fa-solid fa-satellite-dish"></i> Já Paguei o Valor</button>
+                    <button type="button" class="btn-action" onclick="registerOrderDirectly('in_custody')"><i class="fa-solid fa-satellite-dish"></i> Confirmar Pedido</button>
                 </div>
             </div>
         </div>
@@ -479,9 +500,12 @@
             </div>
         </div>
 
-        <!-- BOTÃO FLUTUANTE COM O NOVO NÚMERO COMERCIAL -->
-        <a href="javascript:void(0)" onclick="openSupportWhatsApp()" class="floating-support-btn" title="Falar com o Suporte 24h">
-            <i class="fa-brands fa-whatsapp"></i>
+        <!-- BOTÃO FLUTUANTE COM RÓTULO SUPORTE -->
+        <a href="javascript:void(0)" onclick="openSupportWhatsApp()" class="floating-support-container" title="Falar com o Suporte 24h">
+            <span class="floating-support-label">Suporte</span>
+            <div class="floating-support-btn">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
         </a>
 
         <footer>
@@ -489,9 +513,7 @@
         </footer>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -515,12 +537,13 @@
         var selectedVehicle = 'Moto';
         var selectedProblem = 'Pneu Furado';
         var locationContext = 'Cidade Urbana';
+        var paymentMode = 'pix';
         var activeOrderId = null;
         var servicePrice = 35.50; 
         var mechanicRepase = 30.00; 
         
         var isOnline = false;
-        var mapClient, orderMarkersGroup, mechanicMarkersGroup;
+        var mapClient, mapMechanic, mapAdmin;
         
         var userDocBase64 = "";
         var userSelfieBase64 = "";
@@ -528,7 +551,6 @@
         var mechProfileImgUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         var mechShopImgUrl = "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=150";
 
-        // NOVO NÚMERO COMERCIAL DE SUPORTE DO RESGATE 24H
         var SUPPORT_PHONE_SECRET = "5519998034841";
 
         function openSupportWhatsApp() {
@@ -536,7 +558,6 @@
             window.open(url, '_blank');
         }
 
-        // LÓGICA DA ATENDENTE VIRTUAL NO CHAT DO APP
         function botReply(action) {
             var stream = document.getElementById('bot-chat-stream');
             var chipsContainer = document.getElementById('bot-chips-container');
@@ -548,19 +569,19 @@
 
             if (action === 'como_funciona') {
                 userText = "Como funciona o app?";
-                botResponse = "O Resgate 24h conecta você a mecânicos e guinchos próximos. Você escolhe o problema, faz o Pix exato para a conta central e o radar localiza o profissional ideal instantaneamente!";
+                botResponse = "O Resgate 24h conecta você a mecânicos e guinchos próximos. Você escolhe o problema, faz o Pix ou escolhe pagamento em dinheiro e o radar localiza o profissional ideal!";
                 nextChips = '<button class="bot-chip" onclick="botReply(\'pedir_socorro\')">Quero solicitar socorro</button><button class="bot-chip" onclick="openSupportWhatsApp()">Falar com Suporte</button>';
             } else if (action === 'nao_acho_prestador') {
                 userText = "Não acho prestador na região";
-                botResponse = "Se a busca estiver demorando, certifique-se de selecionar a sua zona correta. Caso persista, você pode clicar no botão flutuante do WhatsApp para acionar nossa equipe de plantão.";
+                botResponse = "Certifique-se de que os prestadores na sua zona estão com o status 'Online'. Caso persista, clique no botão de suporte ao lado para atendimento humano.";
                 nextChips = '<button class="bot-chip" onclick="botReply(\'como_funciona\')">Voltar ao início</button><button class="bot-chip" onclick="openSupportWhatsApp()">Chamar no WhatsApp</button>';
             } else if (action === 'problema_pagamento') {
-                userText = "Dúvida sobre o Pix";
-                botResponse = "O pagamento deve ser o valor exato indicado na tela para que o sistema valide automaticamente na conta central e libere o radar para os profissionais.";
+                userText = "Dúvida sobre Pix/Dinheiro";
+                botResponse = "Você pode pagar via Pix utilizando a chave CNPJ oficial ou optar por dinheiro informando o troco necessário diretamente na tela de confirmação.";
                 nextChips = '<button class="bot-chip" onclick="botReply(\'como_funciona\')">Entendi</button><button class="bot-chip" onclick="openSupportWhatsApp()">Suporte WhatsApp</button>';
             } else if (action === 'pedir_socorro') {
                 userText = "Quero solicitar socorro";
-                botResponse = "Preencha os dados de localização, tipo de veículo e o que aconteceu logo abaixo no formulário de emergência para iniciar o atendimento!";
+                botResponse = "Preencha os dados de localização, tipo de veículo e o que aconteceu logo abaixo no formulário de emergência!";
                 nextChips = '<button class="bot-chip" onclick="botReply(\'como_funciona\')">Dúvidas gerais</button>';
             }
 
@@ -635,16 +656,17 @@
         function verifyAdminLogin() {
             var phone = document.getElementById('admin-login-phone').value.trim();
             var pass = document.getElementById('admin-login-pass').value.trim();
-            if (phone === "5519998034841" && pass === "7847") {
+            if (phone === "11947852640" && pass === "7847") {
                 closeAdminLoginModal();
                 document.getElementById('screen-welcome').classList.remove('active');
                 document.getElementById('role-admin-dashboard').classList.add('active');
                 currentRole = 'admin-dashboard';
+                initAdminMap();
                 loadAdminDataAndRevenue();
                 updateLogoutButton();
                 alert("✅ Login de Administrador efetuado!");
             } else {
-                alert("❌ Credenciais incorretas!");
+                alert("❌ Credenciais incorretas! Use 11947852640 e senha 7847.");
             }
         }
 
@@ -658,6 +680,37 @@
                     }
                 });
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRevenue.toFixed(2).replace('.', ',');
+            });
+
+            rtdb.ref('resgate_mechanics').on('value', (snap) => {
+                var listContainer = document.getElementById('admin-mechanics-directory-list');
+                if (!snap.exists()) {
+                    listContainer.innerHTML = '<p style="font-size: 12px; color: #666;">Nenhum profissional cadastrado.</p>';
+                    return;
+                }
+                var html = '';
+                snap.forEach((child) => {
+                    var m = child.val();
+                    html += `<div style="background:#f9f9f9; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px;">
+                        <b>${m.name}</b> (${m.zone})<br>Tel: ${m.phone} | Pix: ${m.pixKey}
+                    </div>`;
+                });
+                listContainer.innerHTML = html;
+            });
+        }
+
+        function initAdminMap() {
+            if (!mapAdmin) {
+                mapAdmin = L.map('map-admin').setView([-23.3995, -46.3241], 11);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapAdmin);
+            }
+            rtdb.ref('resgate_mechanics').on('value', (snap) => {
+                snap.forEach((child) => {
+                    var m = child.val();
+                    if (m.lat && m.lng) {
+                        L.marker([m.lat, m.lng]).addTo(mapAdmin).bindPopup(`<b>${m.name}</b><br>Zona: ${m.zone}<br>Tel: ${m.phone}`);
+                    }
+                });
             });
         }
 
@@ -777,8 +830,10 @@
                 cnhDoc: mechDocBase64,
                 profileImg: mechProfileImgUrl,
                 shopImg: mechShopImgUrl,
+                feedback: document.getElementById('mech-app-feedback').value,
                 lat: lat,
-                lng: lng
+                lng: lng,
+                online: false
             };
             
             rtdb.ref('resgate_mechanics/' + mechId).set(currentMechanic).then(() => {
@@ -811,24 +866,49 @@
             selectedProblem = problem;
             document.querySelectorAll('#problem-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
-            servicePrice = customPrice || 35.50;
-            mechanicRepase = customPrice ? (customPrice - 5.50) : 30.00;
+            
+            var otherBox = document.getElementById('other-problem-container');
+            if (problem === 'Outros') {
+                otherBox.style.display = 'block';
+                servicePrice = 40.00;
+                mechanicRepase = 32.00;
+            } else {
+                otherBox.style.display = 'none';
+                servicePrice = customPrice || 35.50;
+                mechanicRepase = customPrice ? (customPrice - 5.50) : 30.00;
+            }
             updatePriceDisplay();
         }
 
-        function setLocationType(type, rate, element) {
+        function setLocationType(type, ratePerKm, element) {
             locationContext = type;
-            if (selectedProblem !== 'Guincho') {
-                servicePrice = rate * 10 + 5.50;
-                mechanicRepase = rate * 10;
+            if (selectedProblem !== 'Guincho' && selectedProblem !== 'Outros') {
+                // Cálculo justo de R$ 3,50 por km estimado ou taxa base de região
+                servicePrice = ratePerKm * 10 + 5.50;
+                mechanicRepase = ratePerKm * 10;
             }
             updatePriceDisplay();
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
         }
 
+        function setPaymentMode(mode) {
+            paymentMode = mode;
+            if (mode === 'pix') {
+                document.getElementById('pay-mode-pix').classList.add('active');
+                document.getElementById('pay-mode-cash').classList.remove('active');
+                document.getElementById('pix-payment-box').style.display = 'block';
+                document.getElementById('cash-payment-box').style.display = 'none';
+            } else {
+                document.getElementById('pay-mode-cash').classList.add('active');
+                document.getElementById('pay-mode-pix').classList.remove('active');
+                document.getElementById('pix-payment-box').style.display = 'none';
+                document.getElementById('cash-payment-box').style.display = 'block';
+            }
+        }
+
         function copyPixKeyToClipboard() {
-            navigator.clipboard.writeText("55.775.292/0001-26").then(() => {
+            navigator.clipboard.writeText("70.004.251/0001-20").then(() => {
                 alert("📋 Chave Pix copiada!");
             });
         }
@@ -838,7 +918,17 @@
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     mapClient = L.map('map-client').setView([pos.coords.latitude, pos.coords.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapClient);
-                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Você").openPopup();
+                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Sua Localização").openPopup();
+                    
+                    // Exibir mecânicos online no mapa do cliente
+                    rtdb.ref('resgate_mechanics').on('value', (snap) => {
+                        snap.forEach((child) => {
+                            var m = child.val();
+                            if (m.online && m.lat && m.lng) {
+                                L.marker([m.lat, m.lng]).addTo(mapClient).bindPopup(`<b>${m.name}</b> (Online)<br>Zona: ${m.zone}`);
+                            }
+                        });
+                    });
                 });
             }
         }
@@ -872,12 +962,18 @@
 
         function closeModal() { document.getElementById('modal-confirm').classList.remove('active'); }
 
-        function registerOrderDirectly(initialStatus, paymentInfoText) {
+        function registerOrderDirectly(initialStatus) {
             closeModal();
             navigator.geolocation.getCurrentPosition(function(pos) {
                 var pin = Math.floor(1000 + Math.random() * 9000).toString();
                 var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
                 activeOrderId = orderId;
+
+                var problemFinal = selectedProblem;
+                if (selectedProblem === 'Outros') {
+                    var customProb = document.getElementById('other-problem-input').value.trim();
+                    if (customProb) problemFinal = "Outros: " + customProb;
+                }
 
                 var newOrder = {
                     id: orderId,
@@ -885,14 +981,17 @@
                     clientPhone: currentUser.phone,
                     vehicleModel: currentUser.vehicle,
                     vehiclePlate: currentUser.plate,
-                    problem: selectedProblem,
+                    problem: problemFinal,
                     clientPin: pin,
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                     status: initialStatus,
                     clientTotal: servicePrice.toFixed(2),
                     mechPay: mechanicRepase.toFixed(2),
-                    occurrenceZone: document.getElementById('client-occurrence-zone').value
+                    occurrenceZone: document.getElementById('client-occurrence-zone').value,
+                    paymentMode: paymentMode,
+                    changeFor: paymentMode === 'cash' ? (document.getElementById('cash-change-input').value || 'Sem troco') : 'Pix',
+                    appFeedback: document.getElementById('client-app-feedback').value || ''
                 };
 
                 rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
@@ -960,10 +1059,16 @@
             if (isOnline) {
                 btn.className = 'status-btn online'; btn.innerText = 'Online'; text.innerText = 'ONLINE'; text.style.color = '#25d366';
                 alert("🟢 Online para receber chamados.");
+                if (currentMechanic) {
+                    rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: true });
+                }
                 listenLiveOrders();
             } else {
                 btn.className = 'status-btn'; btn.innerText = 'Ficar Online'; text.innerText = 'OFFLINE'; text.style.color = '#757575';
                 alert("🔴 Offline.");
+                if (currentMechanic) {
+                    rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: false });
+                }
             }
         }
 
@@ -972,6 +1077,7 @@
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     mapMechanic = L.map('map-mechanic').setView([pos.coords.latitude, pos.coords.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
+                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapMechanic).bindPopup("Sua Oficina / Guincho").openPopup();
                 });
             }
         }
@@ -993,7 +1099,8 @@
                         activeOrderId = d.id;
                         html += `
                             <div class="order-card" style="background: #e8f5e9;">
-                                <b>Atendimento em Andamento (${d.clientName})</b>
+                                <b>Atendimento em Andamento (${d.clientName})</b><br>
+                                <span>Pagamento: <b>${d.paymentMode.toUpperCase()}</b> ${d.paymentMode === 'cash' ? '(Troco para: ' + d.changeFor + ')' : ''}</span>
                                 <button class="btn-action" style="background:#0288d1; margin-top:5px;" onclick="openGpsRoute('${d.lat}', '${d.lng}')"><i class="fa-solid fa-location-arrow"></i> Abrir GPS</button>
                                 <div class="chat-box-container" style="height: 130px; margin-top:8px;">
                                     <div class="chat-messages" id="mech-chat-messages"></div>
@@ -1012,7 +1119,7 @@
                         html += `
                             <div class="order-card">
                                 <b>🚨 ${d.problem} (${d.vehicleModel})</b><br>
-                                <span>Cliente: ${d.clientName} | Ganho: R$ ${d.mechPay}</span>
+                                <span>Cliente: ${d.clientName} | Pagamento: ${d.paymentMode.toUpperCase()} | Ganho: R$ ${d.mechPay}</span>
                                 <button class="btn-action" onclick="acceptOrder('${d.id}')"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>
                             </div>
                         `;
