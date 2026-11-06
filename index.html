@@ -145,7 +145,7 @@
                 </div>
             </div>
 
-            <!-- MODAL ADMIN (SENHA LIMPA E OCULTADA) -->
+            <!-- MODAL ADMIN (SENHA LIMPA) -->
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Painel do Administrador</div>
@@ -173,7 +173,10 @@
                 <div class="card">
                     <h2><i class="fa-solid fa-users-gear"></i> Monitoramento em Tempo Real</h2>
                     <div style="font-size: 13px; color: #444; line-height: 1.6;">
-                        <p>👥 <b>Logins Ativos na Plataforma:</b> <span id="admin-logins-count" style="color:#d32f2f; font-weight:bold;">1</span></p>
+                        <p onclick="openLoggedUsersModal()" style="cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.2s;" title="Clique para ver a lista alfabética">
+                            👥 <b>Logins Ativos na Plataforma:</b> <span id="admin-logins-count" style="color:#d32f2f; font-weight:bold;">0</span> 
+                            <span style="font-size:11px; color:#0288d1; float:right;">(Ver Lista <i class="fa-solid fa-chevron-right"></i>)</span>
+                        </p>
                         <p>🟢 <b>Profissionais Online Agora:</b> <span id="admin-online-count" style="color:#2e7d32; font-weight:bold;">0</span></p>
                     </div>
                 </div>
@@ -444,6 +447,17 @@
             </div>
         </div>
 
+        <!-- MODAL LISTA DE USUÁRIOS LOGADOS (ALFABÉTICA) -->
+        <div id="modal-logged-users" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-title"><i class="fa-solid fa-users"></i> Usuários Logados (Ordem Alfabética)</div>
+                <div id="admin-logged-users-list" style="max-height: 250px; overflow-y: auto; margin: 10px 0; font-size: 13px;">
+                    <p style="text-align: center; color: #666;">Carregando usuários...</p>
+                </div>
+                <button type="button" class="btn-primary" style="background:#757575; margin-top:5px;" onclick="closeLoggedUsersModal()">Fechar</button>
+            </div>
+        </div>
+
         <!-- MODAL FECHAMENTO COM QR CODE PIX E TROCO -->
         <div id="modal-complete-service" class="modal-overlay">
             <div class="modal-content">
@@ -663,14 +677,47 @@
         function loadAdminData() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var totalRev = 0;
-                var activeLogins = 1;
                 snap.forEach((child) => {
                     var o = child.val();
                     if(o.status === 'completed') totalRev += parseFloat(o.clientTotal || 0);
-                    activeLogins++;
                 });
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRev.toFixed(2).replace('.', ',');
-                document.getElementById('admin-logins-count').innerText = activeLogins;
+            });
+
+            // Carrega e consolida lista de usuários e prestadores para contagem e ordem alfabética
+            rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
+                rtdb.ref('resgate_orders').on('value', (orderSnap) => {
+                    var namesList = [];
+                    
+                    // Adiciona mecânicos cadastrados
+                    if(mechSnap.exists()) {
+                        mechSnap.forEach((child) => {
+                            var m = child.val();
+                            if(m.name) namesList.push({ name: m.name + " (Mecânico / Prestador)", type: "prestador" });
+                        });
+                    }
+
+                    // Adiciona clientes de pedidos registrados
+                    if(orderSnap.exists()) {
+                        orderSnap.forEach((child) => {
+                            var o = child.val();
+                            if(o.clientName && !namesList.some(n => n.name.includes(o.clientName))) {
+                                namesList.push({ name: o.clientName + " (Cliente)", type: "cliente" });
+                            }
+                        });
+                    }
+
+                    // Se houver usuário logado atualmente na sessão
+                    if(currentUser && currentUser.name && !namesList.some(n => n.name.includes(currentUser.name))) {
+                        namesList.push({ name: currentUser.name + " (Cliente)", type: "cliente" });
+                    }
+
+                    // Ordena alfabeticamente por nome
+                    namesList.sort((a, b) => a.name.localeCompare(b.name));
+
+                    document.getElementById('admin-logins-count').innerText = namesList.length;
+                    window.cachedLoggedUsers = namesList;
+                });
             });
 
             rtdb.ref('resgate_mechanics').on('value', (snap) => {
@@ -697,6 +744,28 @@
                 document.getElementById('admin-online-mechanics-list').innerHTML = onlineHtml || '<p style="font-size:12px; color:#666;">Nenhum profissional online no momento.</p>';
                 document.getElementById('admin-shops-directory-list').innerHTML = listHtml || '<p style="font-size:12px; color:#666;">Nenhuma oficina.</p>';
             });
+        }
+
+        function openLoggedUsersModal() {
+            var container = document.getElementById('admin-logged-users-list');
+            var users = window.cachedLoggedUsers || [];
+            
+            if(users.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">Nenhum usuário registrado no momento.</p>';
+            } else {
+                var html = '';
+                users.forEach((u, index) => {
+                    html += `<div style="padding:6px 8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                        <span><b>${index + 1}.</b> ${u.name}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+            document.getElementById('modal-logged-users').classList.add('active');
+        }
+
+        function closeLoggedUsersModal() {
+            document.getElementById('modal-logged-users').classList.remove('active');
         }
 
         function showAdminMechDetails(m) {
