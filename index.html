@@ -45,7 +45,6 @@
         .btn-back { background: none; border: none; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .option-btn { background-color: #f9f9f9; color: #333; border: 2px solid #ddd; padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
         .option-btn i { font-size: 16px; color: #ff9800; }
         .option-btn.active { background-color: #fff3e0; border-color: #ff9800; color: #e65100; font-weight: bold; }
@@ -74,7 +73,6 @@
         .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .wallet-card-mech { background: linear-gradient(135deg, #1e88e5, #1565c0); }
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
-        .btn-withdraw { background: #ff9800; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; }
 
         .btn-sos { width: 100%; background: linear-gradient(135deg, #d32f2f, #f44336); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(244,67,54,0.4); text-transform: uppercase; }
         .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
@@ -97,8 +95,6 @@
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        .pix-code-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; border: 1px dashed #bbb; font-weight: bold; color: #0288d1; text-align: center; user-select: all; }
-
         footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
     </style>
 </head>
@@ -116,7 +112,6 @@
 
         <main style="padding: 0; display: flex; flex-direction: column; flex: 1;">
             
-            <!-- TELA INICIAL -->
             <div id="screen-welcome" class="screen active">
                 <div class="welcome-container">
                     <h2 class="welcome-title">Bem-vindo ao Resgate 24h</h2>
@@ -140,20 +135,20 @@
                 </div>
             </div>
 
-            <!-- MODAL DE LOGIN ADMIN -->
+            <!-- MODAL ADMIN -->
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Painel do Administrador</div>
                     <label>PIN de Acesso Admin:</label>
                     <input type="password" id="admin-login-pass" placeholder="Digite o PIN (7847)" style="text-align:center; font-size:16px;" maxlength="4">
                     <div style="display: flex; gap: 8px; margin-top: 15px;">
-                        <button type="button" class="btn-action" style="background: #757575;" onclick="closeAdminLoginModal()">Voltar</button>
-                        <button type="button" class="btn-action" onclick="verifyAdminLogin()"><i class="fa-solid fa-key"></i> Acessar Gestão</button>
+                        <button type="button" class="btn-action" style="background: #757575; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeAdminLoginModal()">Voltar</button>
+                        <button type="button" class="btn-action" style="background: #ff9800; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="verifyAdminLogin()">Acessar Gestão</button>
                     </div>
                 </div>
             </div>
 
-            <!-- TELA DO PAINEL DO ADMINISTRADOR -->
+            <!-- DASHBOARD ADMIN -->
             <div id="role-admin-dashboard" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Sair do Painel Admin</button>
                 
@@ -177,7 +172,7 @@
                     <h2><i class="fa-solid fa-store"></i> Cadastrar Oficina / Borracharia Manualmente</h2>
                     <form onsubmit="adminRegisterShop(event)">
                         <label>Nome do Estabelecimento:</label>
-                        <input type="text" id="adm-shop-name" placeholder="Ex: Borracharia Central do Doutor" required>
+                        <input type="text" id="adm-shop-name" placeholder="Ex: Borracharia Central" required>
                         <label>Tipo:</label>
                         <select id="adm-shop-type">
                             <option value="Borracharia">Borracharia</option>
@@ -204,7 +199,7 @@
                 </div>
             </div>
 
-            <!-- TELA DO CLIENTE -->
+            <!-- TELA CLIENTE -->
             <div id="role-client" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
@@ -232,7 +227,7 @@
                             <div class="bot-avatar"><i class="fa-solid fa-headset"></i></div>
                             <div>
                                 <h4 style="font-size: 13px; color: #0288d1;">Assistente Virtual Resgate 24h</h4>
-                                <p style="font-size: 10px; color: #555;">Suporte guiado e atendimento</p>
+                                <p style="font-size: 10px; color: #555;">Suporte guiado</p>
                             </div>
                         </div>
                         <div class="bot-messages" id="bot-chat-stream">
@@ -251,11 +246,8 @@
                         <p style="font-size: 12px; color: #666;">Avisando oficinas e prestadores em tempo real.</p>
                     </div>
 
-                    <!-- MAPA COM BOTÃO DE ATUALIZAÇÃO -->
                     <div class="card" style="padding: 10px;">
-                        <h2>
-                            <span><i class="fa-solid fa-map-location-dot"></i> Oficinas e Borracharias Próximas</span>
-                        </h2>
+                        <h2><span><i class="fa-solid fa-map-location-dot"></i> Oficinas e Borracharias Próximas</span></h2>
                         <button class="refresh-map-btn" onclick="refreshClientMapAndShops()" title="Atualizar Mapa e Oficinas"><i class="fa-solid fa-rotate-right"></i></button>
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
                             <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
@@ -263,7 +255,6 @@
                         <div id="client-shops-list" style="max-height: 130px; overflow-y: auto;"></div>
                     </div>
 
-                    <!-- CARD COM CÓDIGO PIN DE SEGURANÇA -->
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Código de Liberação do Serviço</h2>
                         <p style="font-size: 12px; color: #444;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
@@ -278,7 +269,7 @@
                             </div>
                             <div class="chat-input-row">
                                 <input type="text" id="client-chat-input" placeholder="Mensagem...">
-                                <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('client')">Enviar</button>
+                                <button type="button" class="btn-action" style="width: 70px; background:#0288d1; border:none; color:#fff; border-radius:4px; cursor:pointer;" onclick="sendChatMessage('client')">Enviar</button>
                             </div>
                         </div>
                     </div>
@@ -290,13 +281,19 @@
                         <input type="number" id="client-km-input" value="5" min="1" onchange="calculatePriceByKm()">
 
                         <label>O que aconteceu?</label>
-                        <select id="client-problem-select">
+                        <select id="client-problem-select" onchange="checkProblemSelection()">
                             <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
                             <option value="Carga de Bateria (Chupeta)">Carga de Bateria (Chupeta)</option>
                             <option value="Pane Seca (Combustível)">Pane Seca (Combustível)</option>
                             <option value="Serviço de Guincho">Serviço de Guincho</option>
-                            <option value="Pane Mecânica Geral">Pane Mecânica Geral</option>
+                            <option value="Outros">Outros (Especificar)</option>
                         </select>
+
+                        <!-- CAMPO PARA O BOTÃO OUTROS -->
+                        <div id="other-problem-box" style="display:none; margin-top:8px;">
+                            <label style="color:#d32f2f;">Especifique o problema:</label>
+                            <input type="text" id="other-problem-input" placeholder="Ex: Correia partida, chaveiro...">
+                        </div>
 
                         <label>Referência / Local:</label>
                         <input type="text" id="reference" placeholder="Ex: Próximo à praça central">
@@ -314,12 +311,12 @@
                 </div>
             </div>
 
-            <!-- TELA DO MECÂNICO -->
+            <!-- TELA MECÂNICO -->
             <div id="role-mechanic" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
                 <div id="mech-register-card" class="card card-mech">
-                    <h2><i class="fa-solid id-card"></i> Cadastro do Profissional / Oficina</h2>
+                    <h2><i class="fa-solid fa-id-card"></i> Cadastro do Profissional / Oficina</h2>
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome / Oficina / Guincho:</label>
                         <input type="text" id="mech-name" placeholder="Ex: Borracharia do Alemão" required>
@@ -357,11 +354,11 @@
             </div>
         </main>
 
-        <!-- MODAL DE CONFIRMAÇÃO DO CLIENTE -->
+        <!-- MODAL CONFIRMAÇÃO CLIENTE -->
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Chamado</div>
-                <p style="font-size: 12px; color: #555; text-align: center; margin-bottom: 10px;">O pagamento só será realizado <b>após a conclusão do serviço</b> diretamente ao prestador ou via QR Code Pix na tela dele.</p>
+                <p style="font-size: 12px; color: #555; text-align: center; margin-bottom: 10px;">O pagamento só será realizado <b>após a conclusão do serviço</b>.</p>
                 
                 <div class="mech-profile-box">
                     <p><b>Distância:</b> <span id="modal-km-text">5 km</span></p>
@@ -369,45 +366,46 @@
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
-                    <button type="button" class="btn-action" style="background: #757575; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeModal()">Voltar</button>
-                    <button type="button" class="btn-action" style="background: #25d366; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="dispatchSOS()">Confirmar Socorro</button>
+                    <button type="button" style="background: #757575; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeModal()">Voltar</button>
+                    <button type="button" style="background: #25d366; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="dispatchSOS()">Confirmar Socorro</button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL DE ENCERRAMENTO E PAGAMENTO (MECÂNICO) -->
+        <!-- MODAL FECHAMENTO COM OPÇÃO DE TROCO E QR CODE PIX -->
         <div id="modal-complete-service" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-qrcode"></i> Finalizar Atendimento e Receber</div>
                 <p style="font-size: 12px; color: #555; text-align: center;">Insira o PIN informado pelo cliente e escolha a forma de pagamento:</p>
 
-                <label>Digite o PIN de 4 Dígitos do Cliente:</label>
+                <label>PIN de 4 Dígitos do Cliente:</label>
                 <input type="text" id="input-closing-pin" maxlength="4" placeholder="Ex: 4829" style="text-align:center; font-size:18px; letter-spacing:4px;">
 
                 <label>Forma de Pagamento Escolhida:</label>
                 <select id="closing-payment-mode" onchange="toggleClosingPaymentUI()">
                     <option value="pix">Pix (Gerar QR Code na Tela)</option>
-                    <option value="cash">Dinheiro em Espécie (Gera Saldo Negativo/Débito)</option>
+                    <option value="cash">Dinheiro em Espécie (Gera Saldo Negativo)</option>
                 </select>
 
+                <!-- CAMPO DE TROCO SE FOR DINHEIRO -->
+                <div id="closing-cash-troco-box" style="display: none; margin-top: 8px;">
+                    <label style="color:#e65100;">Cliente pediu troco para quanto?</label>
+                    <input type="text" id="closing-troco-input" placeholder="Ex: Troco para R$ 50,00">
+                </div>
+
                 <div id="closing-pix-box" style="margin-top: 10px; text-align: center;">
-                    <p style="font-size: 11px; color: #666;">Mostre o QR Code abaixo para o cliente pagar:</p>
+                    <p style="font-size: 11px; color: #666;">Mostre o QR Code Pix com o valor exato:</p>
                     <div style="background:#fff; padding:10px; border:1px solid #ddd; border-radius:8px; display:inline-block; margin-top:5px;">
                         <img id="qr-code-img" src="" alt="QR Code Pix" style="width:140px; height:140px;">
                         <p style="font-size: 10px; color:#333; margin-top:4px;">Chave CNPJ: 70.004.251/0001-20</p>
                     </div>
                 </div>
 
-                <div id="closing-cash-box" style="display: none; background: #ffebee; border: 1px solid #ffcdd2; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11px; color: #c62828;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Você recebeu o valor em dinheiro. A taxa da plataforma será debitada da sua carteira (Saldo Negativo).
-                </div>
-
                 <button type="button" class="btn-primary" style="background:#2e7d32; margin-top: 15px;" onclick="finalizeServiceExecution()">Confirmar Pagamento e Concluir</button>
-                <button type="button" class="btn-action" style="background: #757575; width:100%; margin-top:8px; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeClosingModal()">Cancelar</button>
+                <button type="button" style="background: #757575; width:100%; margin-top:8px; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeClosingModal()">Cancelar</button>
             </div>
         </div>
 
-        <!-- BOTÃO FLUTUANTE SUPORTE -->
         <a href="javascript:void(0)" onclick="openSupportWhatsApp()" class="floating-support-container" title="Falar com Suporte">
             <span class="floating-support-label">Suporte</span>
             <div class="floating-support-btn">
@@ -448,7 +446,6 @@
         var calculatedClientTotal = 17.50;
         var calculatedMechGain = 15.00;
         var calculatedPlatformFee = 2.50;
-
         var SUPPORT_PHONE = "5519998034841";
 
         function openSupportWhatsApp() {
@@ -458,7 +455,7 @@
         function botReply(action) {
             var stream = document.getElementById('bot-chat-stream');
             if(!stream) return;
-            var text = (action === 'como') ? "O Resgate 24h conecta você a oficinas e borracharias. O pagamento é feito no final do serviço!" : "Você pode pagar via Pix (gerando QR Code na tela do prestador) ou em dinheiro (com ajuste de saldo na plataforma).";
+            var text = (action === 'como') ? "O Resgate 24h conecta você a oficinas e borracharias. O pagamento é feito no final do serviço!" : "Você pode pagar via Pix (gerando QR Code na tela do prestador) ou em dinheiro (informando se precisa de troco).";
             stream.innerHTML += `<div class="bot-msg user">${action === 'como' ? 'Como funciona?' : 'Sobre o Pagamento'}</div>`;
             stream.innerHTML += `<div class="bot-msg">${text}</div>`;
             stream.scrollTop = stream.scrollHeight;
@@ -478,8 +475,17 @@
             calculatedClientTotal = km * 3.50;
             calculatedMechGain = km * 3.00;
             calculatedPlatformFee = km * 0.50;
-
             document.getElementById('calculated-total-display').innerText = "R$ " + calculatedClientTotal.toFixed(2).replace('.', ',');
+        }
+
+        function checkProblemSelection() {
+            var prob = document.getElementById('client-problem-select').value;
+            var box = document.getElementById('other-problem-box');
+            if(prob === 'Outros') {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
         }
 
         function selectRole(role) {
@@ -703,6 +709,12 @@
             var orderId = 'RESGATE-' + Math.floor(Math.random() * 90000 + 10000);
             activeOrderId = orderId;
 
+            var probFinal = document.getElementById('client-problem-select').value;
+            if(probFinal === 'Outros') {
+                var custom = document.getElementById('other-problem-input').value.trim();
+                if(custom) probFinal = "Outros: " + custom;
+            }
+
             navigator.geolocation.getCurrentPosition(function(pos) {
                 var newOrder = {
                     id: orderId,
@@ -710,7 +722,7 @@
                     clientPhone: currentUser.phone,
                     vehicle: currentUser.vehicle,
                     plate: currentUser.plate,
-                    problem: document.getElementById('client-problem-select').value,
+                    problem: probFinal,
                     reference: document.getElementById('reference').value || 'Não informada',
                     clientTotal: calculatedClientTotal.toFixed(2),
                     mechPay: calculatedMechGain.toFixed(2),
@@ -812,7 +824,7 @@
                                     <div class="chat-messages" id="mech-chat-messages"></div>
                                     <div class="chat-input-row">
                                         <input type="text" id="mech-chat-input" placeholder="Mensagem...">
-                                        <button type="button" class="btn-action" style="width: 70px;" onclick="sendChatMessage('mech')">Enviar</button>
+                                        <button type="button" style="width: 70px; background:#0288d1; border:none; color:#fff; border-radius:4px; cursor:pointer;" onclick="sendChatMessage('mech')">Enviar</button>
                                     </div>
                                 </div>
                             </div>
@@ -849,7 +861,6 @@
             closingOrderId = orderId;
             closingOrderTotal = parseFloat(totalVal);
             
-            // Gerar QR Code Pix dinâmico com a chave CNPJ e valor correto
             var pixPayload = `00020126580014BR.GOV.BCB.PIX013670004251000120520400005303986540${closingOrderTotal.toFixed(2)}5802BR5916RESGATE 24H6009SAO PAULO62070503***6304`;
             var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(pixPayload)}`;
             document.getElementById('qr-code-img').src = qrUrl;
@@ -863,16 +874,17 @@
             var mode = document.getElementById('closing-payment-mode').value;
             if(mode === 'pix') {
                 document.getElementById('closing-pix-box').style.display = 'block';
-                document.getElementById('closing-cash-box').style.display = 'none';
+                document.getElementById('closing-cash-troco-box').style.display = 'none';
             } else {
                 document.getElementById('closing-pix-box').style.display = 'none';
-                document.getElementById('closing-cash-box').style.display = 'block';
+                document.getElementById('closing-cash-troco-box').style.display = 'block';
             }
         }
 
         function finalizeServiceExecution() {
             var pinInput = document.getElementById('input-closing-pin').value.trim();
             var paymentMode = document.getElementById('closing-payment-mode').value;
+            var trocoInfo = document.getElementById('closing-troco-input').value.trim();
 
             rtdb.ref('resgate_orders/' + closingOrderId).once('value', (snap) => {
                 var order = snap.val();
@@ -885,14 +897,17 @@
                 var mechGain = parseFloat(order.mechPay);
                 var platformCommission = parseFloat(order.platformFee);
 
-                // Regra de saldo: Pix credita o ganho; Dinheiro credita o ganho mas debita a comissão (saldo negativo igual à 99)
                 var netAdjustment = (paymentMode === 'pix') ? mechGain : (mechGain - platformCommission);
 
                 rtdb.ref('resgate_wallets/' + mechKey).transaction((curr) => {
                     return (curr || 0) + netAdjustment;
                 }, (err, committed) => {
                     if(committed) {
-                        rtdb.ref('resgate_orders/' + closingOrderId).update({ status: 'completed' }).then(() => {
+                        rtdb.ref('resgate_orders/' + closingOrderId).update({ 
+                            status: 'completed',
+                            paymentModeUsed: paymentMode,
+                            trocoDetails: trocoInfo || 'N/A'
+                        }).then(() => {
                             closeClosingModal();
                             alert("✅ Serviço concluído com sucesso! Transação registrada.");
                             location.reload();
