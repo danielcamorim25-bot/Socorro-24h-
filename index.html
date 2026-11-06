@@ -145,7 +145,7 @@
                 </div>
             </div>
 
-            <!-- MODAL ADMIN (SENHA LIMPA) -->
+            <!-- MODAL ADMIN -->
             <div id="modal-admin-login" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Painel do Administrador</div>
@@ -207,6 +207,19 @@
                         <input type="text" id="adm-shop-hours" placeholder="Seg a Sáb: 08:00 às 18:00" required>
                         <label>Link Foto da Fachada (URL):</label>
                         <input type="text" id="adm-shop-img" placeholder="https://images.unsplash.com/..." required>
+                        
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <div style="flex:1;">
+                                <label>Latitude (GPS):</label>
+                                <input type="text" id="adm-shop-lat" placeholder="-23.3995" required>
+                            </div>
+                            <div style="flex:1;">
+                                <label>Longitude (GPS):</label>
+                                <input type="text" id="adm-shop-lng" placeholder="-46.3241" required>
+                            </div>
+                        </div>
+                        <button type="button" onclick="fillCurrentLocationForShop()" style="background:#0288d1; border:none; color:#fff; padding:6px 10px; border-radius:4px; font-size:11px; margin-top:6px; cursor:pointer;"><i class="fa-solid fa-location-crosshairs"></i> Usar Minha Localização Atual</button>
+
                         <button type="submit" class="btn-primary" style="margin-top: 10px;">Publicar no Mapa dos Clientes</button>
                     </form>
                 </div>
@@ -284,16 +297,17 @@
                         <p style="font-size: 12px; color: #666;">Avisando oficinas e prestadores em tempo real.</p>
                     </div>
 
-                    <!-- MAPA DO CLIENTE COM GEOLOCALIZAÇÃO DO MECÂNICO EM TEMPO REAL -->
+                    <!-- MAPA DO CLIENTE COM OFICINAS E GEOLOCALIZAÇÃO DO MECÂNICO -->
                     <div class="card" style="padding: 10px;">
                         <h2>
-                            <span><i class="fa-solid fa-map-location-dot"></i> Acompanhamento GPS em Tempo Real</span>
+                            <span><i class="fa-solid fa-map-location-dot"></i> Acompanhamento GPS & Oficinas</span>
                         </h2>
                         <button class="refresh-map-btn" onclick="refreshClientMapAndShops()" title="Atualizar Mapa e Oficinas"><i class="fa-solid fa-rotate-right"></i></button>
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
                             <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                         </div>
-                        <div id="client-shops-list" style="max-height: 130px; overflow-y: auto;"></div>
+                        <p style="font-size: 11px; color:#666; margin-bottom:5px;">Toque em uma oficina abaixo para ver fotos e traçar rota:</p>
+                        <div id="client-shops-list" style="max-height: 140px; overflow-y: auto;"></div>
                     </div>
 
                     <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
@@ -447,7 +461,22 @@
             </div>
         </div>
 
-        <!-- MODAL LISTA DE USUÁRIOS LOGADOS (ALFABÉTICA) -->
+        <!-- MODAL DETALHES DA OFICINA PARA O CLIENTE (FOTO E ROTA) -->
+        <div id="modal-shop-details" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-title" id="shop-modal-title"><i class="fa-solid fa-store"></i> Oficina Parceira</div>
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img id="shop-modal-img" src="" alt="Fachada da Oficina" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <div class="mech-profile-box" id="shop-modal-info" style="line-height: 1.6;"></div>
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button type="button" class="btn-primary" style="background: #25d366; margin-top: 0; flex: 1;" onclick="openWazeOrMapsRoute()"><i class="fa-solid fa-diamond-turn-right"></i> Ir até lá (GPS)</button>
+                    <button type="button" style="background: #757575; flex: 1; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeShopDetailsModal()">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL LISTA DE USUÁRIOS LOGADOS -->
         <div id="modal-logged-users" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-users"></i> Usuários Logados (Ordem Alfabética)</div>
@@ -523,6 +552,8 @@
         var mapClient;
         var mechLiveMarker = null;
         var watchPosId = null;
+        var shopMarkers = [];
+        var activeSelectedShop = null;
 
         var userDocBase64 = "";
         var userSelfieBase64 = "";
@@ -684,20 +715,15 @@
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRev.toFixed(2).replace('.', ',');
             });
 
-            // Carrega e consolida lista de usuários e prestadores para contagem e ordem alfabética
             rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
                 rtdb.ref('resgate_orders').on('value', (orderSnap) => {
                     var namesList = [];
-                    
-                    // Adiciona mecânicos cadastrados
                     if(mechSnap.exists()) {
                         mechSnap.forEach((child) => {
                             var m = child.val();
                             if(m.name) namesList.push({ name: m.name + " (Mecânico / Prestador)", type: "prestador" });
                         });
                     }
-
-                    // Adiciona clientes de pedidos registrados
                     if(orderSnap.exists()) {
                         orderSnap.forEach((child) => {
                             var o = child.val();
@@ -706,15 +732,10 @@
                             }
                         });
                     }
-
-                    // Se houver usuário logado atualmente na sessão
                     if(currentUser && currentUser.name && !namesList.some(n => n.name.includes(currentUser.name))) {
                         namesList.push({ name: currentUser.name + " (Cliente)", type: "cliente" });
                     }
-
-                    // Ordena alfabeticamente por nome
                     namesList.sort((a, b) => a.name.localeCompare(b.name));
-
                     document.getElementById('admin-logins-count').innerText = namesList.length;
                     window.cachedLoggedUsers = namesList;
                 });
@@ -744,6 +765,20 @@
                 document.getElementById('admin-online-mechanics-list').innerHTML = onlineHtml || '<p style="font-size:12px; color:#666;">Nenhum profissional online no momento.</p>';
                 document.getElementById('admin-shops-directory-list').innerHTML = listHtml || '<p style="font-size:12px; color:#666;">Nenhuma oficina.</p>';
             });
+        }
+
+        function fillCurrentLocationForShop() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById('adm-shop-lat').value = pos.coords.latitude;
+                    document.getElementById('adm-shop-lng').value = pos.coords.longitude;
+                    alert("📍 Coordenadas GPS atuais capturadas com sucesso!");
+                }, function(err) {
+                    alert("⚠️ Erro ao obter geolocalização. Permita o acesso ao GPS.");
+                });
+            } else {
+                alert("Geolocalização não suportada neste navegador.");
+            }
         }
 
         function openLoggedUsersModal() {
@@ -787,6 +822,9 @@
 
         function adminRegisterShop(e) {
             e.preventDefault();
+            var latVal = parseFloat(document.getElementById('adm-shop-lat').value);
+            var lngVal = parseFloat(document.getElementById('adm-shop-lng').value);
+
             var newShop = {
                 id: 'SHOP-' + Math.floor(Math.random()*90000+10000),
                 name: document.getElementById('adm-shop-name').value,
@@ -795,14 +833,19 @@
                 phone: document.getElementById('adm-shop-phone').value,
                 hours: document.getElementById('adm-shop-hours').value,
                 img: document.getElementById('adm-shop-img').value,
-                lat: -23.3995 + (Math.random() - 0.5) * 0.05,
-                lng: -46.3241 + (Math.random() - 0.5) * 0.05
+                lat: !isNaN(latVal) ? latVal : -23.3995,
+                lng: !isNaN(lngVal) ? lngVal : -46.3241
             };
+
             rtdb.ref('resgate_shops/' + newShop.id).set(newShop).then(() => {
-                alert("✅ Oficina cadastrada com sucesso e publicada no mapa!");
+                alert("✅ Oficina cadastrada com sucesso e fixada no mapa com geolocalização!");
                 document.getElementById('adm-shop-name').value = '';
                 document.getElementById('adm-shop-addr').value = '';
                 document.getElementById('adm-shop-phone').value = '';
+                document.getElementById('adm-shop-hours').value = '';
+                document.getElementById('adm-shop-img').value = '';
+                document.getElementById('adm-shop-lat').value = '';
+                document.getElementById('adm-shop-lng').value = '';
                 loadAdminData();
             });
         }
@@ -891,35 +934,88 @@
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     mapClient = L.map('map-client').setView([pos.coords.latitude, pos.coords.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapClient);
-                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Sua Localização (Cliente)").openPopup();
+                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Sua Localização").openPopup();
+                    loadClientShopsOnMap();
                 });
+            } else if(mapClient) {
+                loadClientShopsOnMap();
             }
         }
 
         function refreshClientMapAndShops() {
             loadClientShopsOnMap();
-            alert("🔄 Mapa e oficinas atualizados com sucesso!");
+            alert("🔄 Mapa e oficinas atualizados!");
         }
 
+        // CARREGA OFICINAS NO MAPA COM MARCADOR LARANJA E DEIXA CLICÁVEL
         function loadClientShopsOnMap() {
             var listContainer = document.getElementById('client-shops-list');
             rtdb.ref('resgate_shops').on('value', (snap) => {
+                // Remove marcadores antigos de oficinas do mapa
+                shopMarkers.forEach(m => { if(mapClient) mapClient.removeLayer(m); });
+                shopMarkers = [];
+
                 if(!snap.exists()) {
-                    listContainer.innerHTML = '<p style="font-size:12px; color:#666;">Nenhuma oficina cadastrada ainda.</p>';
+                    listContainer.innerHTML = '<p style="font-size:12px; color:#666;">Nenhuma oficina cadastrada no momento.</p>';
                     return;
                 }
+
                 var html = '';
                 snap.forEach((child) => {
                     var s = child.val();
+                    
+                    // Cria ícone personalizado (bolinha laranja) para oficinas no mapa Leaflet
+                    var orangeIcon = L.divIcon({
+                        className: 'custom-orange-pin',
+                        html: '<div style="background-color: #ff9800; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
+                        iconSize: [18, 18],
+                        iconAnchor: [9, 9]
+                    });
+
                     if(mapClient && s.lat && s.lng) {
-                        L.marker([s.lat, s.lng]).addTo(mapClient).bindPopup(`<b>${s.name}</b><br>${s.type}<br>Tel: ${s.phone}<br>Horário: ${s.hours}`);
+                        var marker = L.marker([s.lat, s.lng], { icon: orangeIcon }).addTo(mapClient);
+                        marker.bindPopup(`<b>${s.name}</b><br>${s.type}<br><a href="javascript:void(0)" onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})">Ver Fotos e Detalhes</a>`);
+                        shopMarkers.push(marker);
                     }
-                    html += `<div style="background:#fafafa; border-left:4px solid #ff9800; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px;">
-                        <b>${s.name}</b> (${s.type})<br>📍 ${s.address} | ⏰ ${s.hours}<br>📞 ${s.phone}
+
+                    // Card clicável na lista do cliente
+                    html += `<div onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})" style="background:#fafafa; border-left:4px solid #ff9800; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; cursor:pointer; transition:background 0.2s;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b><i class="fa-solid fa-store" style="color:#ff9800;"></i> ${s.name} (${s.type})</b>
+                            <span style="font-size:10px; color:#0288d1; font-weight:bold;">Ver Fotos & Rota <i class="fa-solid fa-chevron-right"></i></span>
+                        </div>
+                        <div style="margin-top:4px; color:#555;">📍 ${s.address} | ⏰ ${s.hours} | 📞 ${s.phone}</div>
                     </div>`;
                 });
                 listContainer.innerHTML = html;
             });
+        }
+
+        function openShopDetails(shop) {
+            activeSelectedShop = shop;
+            document.getElementById('shop-modal-title').innerHTML = `<i class="fa-solid fa-store"></i> ${shop.name}`;
+            document.getElementById('shop-modal-img').src = shop.img || 'https://images.unsplash.com/photo-1580273916550-e323be2ae537';
+            
+            var infoHtml = `
+                <p><b>Tipo:</b> ${shop.type}</p>
+                <p><b>Endereço:</b> ${shop.address}</p>
+                <p><b>Telefone / WhatsApp:</b> ${shop.phone}</p>
+                <p><b>Horário:</b> ${shop.hours}</p>
+            `;
+            document.getElementById('shop-modal-info').innerHTML = infoHtml;
+            document.getElementById('modal-shop-details').classList.add('active');
+        }
+
+        function closeShopDetailsModal() {
+            document.getElementById('modal-shop-details').classList.remove('active');
+        }
+
+        function openWazeOrMapsRoute() {
+            if(!activeSelectedShop) return;
+            var lat = activeSelectedShop.lat;
+            var lng = activeSelectedShop.lng;
+            var url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            window.open(url, '_blank');
         }
 
         function openConfirmationModal() {
