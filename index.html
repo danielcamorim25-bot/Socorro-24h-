@@ -211,11 +211,11 @@
                         <div style="display:flex; gap:8px; margin-top:8px;">
                             <div style="flex:1;">
                                 <label>Latitude (GPS):</label>
-                                <input type="text" id="adm-shop-lat" placeholder="-23.3995" required>
+                                <input type="text" id="adm-shop-lat" placeholder="-23.4800" required>
                             </div>
                             <div style="flex:1;">
                                 <label>Longitude (GPS):</label>
-                                <input type="text" id="adm-shop-lng" placeholder="-46.3241" required>
+                                <input type="text" id="adm-shop-lng" placeholder="-46.3500" required>
                             </div>
                         </div>
                         <button type="button" onclick="fillCurrentLocationForShop()" style="background:#0288d1; border:none; color:#fff; padding:6px 10px; border-radius:4px; font-size:11px; margin-top:6px; cursor:pointer;"><i class="fa-solid fa-location-crosshairs"></i> Usar Minha Localização Atual</button>
@@ -255,9 +255,9 @@
                         <input type="text" id="reg-plate" placeholder="Ex: ABC-1234" required>
                         <label>Zona / Cidade:</label>
                         <select id="reg-zone">
+                            <option value="Itaquaquecetuba">Itaquaquecetuba</option>
                             <option value="Arujá">Arujá</option>
                             <option value="Suzano">Suzano</option>
-                            <option value="Itaquaquecetuba">Itaquaquecetuba</option>
                             <option value="Poá">Poá</option>
                             <option value="Mogi das Cruzes">Mogi das Cruzes</option>
                             <option value="Guarulhos">Guarulhos</option>
@@ -389,13 +389,13 @@
                 </div>
             </div>
 
-            <!-- TELA MECÂNICO / GUINCHO (ATUALIZADA COM MAIS DADOS, FOTO DA OFICINA E MAPA DE CHAMADO) -->
+            <!-- TELA MECÂNICO / GUINCHO -->
             <div id="role-mechanic" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
                 <div id="mech-register-card" class="card card-mech">
                     <h2 id="mech-title-label"><i class="fa-solid fa-id-card"></i> Cadastro do Profissional / Oficina</h2>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Insira seus dados profissionais e fotos da oficina para exibição aos clientes.</p>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Insira seus dados profissionais. A geolocalização será capturada automaticamente do seu aparelho ao salvar.</p>
                     
                     <form onsubmit="saveMechanicAccount(event)">
                         <label>Nome do Responsável / Mecânico:</label>
@@ -414,7 +414,7 @@
                         <input type="text" id="mech-specialty" placeholder="Ex: Borracharia, Injeção, Motor, Guincho" required>
 
                         <label>Endereço / Zona de Atuação:</label>
-                        <input type="text" id="mech-address" placeholder="Av. Principal, 500 - Arujá/SP" required>
+                        <input type="text" id="mech-address" placeholder="Ex: Itaquaquecetuba - SP" required>
 
                         <label>Link Foto da Fachada da Oficina (URL):</label>
                         <input type="text" id="mech-shop-img" placeholder="https://images.unsplash.com/photo-..." required>
@@ -439,7 +439,7 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- MAPA DO MECÂNICO (MOSTRA A LOCALIZAÇÃO DO CLIENTE QUANDO ACEITO) -->
+                    <!-- MAPA DO MECÂNICO -->
                     <div class="card card-mech" style="padding: 10px;">
                         <h2><span><i class="fa-solid fa-map"></i> Radar de Navegação do Chamado</span></h2>
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
@@ -448,7 +448,7 @@
                         <p style="font-size: 11px; color: #666;" id="mech-map-status-text">Fique Online para receber solicitações próximas.</p>
                     </div>
 
-                    <!-- LISTA DE TODOS OS CHAMADOS -->
+                    <!-- LISTA DE CHAMADOS -->
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-list-check"></i> Lista de Chamados Disponíveis</span></h2>
                         <div id="orders-container" style="margin-top: 8px;"></div>
@@ -580,6 +580,7 @@
         var watchPosId = null;
         var shopMarkers = [];
         var activeSelectedShop = null;
+        var lastKnownOrderCount = 0;
 
         var userDocBase64 = "";
         var userSelfieBase64 = "";
@@ -861,8 +862,8 @@
                 phone: document.getElementById('adm-shop-phone').value,
                 hours: document.getElementById('adm-shop-hours').value,
                 img: document.getElementById('adm-shop-img').value,
-                lat: !isNaN(latVal) ? latVal : -23.3995,
-                lng: !isNaN(lngVal) ? lngVal : -46.3241
+                lat: !isNaN(latVal) ? latVal : -23.4800,
+                lng: !isNaN(lngVal) ? lngVal : -46.3500
             };
 
             rtdb.ref('resgate_shops/' + newShop.id).set(newShop).then(() => {
@@ -927,7 +928,6 @@
             alert("✅ Cadastro de cliente concluído com sucesso!");
         }
 
-        // CADASTRO DO MECÂNICO COM GEOLOCALIZAÇÃO AUTOMÁTICA NO ACESSO
         function saveMechanicAccount(e) {
             e.preventDefault();
             var mechId = 'MECH-' + Math.floor(Math.random()*90000+10000);
@@ -936,11 +936,12 @@
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     registerMechanicFinal(mechId, pos.coords.latitude, pos.coords.longitude);
                 }, function(err) {
-                    alert("⚠️ Não foi possível obter sua geolocalização. Usando padrão.");
-                    registerMechanicFinal(mechId, -23.3995, -46.3241);
-                });
+                    alert("⚠️ Ative a permissão de GPS para capturar sua localização exata.");
+                    registerMechanicFinal(mechId, -23.4800, -46.3500);
+                }, { enableHighAccuracy: true, timeout: 10000 });
             } else {
-                registerMechanicFinal(mechId, -23.3995, -46.3241);
+                alert("Geolocalização não suportada.");
+                registerMechanicFinal(mechId, -23.4800, -46.3500);
             }
         }
 
@@ -961,7 +962,6 @@
                 lng: lng
             };
 
-            // Cadastra também automaticamente como oficina parceira para aparecer no mapa do cliente com foto
             var newShop = {
                 id: 'SHOP-' + mechId,
                 name: shopNameVal,
@@ -983,7 +983,7 @@
                 loadMechanicWallet();
                 listenLiveOrders();
                 initMechanicMap();
-                alert("✅ Cadastro profissional concluído e geolocalização obtida!");
+                alert("✅ Cadastro profissional concluído com geolocalização exata capturada!");
             });
         }
 
@@ -1009,9 +1009,9 @@
 
         function initMechanicMap() {
             if (currentMechanic && !mapMechanic) {
-                mapMechanic = L.map('map-mechanic').setView([currentMechanic.lat || -23.3995, currentMechanic.lng || -46.3241], 13);
+                mapMechanic = L.map('map-mechanic').setView([currentMechanic.lat, currentMechanic.lng], 14);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapMechanic);
-                L.marker([currentMechanic.lat || -23.3995, currentMechanic.lng || -46.3241]).addTo(mapMechanic).bindPopup("Sua Localização (Oficina)").openPopup();
+                L.marker([currentMechanic.lat, currentMechanic.lng]).addTo(mapMechanic).bindPopup("Sua Localização (Oficina)").openPopup();
             }
         }
 
@@ -1202,15 +1202,46 @@
             });
         }
 
+        // FUNÇÃO DE ALARME SONORO E NOTIFICAÇÃO NATIVA EM SEGUNDO PLANO
+        function playAlertSoundAndNotify(title, bodyText) {
+            // 1. Sinal Sonoro via Web Audio API (Bip Sirene)
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tom agudo de alerta
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.6); // Toca por 600ms
+            } catch(e) { console.log(e); }
+
+            // 2. Notificação Push Nativa caso o app esteja em segundo plano
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: bodyText,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3202/3202926.png"
+                });
+            }
+        }
+
         function toggleStatus() {
             isOnline = !isOnline;
             var btn = document.getElementById('toggle-status-btn');
             var text = document.getElementById('status-text');
+            
             if(isOnline) {
+                // Solicita permissão de notificação nativa ao ficar online
+                if ("Notification" in window && Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                }
+
                 btn.className = 'status-btn online'; btn.innerText = 'Online'; text.innerText = 'ONLINE'; text.style.color = '#25d366';
                 if(currentMechanic) rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: true });
                 startTransmittingMechanicLocation();
-                alert("🟢 Você está online para receber chamados e transmitindo GPS.");
+                alert("🟢 Você está online! Alertas sonoros e notificações em segundo plano ativados.");
             } else {
                 btn.className = 'status-btn'; btn.innerText = 'Ficar Online'; text.innerText = 'OFFLINE'; text.style.color = '#757575';
                 if(currentMechanic) rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: false });
@@ -1234,14 +1265,24 @@
             }
         }
 
-        // LISTA DE CHAMADOS E MAPA DO CLIENTE PARA O MECÂNICO
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if(!snap.exists()) {
+                    lastKnownOrderCount = 0;
                     if(container) container.innerHTML = '<p style="font-size:12px; text-align:center;">Nenhum chamado disponível.</p>';
                     return;
                 }
+                
+                var totalOrders = 0;
+                snap.forEach(() => { totalOrders++; });
+
+                // Se houver novos chamados enquanto o mecânico estiver online, dispara o alerta sonoro e notificação
+                if (totalOrders > lastKnownOrderCount && lastKnownOrderCount > 0 && isOnline) {
+                    playAlertSoundAndNotify("🚨 Novo Chamado de Socorro!", "Um cliente precisa de atendimento urgente na região. Abra o aplicativo!");
+                }
+                lastKnownOrderCount = totalOrders;
+
                 var html = '';
                 snap.forEach((child) => {
                     var d = child.val();
@@ -1250,7 +1291,6 @@
                     if(d.status === 'accepted' && d.mechanicId === currentMechanic.id) {
                         activeOrderId = d.id;
                         
-                        // Atualiza mapa do mecânico com a posição do cliente
                         if(mapMechanic && d.lat && d.lng) {
                             var clientPos = [d.lat, d.lng];
                             if(!clientTargetMarker) {
