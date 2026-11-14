@@ -11,7 +11,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { 
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #333; 
             display: flex; 
@@ -21,12 +21,12 @@
         .app-container { 
             width: 100%; 
             max-width: 480px; 
-            background-color: rgba(255, 255, 255, 0.94); 
-            backdrop-filter: blur(6px);
+            background-color: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(8px);
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 0 25px rgba(0,0,0,0.4); 
+            box-shadow: 0 0 30px rgba(0,0,0,0.5); 
             position: relative; 
         }
         
@@ -40,7 +40,7 @@
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        .card { background: rgba(255, 255, 255, 0.96); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
+        .card { background: rgba(255, 255, 255, 0.97); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
         .card h2 { font-size: 16px; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
         .card-mech h2 { color: #333; }
         
@@ -52,12 +52,16 @@
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .welcome-title { font-size: 22px; color: #222; margin-bottom: 8px; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
-        .welcome-subtitle { font-size: 13px; color: #444; margin-bottom: 25px; font-weight: bold; }
-        .role-card-btn { width: 100%; background: rgba(255,255,255,0.98); border: 2px solid #ff9800; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .welcome-subtitle { font-size: 13px; color: #444; margin-bottom: 20px; font-weight: bold; }
+        
+        .role-card-btn { width: 100%; background: rgba(255,255,255,0.98); border: 2px solid #ff9800; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .role-card-btn:active { transform: scale(0.98); background: #fff8e1; }
-        .role-card-btn i { font-size: 30px; color: #ff9800; min-width: 38px; text-align: center; }
-        .role-card-btn h3 { font-size: 16px; color: #333; margin-bottom: 3px; }
-        .role-card-btn p { font-size: 12px; color: #666; }
+        .role-card-btn i { font-size: 28px; color: #ff9800; min-width: 38px; text-align: center; }
+        .role-card-btn h3 { font-size: 15px; color: #333; margin-bottom: 2px; }
+        .role-card-btn p { font-size: 11px; color: #666; }
+
+        .btn-google { background: #4285F4 !important; border-color: #357ae8 !important; color: white !important; }
+        .btn-google i { color: white !important; }
 
         .btn-back { background: rgba(255,255,255,0.9); border: 1px solid #ff9800; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; }
 
@@ -134,29 +138,29 @@
             <div id="screen-welcome" class="screen active">
                 <div class="welcome-container">
                     <h2 class="welcome-title">Bem-vindo ao Resgate 24 Horas</h2>
-                    <p class="welcome-subtitle">Como você deseja acessar a plataforma hoje?</p>
+                    <p class="welcome-subtitle">Acesse de forma rápida com sua conta Google e GPS:</p>
 
-                    <button class="role-card-btn" onclick="selectRole('client')">
-                        <i class="fa-solid fa-user-shield"></i>
+                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('client')">
+                        <i class="fa-brands fa-google"></i>
                         <div>
-                            <h3>Sou Cliente / Passageiro</h3>
-                            <p>Preciso de socorro mecânico, pneu furado, guincho ou pane seca.</p>
+                            <h3>Entrar como Cliente (Google)</h3>
+                            <p>Conecte com sua conta Gmail e geolocalização em tempo real.</p>
                         </div>
                     </button>
 
-                    <button class="role-card-btn" onclick="selectRole('mechanic')">
+                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('mechanic')">
                         <i class="fa-solid fa-wrench"></i>
                         <div>
-                            <h3>Sou Mecânico / Profissional</h3>
-                            <p>Quero cadastrar minha oficina e receber chamados de resgate.</p>
+                            <h3>Entrar como Mecânico (Google)</h3>
+                            <p>Acesso rápido à oficina com dados do Gmail e GPS.</p>
                         </div>
                     </button>
 
-                    <button class="role-card-btn" onclick="selectRole('winch')">
+                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('winch')">
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <div>
-                            <h3>Sou Guincho / Reboque</h3>
-                            <p>Cadastrar guincho plataforma para chamados de reboque na região.</p>
+                            <h3>Entrar como Guincho (Google)</h3>
+                            <p>Acesso rápido ao reboque integrado com sua conta.</p>
                         </div>
                     </button>
                 </div>
@@ -252,43 +256,8 @@
             <!-- TELA CLIENTE -->
             <div id="role-client" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
-                
-                <div id="client-register-card" class="card">
-                    <h2><i class="fa-solid fa-user-shield"></i> Cadastro Completo (Cliente)</h2>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Preencha seus dados reais para validação de segurança.</p>
-                    
-                    <form onsubmit="saveUserAccount(event)">
-                        <label>Seu Nome Completo:</label>
-                        <input type="text" id="reg-name" placeholder="Ex: Carlos Silva" required>
-                        <label>Seu CPF:</label>
-                        <input type="text" id="reg-cpf" placeholder="Ex: 123.456.789-00" required>
-                        <label>Seu WhatsApp:</label>
-                        <input type="tel" id="reg-phone" placeholder="Ex: 11988887777" required>
-                        <label>Sua Chave Pix:</label>
-                        <input type="text" id="reg-pix-key" placeholder="Ex: CPF ou E-mail" required>
-                        <label>Modelo do Veículo:</label>
-                        <input type="text" id="reg-vehicle" placeholder="Ex: Honda CG 160" required>
-                        <label>Placa do Veículo:</label>
-                        <input type="text" id="reg-plate" placeholder="Ex: ABC-1234" required>
-                        <label>Zona / Cidade:</label>
-                        <select id="reg-zone">
-                            <option value="Itaquaquecetuba">Itaquaquecetuba</option>
-                            <option value="Arujá">Arujá</option>
-                            <option value="Suzano">Suzano</option>
-                            <option value="Poá">Poá</option>
-                            <option value="Mogi das Cruzes">Mogi das Cruzes</option>
-                            <option value="Guarulhos">Guarulhos</option>
-                            <option value="São Paulo">São Paulo (Capital)</option>
-                        </select>
-                        <label>Foto do Documento (CNH/RG):</label>
-                        <input type="file" id="reg-doc-photo" accept="image/*" onchange="previewUserDoc(event)" style="font-size: 12px; padding: 4px;" required>
-                        <label>Selfie de Confirmação:</label>
-                        <input type="file" id="reg-selfie" accept="image/*" capture="user" onchange="previewUserSelfie(event)" style="font-size: 12px; padding: 4px;" required>
-                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Validar Identidade e Concluir</button>
-                    </form>
-                </div>
 
-                <div id="client-main-content" style="display: none;">
+                <div id="client-main-content">
                     
                     <div class="virtual-bot-card">
                         <div class="bot-header">
@@ -311,7 +280,7 @@
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
                         <h3 style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos...</h3>
-                        <p style="font-size: 12px; color: #666;">Avisando oficinas e prestadores em tempo real.</p>
+                        <p style="font-size: 12px; color: #666;">Avisando oficinas e prestadores em tempo real via GPS.</p>
                     </div>
 
                     <div class="card" style="padding: 10px;">
@@ -410,37 +379,7 @@
             <div id="role-mechanic" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
-                <div id="mech-register-card" class="card card-mech">
-                    <h2 id="mech-title-label"><i class="fa-solid fa-id-card"></i> Cadastro do Profissional / Oficina</h2>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Insira seus dados profissionais. A geolocalização será capturada automaticamente do seu aparelho ao salvar.</p>
-                    
-                    <form onsubmit="saveMechanicAccount(event)">
-                        <label>Nome do Responsável / Mecânico:</label>
-                        <input type="text" id="mech-name" placeholder="Ex: Roberto Carlos" required>
-                        
-                        <label>Nome da Oficina / Guincho:</label>
-                        <input type="text" id="mech-shop-name" placeholder="Ex: Oficina Mecânica São José" required>
-
-                        <label>WhatsApp Comercial:</label>
-                        <input type="tel" id="mech-phone" placeholder="11999998888" required>
-
-                        <label>Chave Pix para Recebimento:</label>
-                        <input type="text" id="mech-pix-key" placeholder="CNPJ, CPF, Telefone ou E-mail" required>
-
-                        <label>Especialidade / Serviços:</label>
-                        <input type="text" id="mech-specialty" placeholder="Ex: Borracharia, Injeção, Motor, Guincho" required>
-
-                        <label>Endereço / Zona de Atuação:</label>
-                        <input type="text" id="mech-address" placeholder="Ex: Itaquaquecetuba - SP" required>
-
-                        <label>Link Foto da Fachada da Oficina (URL):</label>
-                        <input type="text" id="mech-shop-img" placeholder="https://images.unsplash.com/photo-..." required>
-
-                        <button type="submit" class="btn-primary" style="margin-top: 15px;">Salvar Cadastro & Acessar Painel</button>
-                    </form>
-                </div>
-
-                <div id="mech-main-content" style="display: none;">
+                <div id="mech-main-content">
                     
                     <div class="wallet-card wallet-card-mech">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira (Saldo Líquido)</span>
@@ -462,7 +401,7 @@
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
                             <div id="map-mechanic" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                         </div>
-                        <p style="font-size: 11px; color: #666;" id="mech-map-status-text">Fique Online para receber solicitações próximas.</p>
+                        <p style="font-size: 11px; color: #666;" id="mech-map-status-text">Fique Online para receber solicitações próximas via GPS.</p>
                     </div>
 
                     <!-- LISTA DE CHAMADOS -->
@@ -570,6 +509,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
@@ -599,9 +539,6 @@
         var shopMarkers = [];
         var activeSelectedShop = null;
         var lastKnownOrderCount = 0;
-
-        var userDocBase64 = "";
-        var userSelfieBase64 = "";
 
         var selectedLocationContext = 'Cidade Urbana';
         var selectedVehicleType = 'Moto';
@@ -643,17 +580,6 @@
             document.getElementById('calculated-total-display').innerText = "R$ " + calculatedClientTotal.toFixed(2).replace('.', ',');
         }
 
-        function previewUserDoc(event) {
-            var reader = new FileReader();
-            reader.onload = function() { userDocBase64 = reader.result; };
-            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
-        }
-        function previewUserSelfie(event) {
-            var reader = new FileReader();
-            reader.onload = function() { userSelfieBase64 = reader.result; };
-            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
-        }
-
         function setLocationType(type, element) {
             selectedLocationContext = type;
             document.querySelectorAll('#location-type .option-btn').forEach(b => b.classList.remove('active'));
@@ -692,45 +618,93 @@
             }
         }
 
-        function selectRole(role) {
-            currentRole = role;
-            document.getElementById('screen-welcome').classList.remove('active');
-            document.getElementById('role-client').classList.remove('active');
-            document.getElementById('role-mechanic').classList.remove('active');
-            document.getElementById('role-admin-dashboard').classList.remove('active');
+        // NOVO: LOGIN SIMPLIFICADO COM GOOGLE (GMAIL) E GEOLOCALIZAÇÃO EM TEMPO REAL
+        function loginWithGoogle(targetRole) {
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then((result) => {
+                var user = result.user;
+                
+                if (targetRole === 'client') {
+                    currentUser = {
+                        name: user.displayName || "Cliente Google",
+                        email: user.email,
+                        phone: user.phoneNumber || "(11) 99999-9999",
+                        pixKey: user.email,
+                        vehicle: "Moto / Carro (Editar)",
+                        plate: "ABC-1234",
+                        zone: "Itaquaquecetuba",
+                        selfiePhoto: user.photoURL || ""
+                    };
+                    localStorage.setItem('resgate_user', JSON.stringify(currentUser));
+                    requestGeolocationAndProceed('client');
+                } else {
+                    var mechId = 'MECH-' + user.uid.substring(0, 6);
+                    currentMechanic = {
+                        id: mechId,
+                        name: user.displayName || "Profissional Google",
+                        shopName: targetRole === 'winch' ? "Guincho 24h" : "Oficina Mecânica",
+                        phone: user.phoneNumber || "(11) 99999-9999",
+                        pixKey: user.email,
+                        specialty: targetRole === 'winch' ? "Guincho / Reboque" : "Oficina & Borracharia",
+                        address: "Itaquaquecetuba - SP",
+                        online: false,
+                        lat: -23.4800,
+                        lng: -46.3500
+                    };
+                    localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
+                    requestGeolocationAndProceed(targetRole);
+                }
+            }).catch((error) => {
+                alert("❌ Erro ao autenticar com o Google: " + error.message);
+            });
+        }
 
-            if (role === 'client') {
-                document.getElementById('role-client').classList.add('active');
-                if(currentUser) {
-                    document.getElementById('client-register-card').style.display = 'none';
-                    document.getElementById('client-main-content').style.display = 'block';
-                    initClientMap();
-                    loadClientShopsOnMap();
-                    checkClientActiveOrder();
-                } else {
-                    document.getElementById('client-register-card').style.display = 'block';
-                    document.getElementById('client-main-content').style.display = 'none';
-                }
-            } else if (role === 'mechanic' || role === 'winch') {
-                document.getElementById('role-mechanic').classList.add('active');
-                if (role === 'winch') {
-                    document.getElementById('mech-title-label').innerHTML = '<i class="fa-solid fa-truck-ramp-box"></i> Cadastro de Guincho / Reboque';
-                } else {
-                    document.getElementById('mech-title-label').innerHTML = '<i class="fa-solid fa-id-card"></i> Cadastro do Profissional / Oficina';
-                }
+        function requestGeolocationAndProceed(role) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    var lat = pos.coords.latitude;
+                    var lng = pos.coords.longitude;
 
-                if(currentMechanic) {
-                    document.getElementById('mech-register-card').style.display = 'none';
-                    document.getElementById('mech-main-content').style.display = 'block';
-                    loadMechanicWallet();
-                    listenLiveOrders();
-                    initMechanicMap();
-                } else {
-                    document.getElementById('mech-register-card').style.display = 'block';
-                    document.getElementById('mech-main-content').style.display = 'none';
-                }
+                    if (role === 'client') {
+                        document.getElementById('screen-welcome').classList.remove('active');
+                        document.getElementById('role-client').classList.add('active');
+                        initClientMap();
+                        loadClientShopsOnMap();
+                        checkClientActiveOrder();
+                    } else {
+                        currentMechanic.lat = lat;
+                        currentMechanic.lng = lng;
+                        rtdb.ref('resgate_mechanics/' + currentMechanic.id).set(currentMechanic);
+                        
+                        document.getElementById('screen-welcome').classList.remove('active');
+                        document.getElementById('role-mechanic').classList.add('active');
+                        loadMechanicWallet();
+                        listenLiveOrders();
+                        initMechanicMap();
+                    }
+                    currentRole = role;
+                    updateLogoutButton();
+                    alert("📍 Geolocalização em tempo real ativada com sucesso!");
+                }, function(err) {
+                    alert("⚠️ Permissão de GPS negada. Ative a geolocalização para usar o aplicativo.");
+                    if (role === 'client') {
+                        document.getElementById('screen-welcome').classList.remove('active');
+                        document.getElementById('role-client').classList.add('active');
+                        initClientMap();
+                        loadClientShopsOnMap();
+                    } else {
+                        document.getElementById('screen-welcome').classList.remove('active');
+                        document.getElementById('role-mechanic').classList.add('active');
+                        loadMechanicWallet();
+                        listenLiveOrders();
+                        initMechanicMap();
+                    }
+                    currentRole = role;
+                    updateLogoutButton();
+                }, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocalização não suportada pelo navegador.");
             }
-            updateLogoutButton();
         }
 
         function openAdminLoginModal() { document.getElementById('modal-admin-login').classList.add('active'); }
@@ -914,95 +888,11 @@
 
         function logoutCurrentRole() {
             if(watchPosId) navigator.geolocation.clearWatch(watchPosId);
+            firebase.auth().signOut();
             localStorage.clear();
             currentUser = null;
             currentMechanic = null;
             goToWelcome();
-        }
-
-        function saveUserAccount(e) {
-            e.preventDefault();
-            if (!userDocBase64 || !userSelfieBase64) {
-                alert("⚠️ Envie a foto do documento e a selfie obrigatórias.");
-                return;
-            }
-
-            currentUser = {
-                name: document.getElementById('reg-name').value,
-                cpf: document.getElementById('reg-cpf').value,
-                phone: document.getElementById('reg-phone').value,
-                pixKey: document.getElementById('reg-pix-key').value,
-                vehicle: document.getElementById('reg-vehicle').value,
-                plate: document.getElementById('reg-plate').value,
-                zone: document.getElementById('reg-zone').value,
-                docPhoto: userDocBase64,
-                selfiePhoto: userSelfieBase64
-            };
-            localStorage.setItem('resgate_user', JSON.stringify(currentUser));
-            document.getElementById('client-register-card').style.display = 'none';
-            document.getElementById('client-main-content').style.display = 'block';
-            initClientMap();
-            loadClientShopsOnMap();
-            alert("✅ Cadastro de cliente concluído com sucesso!");
-        }
-
-        function saveMechanicAccount(e) {
-            e.preventDefault();
-            var mechId = 'MECH-' + Math.floor(Math.random()*90000+10000);
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    registerMechanicFinal(mechId, pos.coords.latitude, pos.coords.longitude);
-                }, function(err) {
-                    alert("⚠️ Ative a permissão de GPS para capturar sua localização exata.");
-                    registerMechanicFinal(mechId, -23.4800, -46.3500);
-                }, { enableHighAccuracy: true, timeout: 10000 });
-            } else {
-                alert("Geolocalização não suportada.");
-                registerMechanicFinal(mechId, -23.4800, -46.3500);
-            }
-        }
-
-        function registerMechanicFinal(mechId, lat, lng) {
-            var shopNameVal = document.getElementById('mech-shop-name').value;
-            var shopImgVal = document.getElementById('mech-shop-img').value;
-
-            currentMechanic = {
-                id: mechId,
-                name: document.getElementById('mech-name').value,
-                shopName: shopNameVal,
-                phone: document.getElementById('mech-phone').value,
-                pixKey: document.getElementById('mech-pix-key').value,
-                specialty: document.getElementById('mech-specialty').value,
-                address: document.getElementById('mech-address').value,
-                online: false,
-                lat: lat,
-                lng: lng
-            };
-
-            var newShop = {
-                id: 'SHOP-' + mechId,
-                name: shopNameVal,
-                type: 'Oficina / Prestador',
-                address: document.getElementById('mech-address').value,
-                phone: document.getElementById('mech-phone').value,
-                hours: '24 Horas',
-                img: shopImgVal,
-                lat: lat,
-                lng: lng
-            };
-
-            rtdb.ref('resgate_shops/' + newShop.id).set(newShop);
-
-            rtdb.ref('resgate_mechanics/' + mechId).set(currentMechanic).then(() => {
-                localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-                document.getElementById('mech-register-card').style.display = 'none';
-                document.getElementById('mech-main-content').style.display = 'block';
-                loadMechanicWallet();
-                listenLiveOrders();
-                initMechanicMap();
-                alert("✅ Cadastro profissional concluído com geolocalização exata capturada!");
-            });
         }
 
         function loadMechanicWallet() {
@@ -1017,7 +907,7 @@
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     mapClient = L.map('map-client').setView([pos.coords.latitude, pos.coords.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapClient);
-                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Sua Localização").openPopup();
+                    L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(mapClient).bindPopup("Sua Localização GPS").openPopup();
                     loadClientShopsOnMap();
                 });
             } else if(mapClient) {
