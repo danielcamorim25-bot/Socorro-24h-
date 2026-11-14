@@ -11,7 +11,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { 
-            background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #fff; 
             display: flex; 
@@ -28,95 +28,98 @@
             position: relative; 
         }
         
-        header { background: rgba(255, 152, 0, 0.94); backdrop-filter: blur(6px); color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.3); }
-        header h1 { font-size: 22px; margin-bottom: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        header p { font-size: 12px; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        header { background: rgba(255, 152, 0, 0.82); backdrop-filter: blur(8px); color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.3); }
+        header h1 { font-size: 22px; margin-bottom: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        header p { font-size: 12px; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        .btn-logout { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.3); border: none; color: #fff; padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; display: none; align-items: center; gap: 4px; }
-        .admin-corner-btn { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,0.3); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+        .btn-logout { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; display: none; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
+        .admin-corner-btn { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.4); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; backdrop-filter: blur(4px); }
 
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        .card { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); border-radius: 14px; padding: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.4); position: relative; color: #333; }
-        .card h2 { font-size: 16px; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-        .card-mech h2 { color: #333; }
+        /* CARTÕES SUPER TRANSLÚCIDOS (GLASSMORPHISM) */
+        .card { background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(10px); border-radius: 14px; padding: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.35); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.5); position: relative; color: #111; }
+        .card h2 { font-size: 16px; color: #c2410c; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        .card-mech h2 { color: #1e3a8a; }
         
-        label { display: block; font-size: 13px; margin-top: 10px; margin-bottom: 4px; color: #111; font-weight: bold; }
-        input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background-color: #fff; color: #333; }
+        label { display: block; font-size: 12px; margin-top: 10px; margin-bottom: 4px; color: #111; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 9px; border: 1px solid rgba(255,255,255,0.8); border-radius: 6px; font-size: 13px; background-color: rgba(255, 255, 255, 0.85); color: #111; backdrop-filter: blur(4px); }
         textarea { resize: vertical; height: 60px; }
 
-        .map-box { width: 100%; height: 240px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
+        .map-box { width: 100%; height: 240px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); position: relative; }
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
-        .welcome-subtitle { font-size: 14px; color: #eee; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+        .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+        .welcome-subtitle { font-size: 14px; color: #f3f4f6; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
         
-        .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(6px); border: 2px solid #ff9800; border-radius: 14px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-        .role-card-btn:active { transform: scale(0.98); background: #fff8e1; }
+        .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(8px); border: 2px solid #ff9800; border-radius: 14px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .role-card-btn:active { transform: scale(0.98); background: rgba(255, 248, 225, 0.9); }
         .role-card-btn i { font-size: 28px; color: #ff9800; min-width: 38px; text-align: center; }
-        .role-card-btn h3 { font-size: 15px; color: #333; margin-bottom: 2px; }
-        .role-card-btn p { font-size: 11px; color: #555; }
+        .role-card-btn h3 { font-size: 15px; color: #111; margin-bottom: 2px; font-weight: bold; }
+        .role-card-btn p { font-size: 11px; color: #333; }
 
-        .btn-google { background: rgba(66, 133, 244, 0.95) !important; border-color: #2b65c2 !important; color: white !important; }
+        .btn-google { background: rgba(66, 133, 244, 0.85) !important; border-color: rgba(255,255,255,0.6) !important; color: white !important; }
         .btn-google i { color: white !important; }
-        .btn-google h3, .btn-google p { color: white !important; }
+        .btn-google h3, .btn-google p { color: white !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
-        .btn-back { background: rgba(255,255,255,0.9); border: 1px solid #ff9800; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-back { background: rgba(255,255,255,0.8); backdrop-filter: blur(6px); border: 1px solid #ff9800; color: #c2410c; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .option-btn { background-color: #f9f9f9; color: #333; border: 2px solid #ddd; padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+        .option-btn { background-color: rgba(255, 255, 255, 0.75); backdrop-filter: blur(4px); color: #111; border: 1px solid rgba(0,0,0,0.2); padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
         .option-btn i { font-size: 16px; color: #ff9800; }
-        .option-btn.active { background-color: #fff3e0; border-color: #ff9800; color: #e65100; font-weight: bold; }
+        .option-btn.active { background-color: rgba(255, 243, 224, 0.95); border-color: #ff9800; color: #c2410c; font-weight: bold; }
 
-        .refresh-map-btn { position: absolute; top: 12px; right: 12px; background: #ff9800; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1000; }
+        .refresh-map-btn { position: absolute; top: 12px; right: 12px; background: rgba(255, 152, 0, 0.9); backdrop-filter: blur(4px); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 1000; }
 
-        .virtual-bot-card { background: rgba(238, 247, 254, 0.92); border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
-        .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid #d1e9fc; padding-bottom: 6px; }
+        .virtual-bot-card { background: rgba(224, 242, 254, 0.78); backdrop-filter: blur(8px); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(186, 230, 253, 0.8); padding-bottom: 6px; }
         .bot-avatar { width: 36px; height: 36px; background: #0288d1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .bot-messages { background: #fff; border: 1px solid #d1e9fc; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-        .bot-msg { background: #f1f8fe; padding: 6px 10px; border-radius: 6px; max-width: 90%; color: #01579b; line-height: 1.3; }
-        .bot-msg.user { background: #d9fdd3; align-self: flex-end; color: #333; }
+        .bot-messages { background: rgba(255,255,255,0.85); border: 1px solid #bae6fd; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; color: #111; }
+        .bot-msg { background: #f0fdf4; padding: 6px 10px; border-radius: 6px; max-width: 90%; color: #0369a1; line-height: 1.3; }
+        .bot-msg.user { background: #dcfce7; align-self: flex-end; color: #111; }
         .bot-options-row { display: flex; gap: 5px; flex-wrap: wrap; }
-        .bot-chip { background: #fff; border: 1px solid #0288d1; color: #0288d1; padding: 5px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; font-weight: bold; }
+        .bot-chip { background: rgba(255,255,255,0.9); border: 1px solid #0288d1; color: #0288d1; padding: 5px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        .chat-box-container { background: #efeae2; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
-        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; padding-right: 4px; }
-        .chat-msg { background: #fff; padding: 6px 10px; border-radius: 6px; max-width: 80%; word-break: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .chat-msg.me { background: #d9fdd3; align-self: flex-end; }
+        .chat-box-container { background: rgba(245, 245, 244, 0.85); backdrop-filter: blur(6px); border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; padding-right: 4px; color: #111; }
+        .chat-msg { background: rgba(255,255,255,0.95); padding: 6px 10px; border-radius: 6px; max-width: 80%; word-break: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); color: #111; }
+        .chat-msg.me { background: #dcfce7; align-self: flex-end; }
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
         .floating-support-container { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 8px; z-index: 9999; text-decoration: none; }
-        .floating-support-label { background: rgba(255,255,255,0.95); backdrop-filter: blur(4px); color: #25d366; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.4); border: 1px solid #25d366; }
-        .floating-support-btn { background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .floating-support-label { background: rgba(255,255,255,0.9); backdrop-filter: blur(6px); color: #15803d; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.4); border: 1px solid #22c55e; }
+        .floating-support-btn { background: #22c55e; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
-        .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        .wallet-card-mech { background: linear-gradient(135deg, #1e88e5, #1565c0); }
+        .wallet-card { background: linear-gradient(135deg, rgba(22, 101, 52, 0.88), rgba(20, 83, 45, 0.88)); backdrop-filter: blur(8px); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); }
+        .wallet-card-mech { background: linear-gradient(135deg, rgba(30, 64, 175, 0.88), rgba(30, 58, 138, 0.88)); }
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
 
-        .btn-sos { width: 100%; background: linear-gradient(135deg, #d32f2f, #f44336); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(244,67,54,0.4); text-transform: uppercase; }
-        .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        .btn-sos { width: 100%; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5); text-transform: uppercase; }
+        .btn-primary { width: 100%; background-color: #f97316; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         
-        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(240,240,240,0.95); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; color: #333; }
-        .status-btn { background: #757575; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
-        .status-btn.online { background: #25d366; }
+        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.75); backdrop-filter: blur(6px); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); color: #111; }
+        .status-btn { background: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .status-btn.online { background: #16a34a; }
 
-        .searching-radar-box { text-align: center; padding: 25px 15px; background: rgba(255, 243, 224, 0.95); border: 2px dashed #ffb300; border-radius: 10px; margin-bottom: 15px; display: none; }
-        .searching-radar-box i { font-size: 40px; color: #e65100; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
+        .searching-radar-box { text-align: center; padding: 25px 15px; background: rgba(254, 243, 199, 0.85); backdrop-filter: blur(8px); border: 2px dashed #f59e0b; border-radius: 10px; margin-bottom: 15px; display: none; color: #111; }
+        .searching-radar-box i { font-size: 40px; color: #c2410c; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
         @keyframes pulseRadar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        .order-card { background: rgba(255, 253, 231, 0.96); border-left: 5px solid #ff9800; border: 1px solid #ffe082; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #333; }
-        .pin-box { background: #e3f2fd; border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
+        .order-card { background: rgba(254, 252, 232, 0.88); backdrop-filter: blur(6px); border-left: 5px solid #f97316; border: 1px solid rgba(253, 230, 138, 0.8); padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #111; }
+        .pin-box { background: rgba(224, 242, 254, 0.9); border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(6px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.4); color: #333; }
-        .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
+        .modal-content { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #111; border: 1px solid rgba(255,255,255,0.6); }
+        .modal-title { font-size: 18px; color: #dc2626; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
-        .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #333; }
-        footer { text-align: center; padding: 10px; font-size: 11px; color: #ddd; background-color: rgba(0,0,0,0.7); border-top: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .mech-profile-box { background: rgba(249, 250, 251, 0.85); border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
+        footer { text-align: center; padding: 10px; font-size: 11px; color: #f3f4f6; background-color: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+        .preview-img-box { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -133,7 +136,7 @@
 
         <main style="padding: 0; display: flex; flex-direction: column; flex: 1;">
             
-            <!-- TELA INICIAL LIMPA (BOTÕES DIRETOS GOOGLE) -->
+            <!-- TELA INICIAL -->
             <div id="screen-welcome" class="screen active">
                 <div class="welcome-container">
                     <h2 class="welcome-title">Bem-vindo ao Resgate 24 Horas</h2>
@@ -170,10 +173,10 @@
                 <div class="modal-content">
                     <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Painel do Administrador</div>
                     <label>PIN de Acesso Admin:</label>
-                    <input type="password" id="admin-login-pass" placeholder="Digite o PIN de acesso" style="text-align:center; font-size:16px;" maxlength="4">
+                    <input type="password" id="admin-login-pass" placeholder="Digite o PIN" style="text-align:center; font-size:16px;" maxlength="4">
                     <div style="display: flex; gap: 8px; margin-top: 15px;">
-                        <button type="button" style="background: #757575; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeAdminLoginModal()">Voltar</button>
-                        <button type="button" style="background: #ff9800; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="verifyAdminLogin()">Acessar Gestão</button>
+                        <button type="button" style="background: #64748b; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeAdminLoginModal()">Voltar</button>
+                        <button type="button" style="background: #f97316; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="verifyAdminLogin()">Acessar Gestão</button>
                     </div>
                 </div>
             </div>
@@ -182,7 +185,7 @@
             <div id="role-admin-dashboard" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Sair do Painel Admin</button>
                 
-                <div class="wallet-card" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">
+                <div class="wallet-card" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), rgba(185, 28, 28, 0.9));">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-chart-line"></i> Faturamento Central (Plataforma)</span>
                         <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">CNPJ 70.004.251/0001-20</span>
@@ -192,75 +195,45 @@
 
                 <div class="card">
                     <h2><i class="fa-solid fa-users-gear"></i> Monitoramento em Tempo Real</h2>
-                    <div style="font-size: 13px; color: #444; line-height: 1.6;">
-                        <p onclick="openLoggedUsersModal()" style="cursor: pointer; padding: 4px; border-radius: 4px;" title="Ver lista">
-                            👥 <b>Logins Ativos na Plataforma:</b> <span id="admin-logins-count" style="color:#d32f2f; font-weight:bold;">0</span> 
+                    <div style="font-size: 13px; color: #111; line-height: 1.6;">
+                        <p onclick="openLoggedUsersModal()" style="cursor: pointer; padding: 4px;" title="Ver lista">
+                            👥 <b>Logins Ativos na Plataforma:</b> <span id="admin-logins-count" style="color:#dc2626; font-weight:bold;">0</span> 
                             <span style="font-size:11px; color:#0288d1; float:right;">(Ver Lista <i class="fa-solid fa-chevron-right"></i>)</span>
                         </p>
-                        <p>🟢 <b>Profissionais Online Agora:</b> <span id="admin-online-count" style="color:#2e7d32; font-weight:bold;">0</span></p>
+                        <p>🟢 <b>Profissionais Online Agora:</b> <span id="admin-online-count" style="color:#16a34a; font-weight:bold;">0</span></p>
                     </div>
                 </div>
 
                 <div class="card">
                     <h2><i class="fa-solid fa-user-check"></i> Profissionais Conectados</h2>
                     <div id="admin-online-mechanics-list" style="max-height: 160px; overflow-y: auto;">
-                        <p style="font-size: 12px; color: #666;">Nenhum profissional online no momento.</p>
+                        <p style="font-size: 12px; color: #333;">Nenhum profissional online no momento.</p>
                     </div>
-                </div>
-
-                <div class="card">
-                    <h2><i class="fa-solid fa-store"></i> Cadastrar Oficina Manualmente</h2>
-                    <form onsubmit="adminRegisterShop(event)">
-                        <label>Nome do Estabelecimento:</label>
-                        <input type="text" id="adm-shop-name" placeholder="Ex: Borracharia Central" required>
-                        <label>Tipo:</label>
-                        <select id="adm-shop-type">
-                            <option value="Borracharia">Borracharia</option>
-                            <option value="Oficina Mecânica">Oficina Mecânica</option>
-                            <option value="Auto Socorro / Guincho">Auto Socorro / Guincho</option>
-                        </select>
-                        <label>Endereço Completo:</label>
-                        <input type="text" id="adm-shop-addr" placeholder="Av. Principal, 100 - SP" required>
-                        <label>Telefone / WhatsApp:</label>
-                        <input type="tel" id="adm-shop-phone" placeholder="11999998888" required>
-                        <label>Horário de Funcionamento:</label>
-                        <input type="text" id="adm-shop-hours" placeholder="Seg a Sáb: 08:00 às 18:00" required>
-                        <label>Link Foto da Fachada (URL):</label>
-                        <input type="text" id="adm-shop-img" placeholder="https://images.unsplash.com/..." required>
-                        
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <div style="flex:1;">
-                                <label>Latitude:</label>
-                                <input type="text" id="adm-shop-lat" placeholder="-23.4800" required>
-                            </div>
-                            <div style="flex:1;">
-                                <label>Longitude:</label>
-                                <input type="text" id="adm-shop-lng" placeholder="-46.3500" required>
-                            </div>
-                        </div>
-                        <button type="button" onclick="fillCurrentLocationForShop()" style="background:#0288d1; border:none; color:#fff; padding:6px 10px; border-radius:4px; font-size:11px; margin-top:6px; cursor:pointer;"><i class="fa-solid fa-location-crosshairs"></i> Usar Minha Localização Atual</button>
-
-                        <button type="submit" class="btn-primary" style="margin-top: 10px;">Publicar no Mapa</button>
-                    </form>
                 </div>
             </div>
 
-            <!-- TELA CLIENTE (COM OPÇÃO DE ADICIONAR DADOS NA TELA) -->
+            <!-- TELA CLIENTE -->
             <div id="role-client" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
 
                 <div id="client-main-content">
                     
-                    <!-- OPÇÃO DE ADICIONAR/ATUALIZAR DADOS DO CLIENTE -->
-                    <div class="card" style="background: rgba(238, 247, 254, 0.95);">
-                        <h2><span><i class="fa-solid fa-user-pen"></i> Meus Dados de Identificação (Cliente)</span></h2>
+                    <!-- DADOS DO CLIENTE COM UPLOAD DE SELFIE VIA CÂMERA/ARQUIVO -->
+                    <div class="card" style="background: rgba(238, 247, 254, 0.85);">
+                        <h2><span><i class="fa-solid fa-user-pen"></i> Meus Dados & Selfie (Cliente)</span></h2>
                         <label>Seu Nome:</label>
                         <input type="text" id="client-profile-name" placeholder="Ex: Carlos Silva">
                         <label>Seu WhatsApp / Telefone:</label>
                         <input type="tel" id="client-profile-phone" placeholder="Ex: 11999998888">
-                        <label>Link da sua Selfie (URL da Foto):</label>
-                        <input type="text" id="client-profile-selfie" placeholder="https://images.unsplash.com/photo-...">
-                        <button type="button" class="btn-primary" style="background: #0288d1; margin-top: 8px;" onclick="saveClientProfileData()">Salvar Meus Dados</button>
+                        
+                        <label>Sua Selfie (Câmera ou Arquivo):</label>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                            <button type="button" class="btn-primary" style="margin-top:0; background:#0288d1; flex:1;" onclick="document.getElementById('client-selfie-file').click()"><i class="fa-solid fa-camera"></i> Tirar Selfie / Enviar Foto</button>
+                            <input type="file" id="client-selfie-file" accept="image/*" capture="user" style="display:none;" onchange="handleClientSelfieUpload(event)">
+                        </div>
+                        <img id="client-selfie-preview" class="preview-img-box" alt="Preview Selfie">
+
+                        <button type="button" class="btn-primary" style="background: #16a34a; margin-top: 10px;" onclick="saveClientProfileData()">Salvar Meus Dados</button>
                     </div>
 
                     <div class="virtual-bot-card">
@@ -268,7 +241,7 @@
                             <div class="bot-avatar"><i class="fa-solid fa-headset"></i></div>
                             <div>
                                 <h4 style="font-size: 13px; color: #0288d1;">Assistente Virtual Resgate 24 Horas</h4>
-                                <p style="font-size: 10px; color: #555;">Suporte guiado</p>
+                                <p style="font-size: 10px; color: #333;">Suporte guiado</p>
                             </div>
                         </div>
                         <div class="bot-messages" id="bot-chat-stream">
@@ -283,8 +256,8 @@
 
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
-                        <h3 style="color: #d32f2f; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos...</h3>
-                        <p style="font-size: 12px; color: #666;">Avisando oficinas e prestadores em tempo real via GPS.</p>
+                        <h3 style="color: #dc2626; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos...</h3>
+                        <p style="font-size: 12px; color: #111;">Avisando oficinas e prestadores em tempo real via GPS.</p>
                     </div>
 
                     <div class="card" style="padding: 10px;">
@@ -295,13 +268,13 @@
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
                             <div id="map-client" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                         </div>
-                        <p style="font-size: 11px; color:#666; margin-bottom:5px;">Toque em uma oficina abaixo para ver detalhes e rota:</p>
+                        <p style="font-size: 11px; color:#111; margin-bottom:5px;">Toque em uma oficina abaixo para ver detalhes e rota:</p>
                         <div id="client-shops-list" style="max-height: 140px; overflow-y: auto;"></div>
                     </div>
 
-                    <div id="client-active-code-card" class="card" style="display: none; background: #e3f2fd; border-color: #90caf9;">
+                    <div id="client-active-code-card" class="card" style="display: none; background: rgba(227, 242, 253, 0.9); border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Código de Liberação do Serviço</h2>
-                        <p style="font-size: 12px; color: #444;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
+                        <p style="font-size: 12px; color: #111;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
                         <div class="pin-box">
                             <div class="pin-code-text" id="display-client-pin">----</div>
                         </div>
@@ -348,7 +321,7 @@
                         </div>
 
                         <div id="other-problem-container" style="display: none; margin-top: 8px;">
-                            <label style="color:#d32f2f;">Especifique o problema:</label>
+                            <label style="color:#dc2626;">Especifique o problema:</label>
                             <input type="text" id="other-problem-input" placeholder="Ex: Correia partida...">
                         </div>
 
@@ -359,16 +332,16 @@
                         </div>
 
                         <div id="cash-troco-box" style="display: none; margin-top: 8px;">
-                            <label style="color:#e65100;">Precisa de troco para quanto?</label>
+                            <label style="color:#c2410c;">Precisa de troco para quanto?</label>
                             <input type="text" id="client-troco-input" placeholder="Ex: Troco para R$ 50,00">
                         </div>
 
                         <label>Referência / Local:</label>
                         <input type="text" id="reference" placeholder="Ex: Próximo ao KM 32">
 
-                        <div style="background: #fff8e1; border: 1px dashed #ffb300; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #b26a00;">
+                        <div style="background: rgba(254, 243, 199, 0.9); border: 1px dashed #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #111;">
                             <b>Resumo do Cálculo por KM:</b><br>
-                            Total a Pagar no Final: <strong id="calculated-total-display" style="font-size:15px; color:#d32f2f;">R$ 17,50</strong>
+                            Total a Pagar no Final: <strong id="calculated-total-display" style="font-size:15px; color:#dc2626;">R$ 17,50</strong>
                         </div>
 
                         <button type="button" class="btn-sos" onclick="openConfirmationModal()">
@@ -378,7 +351,7 @@
                 </div>
             </div>
 
-            <!-- TELA MECÂNICO / GUINCHO (COM TODAS AS OPÇÕES SOLICITADAS) -->
+            <!-- TELA MECÂNICO / GUINCHO -->
             <div id="role-mechanic" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
                 
@@ -392,25 +365,25 @@
 
                     <div class="status-toggle">
                         <div>
-                            <span style="font-size: 11px; color: #666;">Status:</span>
-                            <strong id="status-text" style="font-size: 13px; color: #757575;">OFFLINE</strong>
+                            <span style="font-size: 11px; color: #111;">Status:</span>
+                            <strong id="status-text" style="font-size: 13px; color: #64748b;">OFFLINE</strong>
                         </div>
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- PAINEL COMPLETO DE CONFIGURAÇÃO DO MECÂNICO/OFICINA -->
+                    <!-- PAINEL COMPLETO COM UPLOAD DE FOTO VIA CÂMERA/ARQUIVO -->
                     <div class="card card-mech">
-                        <h2><span><i class="fa-solid fa-store"></i> Informações & Dados da Oficina</span></h2>
+                        <h2><span><i class="fa-solid fa-store"></i> Dados & Foto da Oficina</span></h2>
                         
                         <label>Nome do Responsável / Oficina:</label>
                         <input type="text" id="edit-mech-name" placeholder="Ex: Oficina Mecânica 24h">
 
-                        <label>Foto da Oficina ou Veículo (Câmera / URL):</label>
-                        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                            <input type="text" id="edit-mech-photo" placeholder="https://images.unsplash.com/..." style="flex:1;">
-                            <button type="button" onclick="triggerCameraInput()" style="background:#0288d1; border:none; color:#fff; padding:8px 12px; border-radius:6px; cursor:pointer;" title="Abrir Câmera"><i class="fa-solid fa-camera"></i></button>
+                        <label>Foto da Oficina ou Veículo (Câmera / Galeria):</label>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                            <button type="button" class="btn-primary" style="margin-top:0; background:#0288d1; flex:1;" onclick="document.getElementById('mech-photo-file').click()"><i class="fa-solid fa-camera"></i> Abrir Câmera / Enviar Foto</button>
+                            <input type="file" id="mech-photo-file" accept="image/*" capture="environment" style="display:none;" onchange="handleMechPhotoUpload(event)">
                         </div>
-                        <input type="file" id="camera-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handleCameraCapture(event)">
+                        <img id="mech-photo-preview" class="preview-img-box" alt="Preview Oficina">
 
                         <label>Endereço Fixo da Oficina:</label>
                         <input type="text" id="edit-mech-address" placeholder="Ex: Av. Brasil, 500 - Itaquaquecetuba">
@@ -432,10 +405,10 @@
 
                         <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" id="edit-mech-negotiable" style="width: 18px; height: 18px;">
-                            <label for="edit-mech-negotiable" style="margin: 0; font-size: 13px; color: #333; cursor: pointer;">Aceitar valores negociáveis com o cliente</label>
+                            <label for="edit-mech-negotiable" style="margin: 0; font-size: 13px; color: #111; cursor: pointer;">Aceitar valores negociáveis com o cliente</label>
                         </div>
 
-                        <button type="button" class="btn-primary" style="margin-top: 12px; background: #0288d1;" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados</button>
+                        <button type="button" class="btn-primary" style="margin-top: 12px; background: #2563eb;" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados</button>
                     </div>
 
                     <!-- MAPA DO MECÂNICO -->
@@ -444,7 +417,7 @@
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
                             <div id="map-mechanic" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                         </div>
-                        <p style="font-size: 11px; color: #666;" id="mech-map-status-text">Fique Online para receber solicitações próximas via GPS.</p>
+                        <p style="font-size: 11px; color: #333;" id="mech-map-status-text">Fique Online para receber solicitações próximas via GPS.</p>
                     </div>
 
                     <!-- LISTA DE CHAMADOS -->
@@ -460,22 +433,22 @@
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Chamado</div>
-                <p style="font-size: 12px; color: #555; text-align: center; margin-bottom: 10px;">O pagamento só será realizado <b>após a conclusão do serviço</b>.</p>
+                <p style="font-size: 12px; color: #333; text-align: center; margin-bottom: 10px;">O pagamento só será realizado <b>após a conclusão do serviço</b>.</p>
                 
                 <div class="mech-profile-box">
                     <p><b>Distância:</b> <span id="modal-km-text">5 km</span></p>
                     <p><b>Pagamento Escolhido:</b> <span id="modal-pay-mode-text" style="text-transform:uppercase; font-weight:bold;">PIX</span></p>
-                    <p><b>Valor Total a Pagar no Final:</b> <strong id="modal-total-price" style="color: #d32f2f; font-size: 16px;">R$ 17,50</strong></p>
+                    <p><b>Valor Total a Pagar no Final:</b> <strong id="modal-total-price" style="color: #dc2626; font-size: 16px;">R$ 17,50</strong></p>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
-                    <button type="button" style="background: #757575; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeModal()">Voltar</button>
-                    <button type="button" style="background: #25d366; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="dispatchSOS()">Confirmar Socorro</button>
+                    <button type="button" style="background: #64748b; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeModal()">Voltar</button>
+                    <button type="button" style="background: #16a34a; flex:1; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer; font-weight:bold;" onclick="dispatchSOS()">Confirmar Socorro</button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL DETALHES DA OFICINA PARA O CLIENTE (COM AVALIAÇÕES) -->
+        <!-- MODAL DETALHES DA OFICINA -->
         <div id="modal-shop-details" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title" id="shop-modal-title"><i class="fa-solid fa-store"></i> Oficina Parceira</div>
@@ -486,14 +459,14 @@
                 
                 <div style="margin-top: 10px;">
                     <h4 style="font-size: 13px; color: #0288d1; margin-bottom: 5px;"><i class="fa-solid fa-star"></i> Avaliações dos Clientes</h4>
-                    <div id="shop-modal-reviews-list" style="max-height: 100px; overflow-y: auto; background: #fff; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 11px;">
+                    <div id="shop-modal-reviews-list" style="max-height: 100px; overflow-y: auto; background: rgba(255,255,255,0.9); padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 11px; color:#111;">
                         Nenhuma avaliação ainda.
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 12px;">
-                    <button type="button" class="btn-primary" style="background: #25d366; margin-top: 0; flex: 1;" onclick="openWazeOrMapsRoute()"><i class="fa-solid fa-diamond-turn-right"></i> Ir até lá (GPS)</button>
-                    <button type="button" style="background: #757575; flex: 1; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeShopDetailsModal()">Fechar</button>
+                    <button type="button" class="btn-primary" style="background: #16a34a; margin-top: 0; flex: 1;" onclick="openWazeOrMapsRoute()"><i class="fa-solid fa-diamond-turn-right"></i> Ir até lá (GPS)</button>
+                    <button type="button" style="background: #64748b; flex: 1; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeShopDetailsModal()">Fechar</button>
                 </div>
             </div>
         </div>
@@ -503,9 +476,9 @@
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-users"></i> Usuários Logados (Ordem Alfabética)</div>
                 <div id="admin-logged-users-list" style="max-height: 250px; overflow-y: auto; margin: 10px 0; font-size: 13px;">
-                    <p style="text-align: center; color: #666;">Carregando...</p>
+                    <p style="text-align: center; color: #333;">Carregando...</p>
                 </div>
-                <button type="button" class="btn-primary" style="background:#757575; margin-top:5px;" onclick="closeLoggedUsersModal()">Fechar</button>
+                <button type="button" class="btn-primary" style="background:#64748b; margin-top:5px;" onclick="closeLoggedUsersModal()">Fechar</button>
             </div>
         </div>
 
@@ -513,7 +486,7 @@
         <div id="modal-complete-service" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-star"></i> Finalizar Serviço e Avaliar</div>
-                <p style="font-size: 12px; color: #555; text-align: center;">Insira o PIN do cliente e deixe sua avaliação:</p>
+                <p style="font-size: 12px; color: #333; text-align: center;">Insira o PIN do cliente e deixe sua avaliação:</p>
 
                 <label>PIN de 4 Dígitos do Cliente:</label>
                 <input type="text" id="input-closing-pin" maxlength="4" placeholder="Ex: 4829" style="text-align:center; font-size:18px; letter-spacing:4px;">
@@ -530,16 +503,16 @@
                 <input type="text" id="review-comment-input" placeholder="Ex: Pagamento rápido, educado...">
 
                 <div id="closing-pix-box" style="margin-top: 10px; text-align: center;">
-                    <p style="font-size: 11px; color: #666;">QR Code Pix emitido em nome de:</p>
+                    <p style="font-size: 11px; color: #333;">QR Code Pix emitido em nome de:</p>
                     <div style="background:#fff; padding:10px; border:1px solid #ddd; border-radius:8px; display:inline-block; margin-top:5px;">
                         <img id="qr-code-img" src="" alt="QR Code Pix" style="width:130px; height:130px;">
-                        <p style="font-size: 11px; color:#d32f2f; font-weight:bold; margin-top:4px;">RESGATE 24 HORAS LTDA</p>
+                        <p style="font-size: 11px; color:#dc2626; font-weight:bold; margin-top:4px;">RESGATE 24 HORAS LTDA</p>
                         <p style="font-size: 10px; color:#333;">Chave CNPJ: 70.004.251/0001-20</p>
                     </div>
                 </div>
 
-                <button type="button" class="btn-primary" style="background:#2e7d32; margin-top: 15px;" onclick="finalizeServiceExecution()">Confirmar Pagamento e Enviar Avaliação</button>
-                <button type="button" style="background: #757575; width:100%; margin-top:8px; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeClosingModal()">Cancelar</button>
+                <button type="button" class="btn-primary" style="background:#16a34a; margin-top: 15px;" onclick="finalizeServiceExecution()">Confirmar Pagamento e Enviar Avaliação</button>
+                <button type="button" style="background: #64748b; width:100%; margin-top:8px; padding:10px; border:none; color:#fff; border-radius:6px; cursor:pointer;" onclick="closeClosingModal()">Cancelar</button>
             </div>
         </div>
 
@@ -616,7 +589,11 @@
                 currentUser = JSON.parse(savedUser);
                 document.getElementById('client-profile-name').value = currentUser.name || '';
                 document.getElementById('client-profile-phone').value = currentUser.phone || '';
-                document.getElementById('client-profile-selfie').value = currentUser.selfie || '';
+                if(currentUser.selfie) {
+                    var prev = document.getElementById('client-selfie-preview');
+                    prev.src = currentUser.selfie;
+                    prev.style.display = 'block';
+                }
             }
             var savedMech = localStorage.getItem('resgate_mechanic');
             if(savedMech) {
@@ -624,12 +601,16 @@
                 document.getElementById('edit-mech-name').value = currentMechanic.name || '';
                 document.getElementById('edit-mech-specialty').value = currentMechanic.specialty || '';
                 document.getElementById('edit-mech-price').value = currentMechanic.pricePerKm || '3.00';
-                document.getElementById('edit-mech-photo').value = currentMechanic.shopPhoto || '';
                 document.getElementById('edit-mech-address').value = currentMechanic.address || '';
                 document.getElementById('edit-mech-hours').value = currentMechanic.hours || '';
                 document.getElementById('edit-mech-nightphone').value = currentMechanic.nightPhone || '';
                 document.getElementById('edit-mech-pix').value = currentMechanic.pixKey || '';
                 document.getElementById('edit-mech-negotiable').checked = currentMechanic.negotiable || false;
+                if(currentMechanic.shopPhoto) {
+                    var mPrev = document.getElementById('mech-photo-preview');
+                    mPrev.src = currentMechanic.shopPhoto;
+                    mPrev.style.display = 'block';
+                }
             }
             goToWelcome();
             calculatePriceByKm();
@@ -681,6 +662,38 @@
             }
         }
 
+        function handleClientSelfieUpload(event) {
+            var file = event.target.files[0];
+            if(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if(!currentUser) currentUser = {};
+                    currentUser.selfie = e.target.result;
+                    var prev = document.getElementById('client-selfie-preview');
+                    prev.src = e.target.result;
+                    prev.style.display = 'block';
+                    alert("📸 Selfie capturada com sucesso!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleMechPhotoUpload(event) {
+            var file = event.target.files[0];
+            if(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if(!currentMechanic) currentMechanic = {};
+                    currentMechanic.shopPhoto = e.target.result;
+                    var prev = document.getElementById('mech-photo-preview');
+                    prev.src = e.target.result;
+                    prev.style.display = 'block';
+                    alert("📸 Foto da oficina/veículo capturada com sucesso!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         // LOGIN DIRETO VIA GOOGLE E GPS
         function quickDirectLogin(targetRole) {
             if (navigator.geolocation) {
@@ -697,11 +710,11 @@
 
         function proceedDirectLogin(role, lat, lng) {
             if (role === 'client') {
-                currentUser = {
-                    name: document.getElementById('client-profile-name').value || "Motorista (Google)",
-                    phone: document.getElementById('client-profile-phone').value || "(11) 99999-9999",
-                    selfie: document.getElementById('client-profile-selfie').value || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
-                };
+                if(!currentUser) currentUser = {};
+                currentUser.name = document.getElementById('client-profile-name').value || "Motorista (Google)";
+                currentUser.phone = document.getElementById('client-profile-phone').value || "(11) 99999-9999";
+                if(!currentUser.selfie) currentUser.selfie = "https://images.unsplash.com/photo-1534528741775-53994a69daeb";
+                
                 localStorage.setItem('resgate_user', JSON.stringify(currentUser));
                 document.getElementById('screen-welcome').classList.remove('active');
                 document.getElementById('role-client').classList.add('active');
@@ -713,7 +726,7 @@
                 currentMechanic = {
                     id: mechId,
                     name: role === 'winch' ? "Guincho 24h Express" : "Oficina Mecânica Parceira",
-                    shopPhoto: "https://images.unsplash.com/photo-1581092335397-9583fe92d232",
+                    shopPhoto: currentMechanic && currentMechanic.shopPhoto ? currentMechanic.shopPhoto : "https://images.unsplash.com/photo-1581092335397-9583fe92d232",
                     specialty: role === 'winch' ? "Guincho e Reboque" : "Mecânica Geral & Borracharia",
                     pricePerKm: "3.00",
                     phone: "(11) 99999-9999",
@@ -732,7 +745,6 @@
                 document.getElementById('edit-mech-name').value = currentMechanic.name;
                 document.getElementById('edit-mech-specialty').value = currentMechanic.specialty;
                 document.getElementById('edit-mech-price').value = currentMechanic.pricePerKm;
-                document.getElementById('edit-mech-photo').value = currentMechanic.shopPhoto;
                 document.getElementById('edit-mech-address').value = currentMechanic.address;
                 document.getElementById('edit-mech-hours').value = currentMechanic.hours;
                 document.getElementById('edit-mech-nightphone').value = currentMechanic.nightPhone;
@@ -754,25 +766,8 @@
             if(!currentUser) currentUser = {};
             currentUser.name = document.getElementById('client-profile-name').value.trim() || "Motorista";
             currentUser.phone = document.getElementById('client-profile-phone').value.trim() || "(11) 99999-9999";
-            currentUser.selfie = document.getElementById('client-profile-selfie').value.trim() || "https://images.unsplash.com/photo-1534528741775-53994a69daeb";
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
             alert("✅ Dados do cliente salvos com sucesso!");
-        }
-
-        function triggerCameraInput() {
-            document.getElementById('camera-file-input').click();
-        }
-
-        function handleCameraCapture(event) {
-            var file = event.target.files[0];
-            if(file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('edit-mech-photo').value = e.target.result;
-                    alert("📸 Foto capturada/carregada com sucesso!");
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         function updateMechanicProfileSettings() {
@@ -780,7 +775,6 @@
             currentMechanic.name = document.getElementById('edit-mech-name').value.trim();
             currentMechanic.specialty = document.getElementById('edit-mech-specialty').value.trim();
             currentMechanic.pricePerKm = document.getElementById('edit-mech-price').value.trim();
-            currentMechanic.shopPhoto = document.getElementById('edit-mech-photo').value.trim();
             currentMechanic.address = document.getElementById('edit-mech-address').value.trim();
             currentMechanic.hours = document.getElementById('edit-mech-hours').value.trim();
             currentMechanic.nightPhone = document.getElementById('edit-mech-nightphone').value.trim();
@@ -854,28 +848,16 @@
                     var m = child.val();
                     if(m.online) {
                         onlineCount++;
-                        onlineHtml += `<div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:8px; border-radius:6px; margin-bottom:5px; font-size:12px; display:flex; align-items:center; gap:10px; color:#333;">
+                        onlineHtml += `<div style="background:rgba(232, 245, 233, 0.9); border:1px solid #c8e6c9; padding:8px; border-radius:6px; margin-bottom:5px; font-size:12px; display:flex; align-items:center; gap:10px; color:#111;">
                             <img src="${m.shopPhoto || 'https://images.unsplash.com/photo-1581092335397-9583fe92d232'}" style="width:36px; height:36px; object-fit:cover; border-radius:50%;">
-                            <div><b>🟢 ${m.name}</b><br><span style="font-size:10px; color:#555;">${m.specialty} | R$ ${m.pricePerKm || '3.00'}/km</span></div>
+                            <div><b>🟢 ${m.name}</b><br><span style="font-size:10px; color:#333;">${m.specialty} | R$ ${m.pricePerKm || '3.00'}/km</span></div>
                         </div>`;
                     }
                 });
 
                 document.getElementById('admin-online-count').innerText = onlineCount;
-                document.getElementById('admin-online-mechanics-list').innerHTML = onlineHtml || '<p style="font-size:12px; color:#666;">Nenhum profissional online no momento.</p>';
+                document.getElementById('admin-online-mechanics-list').innerHTML = onlineHtml || '<p style="font-size:12px; color:#333;">Nenhum profissional online no momento.</p>';
             });
-        }
-
-        function fillCurrentLocationForShop() {
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(pos) {
-                    document.getElementById('adm-shop-lat').value = pos.coords.latitude;
-                    document.getElementById('adm-shop-lng').value = pos.coords.longitude;
-                    alert("📍 Coordenadas GPS atuais capturadas!");
-                }, function(err) {
-                    alert("⚠️ Erro ao obter geolocalização.");
-                });
-            }
         }
 
         function openLoggedUsersModal() {
@@ -890,35 +872,6 @@
         }
 
         function closeLoggedUsersModal() { document.getElementById('modal-logged-users').classList.remove('active'); }
-
-        function adminRegisterShop(e) {
-            e.preventDefault();
-            var latVal = parseFloat(document.getElementById('adm-shop-lat').value);
-            var lngVal = parseFloat(document.getElementById('adm-shop-lng').value);
-
-            var newShop = {
-                id: 'SHOP-' + Math.floor(Math.random()*90000+10000),
-                name: document.getElementById('adm-shop-name').value,
-                type: document.getElementById('adm-shop-type').value,
-                address: document.getElementById('adm-shop-addr').value,
-                phone: document.getElementById('adm-shop-phone').value,
-                hours: document.getElementById('adm-shop-hours').value,
-                img: document.getElementById('adm-shop-img').value,
-                lat: !isNaN(latVal) ? latVal : -23.4800,
-                lng: !isNaN(lngVal) ? lngVal : -46.3500
-            };
-
-            rtdb.ref('resgate_shops/' + newShop.id).set(newShop).then(() => {
-                alert("✅ Oficina cadastrada com sucesso!");
-                document.getElementById('adm-shop-name').value = '';
-                document.getElementById('adm-shop-addr').value = '';
-                document.getElementById('adm-shop-phone').value = '';
-                document.getElementById('adm-shop-hours').value = '';
-                document.getElementById('adm-shop-img').value = '';
-                document.getElementById('adm-shop-lat').value = '';
-                document.getElementById('adm-shop-lng').value = '';
-            });
-        }
 
         function goToWelcome() {
             currentRole = 'welcome';
@@ -982,80 +935,86 @@
                 shopMarkers.forEach(m => { if(mapClient) mapClient.removeLayer(m); });
                 shopMarkers = [];
 
-                if(!snap.exists()) {
-                    listContainer.innerHTML = '<p style="font-size:12px; color:#666;">Nenhuma oficina cadastrada.</p>';
-                    return;
-                }
-
                 var html = '';
-                snap.forEach((child) => {
-                    var s = child.val();
-                    var orangeIcon = L.divIcon({
-                        className: 'custom-orange-pin',
-                        html: '<div style="background-color: #ff9800; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
-                        iconSize: [18, 18],
-                        iconAnchor: [9, 9]
-                    });
-
-                    if(mapClient && s.lat && s.lng) {
-                        var marker = L.marker([s.lat, s.lng], { icon: orangeIcon }).addTo(mapClient);
-                        marker.bindPopup(`<b>${s.name}</b><br>${s.type}<br><a href="javascript:void(0)" onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})">Ver Detalhes</a>`);
-                        shopMarkers.push(marker);
-                    }
-
-                    html += `<div onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})" style="background:#fafafa; border-left:4px solid #ff9800; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; cursor:pointer; color:#333;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <b><i class="fa-solid fa-store" style="color:#ff9800;"></i> ${s.name} (${s.type})</b>
-                            <span style="font-size:10px; color:#0288d1; font-weight:bold;">Ver Fotos & Rota <i class="fa-solid fa-chevron-right"></i></span>
-                        </div>
-                        <div style="margin-top:4px; color:#555;">📍 ${s.address} | ⏰ ${s.hours} | 📞 ${s.phone}</div>
-                    </div>`;
-                });
-                listContainer.innerHTML = html;
-            });
-
-            // Também carregar mecânicos online na lista de oficinas do cliente
-            rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
-                mechSnap.forEach((child) => {
-                    var m = child.val();
-                    if(m.online && m.lat && m.lng) {
-                        var blueIcon = L.divIcon({
-                            className: 'custom-blue-pin',
-                            html: '<div style="background-color: #2e7d32; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
+                if(snap.exists()) {
+                    snap.forEach((child) => {
+                        var s = child.val();
+                        var orangeIcon = L.divIcon({
+                            className: 'custom-orange-pin',
+                            html: '<div style="background-color: #ff9800; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
                             iconSize: [18, 18],
                             iconAnchor: [9, 9]
                         });
-                        if(mapClient) {
-                            var mMarker = L.marker([m.lat, m.lng], { icon: blueIcon }).addTo(mapClient);
-                            mMarker.bindPopup(`<b>🟢 ${m.name} (Online)</b><br>Espec: ${m.specialty}<br>Tel Noite: ${m.nightPhone || m.phone}`);
-                            shopMarkers.push(mMarker);
+
+                        if(mapClient && s.lat && s.lng) {
+                            var marker = L.marker([s.lat, s.lng], { icon: orangeIcon }).addTo(mapClient);
+                            marker.bindPopup(`<b>${s.name}</b><br>${s.type}<br><a href="javascript:void(0)" onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})">Ver Detalhes</a>`);
+                            shopMarkers.push(marker);
                         }
+
+                        html += `<div onclick="openShopDetails(${JSON.stringify(s).replace(/"/g, '&quot;')})" style="background:rgba(255,255,255,0.85); border-left:4px solid #ff9800; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; cursor:pointer; color:#111;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <b><i class="fa-solid fa-store" style="color:#ff9800;"></i> ${s.name} (${s.type})</b>
+                                <span style="font-size:10px; color:#0288d1; font-weight:bold;">Ver Detalhes <i class="fa-solid fa-chevron-right"></i></span>
+                            </div>
+                            <div style="margin-top:4px; color:#333;">📍 ${s.address} | ⏰ ${s.hours} | 📞 ${s.phone}</div>
+                        </div>`;
+                    });
+                }
+
+                rtdb.ref('resgate_mechanics').once('value', (mechSnap) => {
+                    if(mechSnap.exists()) {
+                        mechSnap.forEach((child) => {
+                            var m = child.val();
+                            if(m.online && m.lat && m.lng) {
+                                var greenIcon = L.divIcon({
+                                    className: 'custom-green-pin',
+                                    html: '<div style="background-color: #16a34a; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
+                                    iconSize: [18, 18],
+                                    iconAnchor: [9, 9]
+                                });
+                                if(mapClient) {
+                                    var mMarker = L.marker([m.lat, m.lng], { icon: greenIcon }).addTo(mapClient);
+                                    mMarker.bindPopup(`<b>🟢 ${m.name} (Online)</b><br>Espec: ${m.specialty}`);
+                                    shopMarkers.push(mMarker);
+                                }
+
+                                html += `<div onclick="openShopDetails(${JSON.stringify(m).replace(/"/g, '&quot;')})" style="background:rgba(240,253,244,0.9); border-left:4px solid #16a34a; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; cursor:pointer; color:#111;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <b><i class="fa-solid fa-wrench" style="color:#16a34a;"></i> ${m.name} (Online)</b>
+                                        <span style="font-size:10px; color:#16a34a; font-weight:bold;">Ver Detalhes <i class="fa-solid fa-chevron-right"></i></span>
+                                    </div>
+                                    <div style="margin-top:4px; color:#333;">🛠️ ${m.specialty} | R$ ${m.pricePerKm || '3.00'}/km | 📞 ${m.nightPhone || m.phone}</div>
+                                </div>`;
+                            }
+                        });
                     }
+                    listContainer.innerHTML = html || '<p style="font-size:12px; color:#111;">Nenhuma oficina online.</p>';
                 });
             });
         }
 
         function openShopDetails(shop) {
             activeSelectedShop = shop;
-            document.getElementById('shop-modal-title').innerHTML = `<i class="fa-solid fa-store"></i> ${shop.name}`;
+            document.getElementById('shop-modal-title').innerHTML = `<i class="fa-solid fa-store"></i> ${shop.name || shop.shopName}`;
             document.getElementById('shop-modal-img').src = shop.img || shop.shopPhoto || 'https://images.unsplash.com/photo-1580273916550-e323be2ae537';
             
             var infoHtml = `
-                <p><b>Tipo:</b> ${shop.type || 'Oficina / Prestador'}</p>
-                <p><b>Endereço:</b> ${shop.address || 'Não informado'}</p>
-                <p><b>Telefone / WhatsApp:</b> ${shop.phone || shop.nightPhone || 'Não informado'}</p>
+                <p><b>Tipo:</b> ${shop.type || shop.specialty || 'Oficina Mecânica'}</p>
+                <p><b>Endereço:</b> ${shop.address || 'Itaquaquecetuba - SP'}</p>
+                <p><b>Telefone / WhatsApp:</b> ${shop.phone || shop.nightPhone || 'Disponível'}</p>
                 <p><b>Horário:</b> ${shop.hours || '24 Horas'}</p>
                 <p><b>Valores Negociáveis:</b> ${shop.negotiable ? 'Sim 🤝' : 'Tabela Fixa'}</p>
             `;
             document.getElementById('shop-modal-info').innerHTML = infoHtml;
             
-            // Buscar avaliações
-            rtdb.ref('resgate_reviews').orderByChild('shopId').equalTo(shop.id).once('value', (snap) => {
+            var shopKey = shop.id || 'SHOP';
+            rtdb.ref('resgate_reviews').orderByChild('shopId').equalTo(shopKey).once('value', (snap) => {
                 var revHtml = '';
                 if(snap.exists()) {
                     snap.forEach((rChild) => {
                         var rev = rChild.val();
-                        revHtml += `<div style="border-bottom:1px solid #eee; margin-bottom:4px; padding-bottom:4px;">⭐ ${rev.rating}/5 - "${rev.comment}" <span style="color:#666; font-size:10px;">(${rev.from})</span></div>`;
+                        revHtml += `<div style="border-bottom:1px solid #eee; margin-bottom:4px; padding-bottom:4px;">⭐ ${rev.rating}/5 - "${rev.comment}" <span style="color:#555; font-size:10px;">(${rev.from})</span></div>`;
                     });
                 } else {
                     revHtml = 'Nenhuma avaliação registrada ainda.';
@@ -1070,7 +1029,9 @@
 
         function openWazeOrMapsRoute() {
             if(!activeSelectedShop) return;
-            var url = `https://www.google.com/maps/dir/?api=1&destination=${activeSelectedShop.lat},${activeSelectedShop.lng}`;
+            var lat = activeSelectedShop.lat || -23.48;
+            var lng = activeSelectedShop.lng || -46.35;
+            var url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
             window.open(url, '_blank');
         }
 
@@ -1196,12 +1157,12 @@
             var text = document.getElementById('status-text');
             
             if(isOnline) {
-                btn.className = 'status-btn online'; btn.innerText = 'Online'; text.innerText = 'ONLINE'; text.style.color = '#25d366';
+                btn.className = 'status-btn online'; btn.innerText = 'Online'; text.innerText = 'ONLINE'; text.style.color = '#16a34a';
                 if(currentMechanic) rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: true });
                 startTransmittingMechanicLocation();
                 alert("🟢 Você está online!");
             } else {
-                btn.className = 'status-btn'; btn.innerText = 'Ficar Online'; text.innerText = 'OFFLINE'; text.style.color = '#757575';
+                btn.className = 'status-btn'; btn.innerText = 'Ficar Online'; text.innerText = 'OFFLINE'; text.style.color = '#64748b';
                 if(currentMechanic) rtdb.ref('resgate_mechanics/' + currentMechanic.id).update({ online: false });
                 if(watchPosId) navigator.geolocation.clearWatch(watchPosId);
                 alert("🔴 Você está offline.");
@@ -1227,7 +1188,7 @@
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
                 if(!snap.exists()) {
-                    if(container) container.innerHTML = '<p style="font-size:12px; text-align:center; color:#333;">Nenhum chamado disponível.</p>';
+                    if(container) container.innerHTML = '<p style="font-size:12px; text-align:center; color:#111;">Nenhum chamado disponível.</p>';
                     return;
                 }
 
@@ -1239,12 +1200,12 @@
                     if(d.status === 'accepted' && d.mechanicId === currentMechanic.id) {
                         activeOrderId = d.id;
                         html += `
-                            <div class="order-card" style="background:#e8f5e9;">
+                            <div class="order-card" style="background:rgba(232, 245, 233, 0.9);">
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
                                     <img src="${d.clientSelfie || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                     <div><b>Cliente: ${d.clientName}</b><br><span style="font-size:11px;">Problema: ${d.problem}</span></div>
                                 </div>
-                                <button class="btn-primary" style="background:#ed6c02; margin-top:8px;" onclick="openClosingModal('${d.id}', '${d.clientTotal}', '${d.paymentMode}', '${d.trocoDetails}')">Finalizar Serviço e Avaliar</button>
+                                <button class="btn-primary" style="background:#ea580c; margin-top:8px;" onclick="openClosingModal('${d.id}', '${d.clientTotal}', '${d.paymentMode}', '${d.trocoDetails}')">Finalizar Serviço e Avaliar</button>
                                 <div class="chat-box-container" style="height:120px; margin-top:8px;">
                                     <div class="chat-messages" id="mech-chat-messages"></div>
                                     <div class="chat-input-row">
@@ -1262,12 +1223,12 @@
                                     <img src="${d.clientSelfie || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
                                     <div><b>🚨 ${d.problem}</b><br><span style="font-size:12px;">Cliente: ${d.clientName} | Pagamento: <b>${d.paymentMode.toUpperCase()}</b></span></div>
                                 </div>
-                                <button class="btn-primary" style="background:#25d366; margin-top:6px;" onclick="acceptOrder('${d.id}')"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>
+                                <button class="btn-primary" style="background:#16a34a; margin-top:6px;" onclick="acceptOrder('${d.id}')"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>
                             </div>
                         `;
                     }
                 });
-                if(container) container.innerHTML = html || '<p style="font-size:12px; text-align:center; color:#333;">Nenhum chamado no momento.</p>';
+                if(container) container.innerHTML = html || '<p style="font-size:12px; text-align:center; color:#111;">Nenhum chamado no momento.</p>';
             });
         }
 
