@@ -10,20 +10,37 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #f4f4f9; color: #333; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background-color: #fff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; }
+        body { 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        .app-container { 
+            width: 100%; 
+            max-width: 480px; 
+            background-color: rgba(255, 255, 255, 0.94); 
+            backdrop-filter: blur(6px);
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 0 25px rgba(0,0,0,0.4); 
+            position: relative; 
+        }
         
-        header { background: #ff9800; color: #fff; padding: 15px 20px; text-align: center; position: relative; }
+        header { background: #ff9800; color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         header h1 { font-size: 22px; margin-bottom: 3px; }
-        header p { font-size: 12px; opacity: 0.9; }
+        header p { font-size: 12px; opacity: 0.95; }
 
-        .btn-logout { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.15); border: none; color: #fff; padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; display: none; align-items: center; gap: 4px; }
-        .admin-corner-btn { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,0.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+        .btn-logout { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.2); border: none; color: #fff; padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; display: none; align-items: center; gap: 4px; }
+        .admin-corner-btn { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,0.25); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
 
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        .card { background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #eee; position: relative; }
+        .card { background: rgba(255, 255, 255, 0.96); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
         .card h2 { font-size: 16px; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
         .card-mech h2 { color: #333; }
         
@@ -34,15 +51,15 @@
         .map-box { width: 100%; height: 250px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .welcome-title { font-size: 22px; color: #333; margin-bottom: 8px; font-weight: bold; }
-        .welcome-subtitle { font-size: 13px; color: #666; margin-bottom: 25px; }
-        .role-card-btn { width: 100%; background: #fff; border: 2px solid #ff9800; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .welcome-title { font-size: 22px; color: #222; margin-bottom: 8px; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
+        .welcome-subtitle { font-size: 13px; color: #444; margin-bottom: 25px; font-weight: bold; }
+        .role-card-btn { width: 100%; background: rgba(255,255,255,0.98); border: 2px solid #ff9800; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .role-card-btn:active { transform: scale(0.98); background: #fff8e1; }
         .role-card-btn i { font-size: 30px; color: #ff9800; min-width: 38px; text-align: center; }
         .role-card-btn h3 { font-size: 16px; color: #333; margin-bottom: 3px; }
         .role-card-btn p { font-size: 12px; color: #666; }
 
-        .btn-back { background: none; border: none; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-back { background: rgba(255,255,255,0.9); border: 1px solid #ff9800; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; }
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -52,7 +69,7 @@
 
         .refresh-map-btn { position: absolute; top: 12px; right: 12px; background: #ff9800; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1000; }
 
-        .virtual-bot-card { background: #eef7fe; border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .virtual-bot-card { background: rgba(238, 247, 254, 0.95); border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid #d1e9fc; padding-bottom: 6px; }
         .bot-avatar { width: 36px; height: 36px; background: #0288d1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .bot-messages { background: #fff; border: 1px solid #d1e9fc; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
@@ -68,7 +85,7 @@
         .chat-input-row { display: flex; gap: 5px; margin-top: 8px; }
 
         .floating-support-container { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 8px; z-index: 9999; text-decoration: none; }
-        .floating-support-label { background: #fff; color: #25d366; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.2); border: 1px solid #25d366; }
+        .floating-support-label { background: #fff; color: #25d366; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.3); border: 1px solid #25d366; }
         .floating-support-btn { background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         .wallet-card { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
@@ -76,27 +93,27 @@
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
 
         .btn-sos { width: 100%; background: linear-gradient(135deg, #d32f2f, #f44336); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(244,67,54,0.4); text-transform: uppercase; }
-        .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .btn-primary { width: 100%; background-color: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
         
-        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: #f0f0f0; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(240,240,240,0.95); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; }
         .status-btn { background: #757575; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .status-btn.online { background: #25d366; }
 
-        .searching-radar-box { text-align: center; padding: 25px 15px; background: #fff3e0; border: 2px dashed #ffb300; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .searching-radar-box { text-align: center; padding: 25px 15px; background: rgba(255, 243, 224, 0.95); border: 2px dashed #ffb300; border-radius: 10px; margin-bottom: 15px; display: none; }
         .searching-radar-box i { font-size: 40px; color: #e65100; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
         @keyframes pulseRadar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        .order-card { background: #fffde7; border-left: 5px solid #ff9800; border: 1px solid #ffe082; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .order-card { background: rgba(255, 253, 231, 0.96); border-left: 5px solid #ff9800; border: 1px solid #ffe082; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
         .pin-box { background: #e3f2fd; border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
         .modal-title { font-size: 18px; color: #d32f2f; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
         .mech-profile-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; }
-        footer { text-align: center; padding: 10px; font-size: 11px; color: #888; background-color: #f4f4f9; border-top: 1px solid #e0e0e0; }
+        footer { text-align: center; padding: 10px; font-size: 11px; color: #fff; background-color: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -104,7 +121,7 @@
     <div class="app-container">
         <header>
             <button class="admin-corner-btn" onclick="openAdminLoginModal()" title="Painel Admin"><i class="fa-solid fa-lock"></i></button>
-            <h1><i class="fa-solid fa-truck-fast"></i> Resgate 24h</h1>
+            <h1><i class="fa-solid fa-truck-fast"></i> Resgate 24 Horas</h1>
             <p>Socorro Mecânico na Rodovia e Cidade</p>
             <button id="logout-btn" class="btn-logout" onclick="logoutCurrentRole()">
                 <i class="fa-solid fa-right-from-bracket"></i> Sair
@@ -116,7 +133,7 @@
             <!-- TELA INICIAL -->
             <div id="screen-welcome" class="screen active">
                 <div class="welcome-container">
-                    <h2 class="welcome-title">Bem-vindo ao Resgate 24h</h2>
+                    <h2 class="welcome-title">Bem-vindo ao Resgate 24 Horas</h2>
                     <p class="welcome-subtitle">Como você deseja acessar a plataforma hoje?</p>
 
                     <button class="role-card-btn" onclick="selectRole('client')">
@@ -277,7 +294,7 @@
                         <div class="bot-header">
                             <div class="bot-avatar"><i class="fa-solid fa-headset"></i></div>
                             <div>
-                                <h4 style="font-size: 13px; color: #0288d1;">Assistente Virtual Resgate 24h</h4>
+                                <h4 style="font-size: 13px; color: #0288d1;">Assistente Virtual Resgate 24 Horas</h4>
                                 <p style="font-size: 10px; color: #555;">Suporte guiado</p>
                             </div>
                         </div>
@@ -526,10 +543,11 @@
                 </div>
 
                 <div id="closing-pix-box" style="margin-top: 10px; text-align: center;">
-                    <p style="font-size: 11px; color: #666;">QR Code Pix com o valor exato calculado:</p>
+                    <p style="font-size: 11px; color: #666;">QR Code Pix emitido em nome de:</p>
                     <div style="background:#fff; padding:10px; border:1px solid #ddd; border-radius:8px; display:inline-block; margin-top:5px;">
                         <img id="qr-code-img" src="" alt="QR Code Pix" style="width:140px; height:140px;">
-                        <p style="font-size: 10px; color:#333; margin-top:4px;">Chave CNPJ: 70.004.251/0001-20</p>
+                        <p style="font-size: 11px; color:#d32f2f; font-weight:bold; margin-top:4px;">RESGATE 24 HORAS</p>
+                        <p style="font-size: 10px; color:#333;">Chave CNPJ: 70.004.251/0001-20</p>
                     </div>
                 </div>
 
@@ -546,7 +564,7 @@
         </a>
 
         <footer>
-            <p>&copy; 2026 Resgate 24h - Plataforma de Socorro Mecânico</p>
+            <p>&copy; 2026 Resgate 24 Horas - Plataforma de Socorro Mecânico</p>
         </footer>
     </div>
 
@@ -596,13 +614,13 @@
         var SUPPORT_PHONE = "5519998034841";
 
         function openSupportWhatsApp() {
-            window.open("https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE + "&text=" + encodeURIComponent("Olá! Preciso de suporte no Resgate 24h."), '_blank');
+            window.open("https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE + "&text=" + encodeURIComponent("Olá! Preciso de suporte no Resgate 24 Horas."), '_blank');
         }
 
         function botReply(action) {
             var stream = document.getElementById('bot-chat-stream');
             if(!stream) return;
-            var text = (action === 'como') ? "O Resgate 24h conecta você a oficinas e borracharias. O pagamento é feito no final do serviço!" : "Você pode pagar via Pix (gerando QR Code na tela do prestador) ou em dinheiro (informando se precisa de troco).";
+            var text = (action === 'como') ? "O Resgate 24 Horas conecta você a oficinas e borracharias. O pagamento é feito no final do serviço!" : "Você pode pagar via Pix (gerando QR Code na tela do prestador) ou em dinheiro (informando se precisa de troco).";
             stream.innerHTML += `<div class="bot-msg user">${action === 'como' ? 'Como funciona?' : 'Sobre o Pagamento'}</div>`;
             stream.innerHTML += `<div class="bot-msg">${text}</div>`;
             stream.scrollTop = stream.scrollHeight;
@@ -1202,23 +1220,20 @@
             });
         }
 
-        // FUNÇÃO DE ALARME SONORO E NOTIFICAÇÃO NATIVA EM SEGUNDO PLANO
         function playAlertSoundAndNotify(title, bodyText) {
-            // 1. Sinal Sonoro via Web Audio API (Bip Sirene)
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tom agudo de alerta
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
                 gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 osc.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.6); // Toca por 600ms
+                osc.stop(audioCtx.currentTime + 0.6);
             } catch(e) { console.log(e); }
 
-            // 2. Notificação Push Nativa caso o app esteja em segundo plano
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification(title, {
                     body: bodyText,
@@ -1233,7 +1248,6 @@
             var text = document.getElementById('status-text');
             
             if(isOnline) {
-                // Solicita permissão de notificação nativa ao ficar online
                 if ("Notification" in window && Notification.permission !== "granted") {
                     Notification.requestPermission();
                 }
@@ -1277,7 +1291,6 @@
                 var totalOrders = 0;
                 snap.forEach(() => { totalOrders++; });
 
-                // Se houver novos chamados enquanto o mecânico estiver online, dispara o alerta sonoro e notificação
                 if (totalOrders > lastKnownOrderCount && lastKnownOrderCount > 0 && isOnline) {
                     playAlertSoundAndNotify("🚨 Novo Chamado de Socorro!", "Um cliente precisa de atendimento urgente na região. Abra o aplicativo!");
                 }
@@ -1359,7 +1372,7 @@
                 document.getElementById('closing-troco-display').style.display = 'none';
                 document.getElementById('closing-pix-box').style.display = 'block';
                 
-                var pixPayload = `00020126580014BR.GOV.BCB.PIX013670004251000120520400005303986540${closingOrderTotal.toFixed(2)}5802BR5916RESGATE 24H6009SAO PAULO62070503***6304`;
+                var pixPayload = `00020126580014BR.GOV.BCB.PIX013670004251000120520400005303986540${closingOrderTotal.toFixed(2)}5802BR5920RESGATE 24 HORAS LTDA6009SAO PAULO62070503***6304`;
                 var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(pixPayload)}`;
                 document.getElementById('qr-code-img').src = qrUrl;
             }
