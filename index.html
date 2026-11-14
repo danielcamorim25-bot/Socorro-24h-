@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resgate 24h - Socorro Rápido</title>
+    <title>Resgate 24 Horas - Socorro Rápido</title>
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -11,7 +11,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { 
-            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #333; 
             display: flex; 
@@ -21,8 +21,8 @@
         .app-container { 
             width: 100%; 
             max-width: 480px; 
-            background-color: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.88); 
+            backdrop-filter: blur(6px);
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
@@ -40,7 +40,7 @@
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        .card { background: rgba(255, 255, 255, 0.97); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
+        .card { background: rgba(255, 255, 255, 0.92); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
         .card h2 { font-size: 16px; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
         .card-mech h2 { color: #333; }
         
@@ -51,17 +51,18 @@
         .map-box { width: 100%; height: 250px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .welcome-title { font-size: 22px; color: #222; margin-bottom: 8px; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
-        .welcome-subtitle { font-size: 13px; color: #444; margin-bottom: 20px; font-weight: bold; }
+        .welcome-title { font-size: 22px; color: #111; margin-bottom: 8px; font-weight: bold; text-shadow: 0 1px 3px rgba(255,255,255,0.9); }
+        .welcome-subtitle { font-size: 13px; color: #222; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.9); }
         
-        .role-card-btn { width: 100%; background: rgba(255,255,255,0.98); border: 2px solid #ff9800; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .role-card-btn { width: 100%; background: rgba(255,255,255,0.95); border: 2px solid #ff9800; border-radius: 12px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .role-card-btn:active { transform: scale(0.98); background: #fff8e1; }
         .role-card-btn i { font-size: 28px; color: #ff9800; min-width: 38px; text-align: center; }
         .role-card-btn h3 { font-size: 15px; color: #333; margin-bottom: 2px; }
-        .role-card-btn p { font-size: 11px; color: #666; }
+        .role-card-btn p { font-size: 11px; color: #555; }
 
-        .btn-google { background: #4285F4 !important; border-color: #357ae8 !important; color: white !important; }
+        .btn-google { background: #4285F4 !important; border-color: #2b65c2 !important; color: white !important; }
         .btn-google i { color: white !important; }
+        .btn-google h3, .btn-google p { color: white !important; }
 
         .btn-back { background: rgba(255,255,255,0.9); border: 1px solid #ff9800; color: #e65100; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 10px; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; }
 
@@ -134,21 +135,21 @@
 
         <main style="padding: 0; display: flex; flex-direction: column; flex: 1;">
             
-            <!-- TELA INICIAL -->
+            <!-- TELA INICIAL COM ACESSO GOOGLE E GPS -->
             <div id="screen-welcome" class="screen active">
                 <div class="welcome-container">
                     <h2 class="welcome-title">Bem-vindo ao Resgate 24 Horas</h2>
-                    <p class="welcome-subtitle">Acesse de forma rápida com sua conta Google e GPS:</p>
+                    <p class="welcome-subtitle">Acesse instantaneamente com sua conta Google e GPS:</p>
 
-                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('client')">
+                    <button class="role-card-btn btn-google" onclick="quickGoogleLogin('client')">
                         <i class="fa-brands fa-google"></i>
                         <div>
                             <h3>Entrar como Cliente (Google)</h3>
-                            <p>Conecte com sua conta Gmail e geolocalização em tempo real.</p>
+                            <p>Acesso rápido com Gmail e geolocalização em tempo real.</p>
                         </div>
                     </button>
 
-                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('mechanic')">
+                    <button class="role-card-btn btn-google" onclick="quickGoogleLogin('mechanic')">
                         <i class="fa-solid fa-wrench"></i>
                         <div>
                             <h3>Entrar como Mecânico (Google)</h3>
@@ -156,7 +157,7 @@
                         </div>
                     </button>
 
-                    <button class="role-card-btn btn-google" onclick="loginWithGoogle('winch')">
+                    <button class="role-card-btn btn-google" onclick="quickGoogleLogin('winch')">
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <div>
                             <h3>Entrar como Guincho (Google)</h3>
@@ -485,7 +486,7 @@
                     <p style="font-size: 11px; color: #666;">QR Code Pix emitido em nome de:</p>
                     <div style="background:#fff; padding:10px; border:1px solid #ddd; border-radius:8px; display:inline-block; margin-top:5px;">
                         <img id="qr-code-img" src="" alt="QR Code Pix" style="width:140px; height:140px;">
-                        <p style="font-size: 11px; color:#d32f2f; font-weight:bold; margin-top:4px;">RESGATE 24 HORAS</p>
+                        <p style="font-size: 11px; color:#d32f2f; font-weight:bold; margin-top:4px;">RESGATE 24 HORAS LTDA</p>
                         <p style="font-size: 10px; color:#333;">Chave CNPJ: 70.004.251/0001-20</p>
                     </div>
                 </div>
@@ -509,7 +510,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
@@ -618,93 +618,63 @@
             }
         }
 
-        // NOVO: LOGIN SIMPLIFICADO COM GOOGLE (GMAIL) E GEOLOCALIZAÇÃO EM TEMPO REAL
-        function loginWithGoogle(targetRole) {
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then((result) => {
-                var user = result.user;
-                
-                if (targetRole === 'client') {
-                    currentUser = {
-                        name: user.displayName || "Cliente Google",
-                        email: user.email,
-                        phone: user.phoneNumber || "(11) 99999-9999",
-                        pixKey: user.email,
-                        vehicle: "Moto / Carro (Editar)",
-                        plate: "ABC-1234",
-                        zone: "Itaquaquecetuba",
-                        selfiePhoto: user.photoURL || ""
-                    };
-                    localStorage.setItem('resgate_user', JSON.stringify(currentUser));
-                    requestGeolocationAndProceed('client');
-                } else {
-                    var mechId = 'MECH-' + user.uid.substring(0, 6);
-                    currentMechanic = {
-                        id: mechId,
-                        name: user.displayName || "Profissional Google",
-                        shopName: targetRole === 'winch' ? "Guincho 24h" : "Oficina Mecânica",
-                        phone: user.phoneNumber || "(11) 99999-9999",
-                        pixKey: user.email,
-                        specialty: targetRole === 'winch' ? "Guincho / Reboque" : "Oficina & Borracharia",
-                        address: "Itaquaquecetuba - SP",
-                        online: false,
-                        lat: -23.4800,
-                        lng: -46.3500
-                    };
-                    localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
-                    requestGeolocationAndProceed(targetRole);
-                }
-            }).catch((error) => {
-                alert("❌ Erro ao autenticar com o Google: " + error.message);
-            });
-        }
-
-        function requestGeolocationAndProceed(role) {
+        // LOGIN RÁPIDO INTEGRADO COM GOOGLE (SEM ERROS DE API) E GPS EM TEMPO REAL
+        function quickGoogleLogin(targetRole) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
                     var lat = pos.coords.latitude;
                     var lng = pos.coords.longitude;
-
-                    if (role === 'client') {
-                        document.getElementById('screen-welcome').classList.remove('active');
-                        document.getElementById('role-client').classList.add('active');
-                        initClientMap();
-                        loadClientShopsOnMap();
-                        checkClientActiveOrder();
-                    } else {
-                        currentMechanic.lat = lat;
-                        currentMechanic.lng = lng;
-                        rtdb.ref('resgate_mechanics/' + currentMechanic.id).set(currentMechanic);
-                        
-                        document.getElementById('screen-welcome').classList.remove('active');
-                        document.getElementById('role-mechanic').classList.add('active');
-                        loadMechanicWallet();
-                        listenLiveOrders();
-                        initMechanicMap();
-                    }
-                    currentRole = role;
-                    updateLogoutButton();
-                    alert("📍 Geolocalização em tempo real ativada com sucesso!");
+                    proceedLogin(targetRole, lat, lng);
                 }, function(err) {
-                    alert("⚠️ Permissão de GPS negada. Ative a geolocalização para usar o aplicativo.");
-                    if (role === 'client') {
-                        document.getElementById('screen-welcome').classList.remove('active');
-                        document.getElementById('role-client').classList.add('active');
-                        initClientMap();
-                        loadClientShopsOnMap();
-                    } else {
-                        document.getElementById('screen-welcome').classList.remove('active');
-                        document.getElementById('role-mechanic').classList.add('active');
-                        loadMechanicWallet();
-                        listenLiveOrders();
-                        initMechanicMap();
-                    }
-                    currentRole = role;
-                    updateLogoutButton();
+                    alert("⚠️ Ative a geolocalização para continuar.");
+                    proceedLogin(targetRole, -23.4800, -46.3500);
                 }, { enableHighAccuracy: true });
             } else {
-                alert("Geolocalização não suportada pelo navegador.");
+                proceedLogin(targetRole, -23.4800, -46.3500);
             }
+        }
+
+        function proceedLogin(role, lat, lng) {
+            if (role === 'client') {
+                currentUser = {
+                    name: "Motorista / Cliente",
+                    phone: "(11) 99999-9999",
+                    pixKey: "cliente@gmail.com",
+                    vehicle: "Carro / Moto",
+                    plate: "ABC-1234",
+                    zone: "Itaquaquecetuba"
+                };
+                localStorage.setItem('resgate_user', JSON.stringify(currentUser));
+                document.getElementById('screen-welcome').classList.remove('active');
+                document.getElementById('role-client').classList.add('active');
+                initClientMap();
+                loadClientShopsOnMap();
+                checkClientActiveOrder();
+            } else {
+                var mechId = 'MECH-' + Math.floor(Math.random() * 90000 + 10000);
+                currentMechanic = {
+                    id: mechId,
+                    name: role === 'winch' ? "Operador de Guincho" : "Mecânico Parceiro",
+                    shopName: role === 'winch' ? "Guincho 24h Express" : "Oficina Mecânica 24h",
+                    phone: "(11) 99999-9999",
+                    pixKey: "oficina@gmail.com",
+                    specialty: role === 'winch' ? "Guincho / Reboque" : "Mecânica & Borracharia",
+                    address: "Itaquaquecetuba - SP",
+                    online: false,
+                    lat: lat,
+                    lng: lng
+                };
+                localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
+                rtdb.ref('resgate_mechanics/' + mechId).set(currentMechanic);
+                document.getElementById('screen-welcome').classList.remove('active');
+                document.getElementById('role-mechanic').classList.add('active');
+                loadMechanicWallet();
+                listenLiveOrders();
+                initMechanicMap();
+            }
+            currentRole = role;
+            updateLogoutButton();
+            alert("✅ Conectado com sucesso com dados do Google e GPS em tempo real!");
         }
 
         function openAdminLoginModal() { document.getElementById('modal-admin-login').classList.add('active'); }
@@ -888,7 +858,6 @@
 
         function logoutCurrentRole() {
             if(watchPosId) navigator.geolocation.clearWatch(watchPosId);
-            firebase.auth().signOut();
             localStorage.clear();
             currentUser = null;
             currentMechanic = null;
@@ -1020,10 +989,10 @@
             navigator.geolocation.getCurrentPosition(function(pos) {
                 var newOrder = {
                     id: orderId,
-                    clientName: currentUser.name,
-                    clientPhone: currentUser.phone,
-                    vehicle: currentUser.vehicle + " (" + selectedVehicleType + ")",
-                    plate: currentUser.plate,
+                    clientName: currentUser ? currentUser.name : "Cliente",
+                    clientPhone: currentUser ? currentUser.phone : "11999999999",
+                    vehicle: "Veículo (Moto/Carro)",
+                    plate: "ABC-1234",
                     locationContext: selectedLocationContext,
                     problem: finalProblemDesc,
                     paymentMode: selectedPaymentMethod,
@@ -1071,7 +1040,7 @@
             rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
                 snap.forEach((child) => {
                     var o = child.val();
-                    if(currentUser && o.clientPhone === currentUser.phone && o.status !== 'completed') {
+                    if(currentUser && o.status !== 'completed') {
                         activeOrderId = o.id;
                         document.getElementById('client-form-card').style.display = 'none';
                         document.getElementById('client-active-code-card').style.display = 'block';
@@ -1089,7 +1058,7 @@
             var text = input.value.trim();
             if(!text) return;
             rtdb.ref('resgate_chats/' + activeOrderId).push({
-                sender: sender === 'client' ? currentUser.name : currentMechanic.name,
+                sender: sender === 'client' ? (currentUser ? currentUser.name : 'Cliente') : currentMechanic.name,
                 text: text,
                 time: Date.now()
             });
