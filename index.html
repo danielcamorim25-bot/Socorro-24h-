@@ -11,7 +11,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { 
-            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #333; 
             display: flex; 
@@ -21,16 +21,14 @@
         .app-container { 
             width: 100%; 
             max-width: 480px; 
-            background-color: rgba(255, 255, 255, 0.88); 
-            backdrop-filter: blur(6px);
+            background-color: transparent; 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.5); 
             position: relative; 
         }
         
-        header { background: #ff9800; color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        header { background: rgba(255, 152, 0, 0.95); color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.2); backdrop-filter: blur(4px); }
         header h1 { font-size: 22px; margin-bottom: 3px; }
         header p { font-size: 12px; opacity: 0.95; }
 
@@ -40,27 +38,27 @@
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        .card { background: rgba(255, 255, 255, 0.92); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 15px; border: 1px solid rgba(220,220,220,0.8); position: relative; }
+        .card { background: rgba(255, 255, 255, 0.90); backdrop-filter: blur(6px); border-radius: 12px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.5); position: relative; }
         .card h2 { font-size: 16px; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
         .card-mech h2 { color: #333; }
         
-        label { display: block; font-size: 13px; margin-top: 12px; margin-bottom: 5px; color: #333; font-weight: bold; }
-        input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background-color: #fff; color: #333; }
+        label { display: block; font-size: 13px; margin-top: 12px; margin-bottom: 5px; color: #111; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background-color: rgba(255,255,255,0.95); color: #333; }
         textarea { resize: vertical; height: 65px; }
 
         .map-box { width: 100%; height: 250px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; position: relative; }
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .welcome-title { font-size: 22px; color: #111; margin-bottom: 8px; font-weight: bold; text-shadow: 0 1px 3px rgba(255,255,255,0.9); }
-        .welcome-subtitle { font-size: 13px; color: #222; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.9); }
+        .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .welcome-subtitle { font-size: 14px; color: #fff; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         
-        .role-card-btn { width: 100%; background: rgba(255,255,255,0.95); border: 2px solid #ff9800; border-radius: 12px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(4px); border: 2px solid #ff9800; border-radius: 12px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .role-card-btn:active { transform: scale(0.98); background: #fff8e1; }
         .role-card-btn i { font-size: 28px; color: #ff9800; min-width: 38px; text-align: center; }
         .role-card-btn h3 { font-size: 15px; color: #333; margin-bottom: 2px; }
         .role-card-btn p { font-size: 11px; color: #555; }
 
-        .btn-google { background: #4285F4 !important; border-color: #2b65c2 !important; color: white !important; }
+        .btn-google { background: rgba(66, 133, 244, 0.95) !important; border-color: #2b65c2 !important; color: white !important; }
         .btn-google i { color: white !important; }
         .btn-google h3, .btn-google p { color: white !important; }
 
@@ -68,13 +66,13 @@
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .option-btn { background-color: #f9f9f9; color: #333; border: 2px solid #ddd; padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+        .option-btn { background-color: rgba(255,255,255,0.9); color: #333; border: 2px solid #ddd; padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
         .option-btn i { font-size: 16px; color: #ff9800; }
         .option-btn.active { background-color: #fff3e0; border-color: #ff9800; color: #e65100; font-weight: bold; }
 
         .refresh-map-btn { position: absolute; top: 12px; right: 12px; background: #ff9800; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1000; }
 
-        .virtual-bot-card { background: rgba(238, 247, 254, 0.95); border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .virtual-bot-card { background: rgba(238, 247, 254, 0.92); border: 1px solid #b3e5fc; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid #d1e9fc; padding-bottom: 6px; }
         .bot-avatar { width: 36px; height: 36px; background: #0288d1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .bot-messages { background: #fff; border: 1px solid #d1e9fc; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
@@ -618,7 +616,7 @@
             }
         }
 
-        // LOGIN RÁPIDO INTEGRADO COM GOOGLE (SEM ERROS DE API) E GPS EM TEMPO REAL
+        // LOGIN RÁPIDO INTEGRADO COM GOOGLE E GPS EM TEMPO REAL
         function quickGoogleLogin(targetRole) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
