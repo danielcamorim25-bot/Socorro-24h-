@@ -43,10 +43,10 @@
         .card-mech h2 { color: #1e3a8a; }
         
         label { display: block; font-size: 12px; margin-top: 10px; margin-bottom: 4px; color: #111; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
-        input[type="text"], input[type="tel"], input[type="password"], select, textarea { width: 100%; padding: 9px; border: 1px solid rgba(255,255,255,0.8); border-radius: 6px; font-size: 13px; background-color: rgba(255, 255, 255, 0.85); color: #111; backdrop-filter: blur(4px); }
+        input[type="text"], input[type="tel"], input[type="password"], input[type="number"], select, textarea { width: 100%; padding: 9px; border: 1px solid rgba(255,255,255,0.8); border-radius: 6px; font-size: 13px; background-color: rgba(255, 255, 255, 0.85); color: #111; backdrop-filter: blur(4px); }
         textarea { resize: vertical; height: 60px; }
 
-        .map-box { width: 100%; height: 240px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); position: relative; }
+        .map-box { width: 100%; height: 220px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); position: relative; }
 
         .welcome-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
@@ -298,7 +298,8 @@
                     <div id="searching-radar" class="searching-radar-box">
                         <i class="fa-solid fa-satellite-dish"></i>
                         <h3 style="color: #dc2626; font-size: 16px; margin-bottom: 5px;">Procurando Mecânicos Próximos...</h3>
-                        <p style="font-size: 12px; color: #111;">Avisando oficinas e prestadores em tempo real via GPS.</p>
+                        <p style="font-size: 12px; color: #111; margin-bottom: 10px;">Avisando oficinas e prestadores em tempo real via GPS.</p>
+                        <button type="button" class="btn-primary" style="background: #dc2626; margin-top: 5px; padding: 8px;" onclick="cancelClientOrder()"><i class="fa-solid fa-ban"></i> Cancelar Chamado</button>
                     </div>
 
                     <div class="card" style="padding: 10px;">
@@ -330,10 +331,12 @@
                                 <button type="button" style="width: 70px; background:#0288d1; border:none; color:#fff; border-radius:4px; cursor:pointer;" onclick="sendChatMessage('client')">Enviar</button>
                             </div>
                         </div>
+                        <button type="button" class="btn-primary" style="background:#dc2626; margin-top:10px;" onclick="cancelClientOrder()"><i class="fa-solid fa-ban"></i> Cancelar Chamado em Andamento</button>
                     </div>
 
+                    <!-- CARD DE SOLICITAÇÃO (OPÇÕES DE SERVIÇOS DO CLIENTE) -->
                     <div class="card" id="client-form-card">
-                        <h2>Detalhes do Socorro</h2>
+                        <h2><span><i class="fa-solid fa-screwdriver-wrench"></i> Detalhes do Socorro</span></h2>
                         
                         <label>Distância estimada até o prestador (KM):</label>
                         <input type="number" id="client-km-input" value="5" min="1" onchange="calculatePriceByKm()">
@@ -352,7 +355,7 @@
                             <button type="button" class="option-btn" onclick="setVehicleType('Caminhão', this)"><i class="fa-solid fa-truck"></i> Caminhão</button>
                         </div>
 
-                        <label>O que aconteceu?</label>
+                        <label>O que aconteceu? (Selecione o Serviço):</label>
                         <div class="options-grid" id="problem-type">
                             <button type="button" class="option-btn active" onclick="setProblemType('Pneu Furado', this)"><i class="fa-solid fa-circle-exclamation"></i> Pneu Furado</button>
                             <button type="button" class="option-btn" onclick="setProblemType('Pane Seca', this)"><i class="fa-solid fa-gas-pump"></i> Pane Seca</button>
@@ -1337,7 +1340,7 @@
                 rtdb.ref('resgate_orders/' + orderId).set(newOrder).then(() => {
                     document.getElementById('client-form-card').style.display = 'none';
                     document.getElementById('searching-radar').style.display = 'block';
-                    document.getElementById('client-active-code-card').style.display = 'block';
+                    document.getElementById('client-active-code-card').style.display = 'none';
                     document.getElementById('display-client-pin').innerText = pin;
                     listenChatMessages(orderId, 'client-chat-messages');
                     trackMechanicOnClientMap(orderId);
@@ -1346,18 +1349,52 @@
             });
         }
 
+        function cancelClientOrder() {
+            if(!activeOrderId) {
+                // Se estiver apenas procurando no radar e o ID não estiver gravado na variável global, pega o último pedido ativo
+                rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
+                    snap.forEach((child) => {
+                        var o = child.val();
+                        if(o.status !== 'completed' && o.status !== 'cancelled') {
+                            activeOrderId = o.id;
+                        }
+                    });
+                    executeOrderCancellation();
+                });
+            } else {
+                executeOrderCancellation();
+            }
+        }
+
+        function executeOrderCancellation() {
+            if(activeOrderId) {
+                rtdb.ref('resgate_orders/' + activeOrderId).update({ status: 'cancelled' }).then(() => {
+                    alert("🚫 Chamado cancelado com sucesso.");
+                    resetClientToNewOrder();
+                });
+            } else {
+                resetClientToNewOrder();
+            }
+        }
+
         function trackMechanicOnClientMap(orderId) {
             rtdb.ref('resgate_orders/' + orderId).on('value', (snap) => {
                 var o = snap.val();
-                if(o && o.status === 'accepted' && o.mechanicLat && o.mechanicLng) {
-                    if(mapClient) {
-                        var mechPos = [o.mechanicLat, o.mechanicLng];
-                        if(!mechLiveMarker) {
-                            mechLiveMarker = L.marker(mechPos).addTo(mapClient).bindPopup("<b>Mecânico a caminho!</b>").openPopup();
-                        } else {
-                            mechLiveMarker.setLatLng(mechPos);
+                if(o) {
+                    if(o.status === 'accepted') {
+                        document.getElementById('searching-radar').style.display = 'none';
+                        document.getElementById('client-active-code-card').style.display = 'block';
+                        if(o.mechanicLat && o.mechanicLng && mapClient) {
+                            var mechPos = [o.mechanicLat, o.mechanicLng];
+                            if(!mechLiveMarker) {
+                                mechLiveMarker = L.marker(mechPos).addTo(mapClient).bindPopup("<b>Mecânico a caminho!</b>").openPopup();
+                            } else {
+                                mechLiveMarker.setLatLng(mechPos);
+                            }
+                            mapClient.panTo(mechPos);
                         }
-                        mapClient.panTo(mechPos);
+                    } else if(o.status === 'cancelled') {
+                        resetClientToNewOrder();
                     }
                 }
             });
@@ -1367,16 +1404,38 @@
             rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
                 snap.forEach((child) => {
                     var o = child.val();
-                    if(currentUser && o.status !== 'completed') {
+                    if(currentUser && o.status && o.status !== 'completed' && o.status !== 'cancelled') {
                         activeOrderId = o.id;
                         document.getElementById('client-form-card').style.display = 'none';
-                        document.getElementById('client-active-code-card').style.display = 'block';
+                        if(o.status === 'accepted') {
+                            document.getElementById('searching-radar').style.display = 'none';
+                            document.getElementById('client-active-code-card').style.display = 'block';
+                        } else {
+                            document.getElementById('searching-radar').style.display = 'block';
+                            document.getElementById('client-active-code-card').style.display = 'none';
+                        }
                         document.getElementById('display-client-pin').innerText = o.clientPin;
                         listenChatMessages(o.id, 'client-chat-messages');
                         trackMechanicOnClientMap(o.id);
                     }
                 });
             });
+        }
+
+        function resetClientToNewOrder() {
+            if(activeOrderId) {
+                rtdb.ref('resgate_orders/' + activeOrderId).off();
+                rtdb.ref('resgate_chats/' + activeOrderId).off();
+            }
+            activeOrderId = null;
+            document.getElementById('client-active-code-card').style.display = 'none';
+            document.getElementById('searching-radar').style.display = 'none';
+            document.getElementById('client-form-card').style.display = 'block';
+            if(mechLiveMarker && mapClient) {
+                mapClient.removeLayer(mechLiveMarker);
+                mechLiveMarker = null;
+            }
+            alert("🔄 Pronto para um novo pedido de socorro!");
         }
 
         function sendChatMessage(sender) {
@@ -1455,7 +1514,7 @@
                 var html = '';
                 snap.forEach((child) => {
                     var d = child.val();
-                    if(d.status === 'completed') return;
+                    if(d.status === 'completed' || d.status === 'cancelled') return;
 
                     if(d.status === 'accepted' && d.mechanicId === currentMechanic.id) {
                         activeOrderId = d.id;
