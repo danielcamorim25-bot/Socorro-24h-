@@ -315,7 +315,13 @@
                     </div>
 
                     <div id="client-active-code-card" class="card" style="display: none; background: rgba(227, 242, 253, 0.95); border-color: #90caf9;">
-                        <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Código de Liberação do Serviço</h2>
+                        <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Código de Liberação & Orçamento</h2>
+                        
+                        <div style="background: rgba(254, 243, 199, 0.95); border: 1px dashed #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 5px; margin-bottom: 10px; color: #111;">
+                            <b>Valor Calculado do Atendimento:</b><br>
+                            Total a Pagar no Final: <strong id="display-accepted-total" style="font-size:16px; color:#dc2626;">R$ 17,50</strong>
+                        </div>
+
                         <p style="font-size: 12px; color: #111;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
                         <div class="pin-box">
                             <div class="pin-code-text" id="display-client-pin">----</div>
@@ -382,11 +388,6 @@
 
                         <label>Referência / Local:</label>
                         <input type="text" id="reference" placeholder="Ex: Próximo ao KM 32">
-
-                        <div style="background: rgba(254, 243, 199, 0.95); border: 1px dashed #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #111;">
-                            <b>Resumo do Cálculo por KM:</b><br>
-                            Total a Pagar no Final: <strong id="calculated-total-display" style="font-size:15px; color:#dc2626;">R$ 17,50</strong>
-                        </div>
 
                         <button type="button" class="btn-sos" onclick="openConfirmationModal()">
                             <i class="fa-solid fa-triangle-exclamation"></i> Solicitar Socorro (Pagar no Final)
@@ -483,12 +484,12 @@
         <div id="modal-confirm" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-circle-check"></i> Confirmar Chamado</div>
-                <p style="font-size: 12px; color: #333; text-align: center; margin-bottom: 10px;">O pagamento só será realizado <b>após a conclusão do serviço</b>.</p>
+                <p style="font-size: 12px; color: #333; text-align: center; margin-bottom: 10px;">O valor estimado será calculado e exibido assim que um prestador aceitar o atendimento.</p>
                 
                 <div class="mech-profile-box">
-                    <p><b>Distância:</b> <span id="modal-km-text">5 km</span></p>
+                    <p><b>Distância Informada:</b> <span id="modal-km-text">5 km</span></p>
                     <p><b>Pagamento Escolhido:</b> <span id="modal-pay-mode-text" style="text-transform:uppercase; font-weight:bold;">PIX</span></p>
-                    <p><b>Valor Total a Pagar no Final:</b> <strong id="modal-total-price" style="color: #dc2626; font-size: 16px;">R$ 17,50</strong></p>
+                    <p style="margin-top:5px; font-size:11px; color:#555;">* Tarifa base calculada por quilômetro rodado ao aceitar.</p>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 15px;">
@@ -705,7 +706,6 @@
             calculatedClientTotal = km * 3.50;
             calculatedMechGain = km * 3.00;
             calculatedPlatformFee = km * 0.50;
-            document.getElementById('calculated-total-display').innerText = "R$ " + calculatedClientTotal.toFixed(2).replace('.', ',');
         }
 
         function setLocationType(type, element) {
@@ -1296,7 +1296,6 @@
         function openConfirmationModal() {
             document.getElementById('modal-km-text').innerText = document.getElementById('client-km-input').value + " km";
             document.getElementById('modal-pay-mode-text').innerText = selectedPaymentMethod.toUpperCase();
-            document.getElementById('modal-total-price').innerText = "R$ " + calculatedClientTotal.toFixed(2).replace('.', ',');
             document.getElementById('modal-confirm').classList.add('active');
         }
 
@@ -1351,7 +1350,6 @@
 
         function cancelClientOrder() {
             if(!activeOrderId) {
-                // Se estiver apenas procurando no radar e o ID não estiver gravado na variável global, pega o último pedido ativo
                 rtdb.ref('resgate_orders').limitToLast(1).once('value', (snap) => {
                     snap.forEach((child) => {
                         var o = child.val();
@@ -1384,6 +1382,8 @@
                     if(o.status === 'accepted') {
                         document.getElementById('searching-radar').style.display = 'none';
                         document.getElementById('client-active-code-card').style.display = 'block';
+                        document.getElementById('display-accepted-total').innerText = "R$ " + parseFloat(o.clientTotal || 0).toFixed(2).replace('.', ',');
+                        
                         if(o.mechanicLat && o.mechanicLng && mapClient) {
                             var mechPos = [o.mechanicLat, o.mechanicLng];
                             if(!mechLiveMarker) {
@@ -1410,6 +1410,7 @@
                         if(o.status === 'accepted') {
                             document.getElementById('searching-radar').style.display = 'none';
                             document.getElementById('client-active-code-card').style.display = 'block';
+                            document.getElementById('display-accepted-total').innerText = "R$ " + parseFloat(o.clientTotal || 0).toFixed(2).replace('.', ',');
                         } else {
                             document.getElementById('searching-radar').style.display = 'block';
                             document.getElementById('client-active-code-card').style.display = 'none';
