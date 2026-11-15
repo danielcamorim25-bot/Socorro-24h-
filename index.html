@@ -38,8 +38,7 @@
         .screen { display: none; flex: 1; flex-direction: column; padding: 15px; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        /* CARTÕES SUPER TRANSLÚCIDOS (GLASSMORPHISM) */
-        .card { background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(10px); border-radius: 14px; padding: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.35); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.5); position: relative; color: #111; }
+        .card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px); border-radius: 14px; padding: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.35); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.5); position: relative; color: #111; }
         .card h2 { font-size: 16px; color: #c2410c; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
         .card-mech h2 { color: #1e3a8a; }
         
@@ -53,7 +52,7 @@
         .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
         .welcome-subtitle { font-size: 14px; color: #f3f4f6; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
         
-        .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(8px); border: 2px solid #ff9800; border-radius: 14px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(8px); border: 2px solid #ff9800; border-radius: 14px; padding: 15px 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.2s; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
         .role-card-btn:active { transform: scale(0.98); background: rgba(255, 248, 225, 0.9); }
         .role-card-btn i { font-size: 28px; color: #ff9800; min-width: 38px; text-align: center; }
         .role-card-btn h3 { font-size: 15px; color: #111; margin-bottom: 2px; font-weight: bold; }
@@ -67,22 +66,22 @@
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .options-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .option-btn { background-color: rgba(255, 255, 255, 0.75); backdrop-filter: blur(4px); color: #111; border: 1px solid rgba(0,0,0,0.2); padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+        .option-btn { background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(4px); color: #111; border: 1px solid rgba(0,0,0,0.2); padding: 10px 5px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
         .option-btn i { font-size: 16px; color: #ff9800; }
         .option-btn.active { background-color: rgba(255, 243, 224, 0.95); border-color: #ff9800; color: #c2410c; font-weight: bold; }
 
         .refresh-map-btn { position: absolute; top: 12px; right: 12px; background: rgba(255, 152, 0, 0.9); backdrop-filter: blur(4px); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 1000; }
 
-        .virtual-bot-card { background: rgba(224, 242, 254, 0.78); backdrop-filter: blur(8px); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .virtual-bot-card { background: rgba(224, 242, 254, 0.82); backdrop-filter: blur(8px); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(186, 230, 253, 0.8); padding-bottom: 6px; }
         .bot-avatar { width: 36px; height: 36px; background: #0288d1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .bot-messages { background: rgba(255,255,255,0.85); border: 1px solid #bae6fd; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; color: #111; }
+        .bot-messages { background: rgba(255,255,255,0.88); border: 1px solid #bae6fd; border-radius: 8px; padding: 10px; height: 110px; overflow-y: auto; font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; color: #111; }
         .bot-msg { background: #f0fdf4; padding: 6px 10px; border-radius: 6px; max-width: 90%; color: #0369a1; line-height: 1.3; }
         .bot-msg.user { background: #dcfce7; align-self: flex-end; color: #111; }
         .bot-options-row { display: flex; gap: 5px; flex-wrap: wrap; }
         .bot-chip { background: rgba(255,255,255,0.9); border: 1px solid #0288d1; color: #0288d1; padding: 5px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        .chat-box-container { background: rgba(245, 245, 244, 0.85); backdrop-filter: blur(6px); border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
+        .chat-box-container { background: rgba(245, 245, 244, 0.88); backdrop-filter: blur(6px); border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; margin-top: 12px; height: 180px; display: flex; flex-direction: column; }
         .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; padding-right: 4px; color: #111; }
         .chat-msg { background: rgba(255,255,255,0.95); padding: 6px 10px; border-radius: 6px; max-width: 80%; word-break: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); color: #111; }
         .chat-msg.me { background: #dcfce7; align-self: flex-end; }
@@ -99,24 +98,24 @@
         .btn-sos { width: 100%; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5); text-transform: uppercase; }
         .btn-primary { width: 100%; background-color: #f97316; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         
-        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.75); backdrop-filter: blur(6px); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); color: #111; }
+        .status-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.78); backdrop-filter: blur(6px); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.5); color: #111; }
         .status-btn { background: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .status-btn.online { background: #16a34a; }
 
-        .searching-radar-box { text-align: center; padding: 25px 15px; background: rgba(254, 243, 199, 0.85); backdrop-filter: blur(8px); border: 2px dashed #f59e0b; border-radius: 10px; margin-bottom: 15px; display: none; color: #111; }
+        .searching-radar-box { text-align: center; padding: 25px 15px; background: rgba(254, 243, 199, 0.88); backdrop-filter: blur(8px); border: 2px dashed #f59e0b; border-radius: 10px; margin-bottom: 15px; display: none; color: #111; }
         .searching-radar-box i { font-size: 40px; color: #c2410c; margin-bottom: 10px; animation: pulseRadar 1.5s infinite; }
         @keyframes pulseRadar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        .order-card { background: rgba(254, 252, 232, 0.88); backdrop-filter: blur(6px); border-left: 5px solid #f97316; border: 1px solid rgba(253, 230, 138, 0.8); padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #111; }
-        .pin-box { background: rgba(224, 242, 254, 0.9); border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
+        .order-card { background: rgba(254, 252, 232, 0.9); backdrop-filter: blur(6px); border-left: 5px solid #f97316; border: 1px solid rgba(253, 230, 138, 0.8); padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #111; }
+        .pin-box { background: rgba(224, 242, 254, 0.92); border: 2px dashed #0288d1; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; }
         .pin-code-text { font-size: 24px; font-weight: bold; color: #0288d1; letter-spacing: 4px; margin-top: 4px; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(6px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #111; border: 1px solid rgba(255,255,255,0.6); }
+        .modal-content { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #111; border: 1px solid rgba(255,255,255,0.6); }
         .modal-title { font-size: 18px; color: #dc2626; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
-        .mech-profile-box { background: rgba(249, 250, 251, 0.85); border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
+        .mech-profile-box { background: rgba(249, 250, 251, 0.88); border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
         footer { text-align: center; padding: 10px; font-size: 11px; color: #f3f4f6; background-color: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
         .preview-img-box { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-top: 5px; display: none; }
@@ -197,8 +196,8 @@
                     <h2><i class="fa-solid fa-users-gear"></i> Monitoramento em Tempo Real</h2>
                     <div style="font-size: 13px; color: #111; line-height: 1.6;">
                         <p onclick="openLoggedUsersModal()" style="cursor: pointer; padding: 4px;" title="Ver lista">
-                            👥 <b>Logins Ativos na Plataforma:</b> <span id="admin-logins-count" style="color:#dc2626; font-weight:bold;">0</span> 
-                            <span style="font-size:11px; color:#0288d1; float:right;">(Ver Lista <i class="fa-solid fa-chevron-right"></i>)</span>
+                            👥 <b>Contas Conectadas e Usuários:</b> <span id="admin-logins-count" style="color:#dc2626; font-weight:bold;">0</span> 
+                            <span style="font-size:11px; color:#0288d1; float:right;">(Ver Detalhes <i class="fa-solid fa-chevron-right"></i>)</span>
                         </p>
                         <p>🟢 <b>Profissionais Online Agora:</b> <span id="admin-online-count" style="color:#16a34a; font-weight:bold;">0</span></p>
                     </div>
@@ -206,9 +205,46 @@
 
                 <div class="card">
                     <h2><i class="fa-solid fa-user-check"></i> Profissionais Conectados</h2>
-                    <div id="admin-online-mechanics-list" style="max-height: 160px; overflow-y: auto;">
+                    <div id="admin-online-mechanics-list" style="max-height: 150px; overflow-y: auto;">
                         <p style="font-size: 12px; color: #333;">Nenhum profissional online no momento.</p>
                     </div>
+                </div>
+
+                <!-- CADASTRO MANUAL DE OFICINA NA ÁREA DO ADMIN -->
+                <div class="card">
+                    <h2><i class="fa-solid fa-store"></i> Cadastrar Oficina / Borracharia Manualmente</h2>
+                    <form onsubmit="adminRegisterShop(event)">
+                        <label>Nome do Estabelecimento:</label>
+                        <input type="text" id="adm-shop-name" placeholder="Ex: Borracharia Central" required>
+                        <label>Tipo:</label>
+                        <select id="adm-shop-type">
+                            <option value="Borracharia">Borracharia</option>
+                            <option value="Oficina Mecânica">Oficina Mecânica</option>
+                            <option value="Auto Socorro / Guincho">Auto Socorro / Guincho</option>
+                        </select>
+                        <label>Endereço Completo:</label>
+                        <input type="text" id="adm-shop-addr" placeholder="Av. Principal, 100 - SP" required>
+                        <label>Telefone / WhatsApp:</label>
+                        <input type="tel" id="adm-shop-phone" placeholder="11999998888" required>
+                        <label>Horário de Funcionamento:</label>
+                        <input type="text" id="adm-shop-hours" placeholder="Seg a Sáb: 08:00 às 18:00" required>
+                        <label>Link Foto da Fachada (URL):</label>
+                        <input type="text" id="adm-shop-img" placeholder="https://images.unsplash.com/..." required>
+                        
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <div style="flex:1;">
+                                <label>Latitude:</label>
+                                <input type="text" id="adm-shop-lat" placeholder="-23.4800" required>
+                            </div>
+                            <div style="flex:1;">
+                                <label>Longitude:</label>
+                                <input type="text" id="adm-shop-lng" placeholder="-46.3500" required>
+                            </div>
+                        </div>
+                        <button type="button" onclick="fillCurrentLocationForShop()" style="background:#0288d1; border:none; color:#fff; padding:6px 10px; border-radius:4px; font-size:11px; margin-top:6px; cursor:pointer;"><i class="fa-solid fa-location-crosshairs"></i> Usar Minha Localização Atual</button>
+
+                        <button type="submit" class="btn-primary" style="margin-top: 10px;">Publicar no Mapa</button>
+                    </form>
                 </div>
             </div>
 
@@ -218,8 +254,7 @@
 
                 <div id="client-main-content">
                     
-                    <!-- DADOS DO CLIENTE COM UPLOAD DE SELFIE VIA CÂMERA/ARQUIVO -->
-                    <div class="card" style="background: rgba(238, 247, 254, 0.85);">
+                    <div class="card" style="background: rgba(238, 247, 254, 0.88);">
                         <h2><span><i class="fa-solid fa-user-pen"></i> Meus Dados & Selfie (Cliente)</span></h2>
                         <label>Seu Nome:</label>
                         <input type="text" id="client-profile-name" placeholder="Ex: Carlos Silva">
@@ -272,7 +307,7 @@
                         <div id="client-shops-list" style="max-height: 140px; overflow-y: auto;"></div>
                     </div>
 
-                    <div id="client-active-code-card" class="card" style="display: none; background: rgba(227, 242, 253, 0.9); border-color: #90caf9;">
+                    <div id="client-active-code-card" class="card" style="display: none; background: rgba(227, 242, 253, 0.92); border-color: #90caf9;">
                         <h2 style="color: #0288d1;"><i class="fa-solid fa-key"></i> Código de Liberação do Serviço</h2>
                         <p style="font-size: 12px; color: #111;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
                         <div class="pin-box">
@@ -339,7 +374,7 @@
                         <label>Referência / Local:</label>
                         <input type="text" id="reference" placeholder="Ex: Próximo ao KM 32">
 
-                        <div style="background: rgba(254, 243, 199, 0.9); border: 1px dashed #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #111;">
+                        <div style="background: rgba(254, 243, 199, 0.92); border: 1px dashed #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 12px; color: #111;">
                             <b>Resumo do Cálculo por KM:</b><br>
                             Total a Pagar no Final: <strong id="calculated-total-display" style="font-size:15px; color:#dc2626;">R$ 17,50</strong>
                         </div>
@@ -371,7 +406,6 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- PAINEL COMPLETO COM UPLOAD DE FOTO VIA CÂMERA/ARQUIVO -->
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-store"></i> Dados & Foto da Oficina</span></h2>
                         
@@ -389,7 +423,7 @@
                         <input type="text" id="edit-mech-address" placeholder="Ex: Av. Brasil, 500 - Itaquaquecetuba">
 
                         <label>Horário de Funcionamento (Abre / Fecha):</label>
-                        <input type="text" id="edit-mech-hours" placeholder="Ex: 08:00 às 18:00 (Plantão Noturno Ativo)">
+                        <input type="text" id="edit-mech-hours" placeholder="Ex: 08:00 às 18:00 (Plantão Noturno)">
 
                         <label>Contato para Chamadas à Noite (WhatsApp):</label>
                         <input type="tel" id="edit-mech-nightphone" placeholder="Ex: 11999998888">
@@ -411,7 +445,6 @@
                         <button type="button" class="btn-primary" style="margin-top: 12px; background: #2563eb;" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados</button>
                     </div>
 
-                    <!-- MAPA DO MECÂNICO -->
                     <div class="card card-mech" style="padding: 10px;">
                         <h2><span><i class="fa-solid fa-map"></i> Radar de Navegação do Chamado</span></h2>
                         <div class="map-box" style="margin-top: 8px; margin-bottom: 5px;">
@@ -420,7 +453,6 @@
                         <p style="font-size: 11px; color: #333;" id="mech-map-status-text">Fique Online para receber solicitações próximas via GPS.</p>
                     </div>
 
-                    <!-- LISTA DE CHAMADOS -->
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-list-check"></i> Lista de Chamados Disponíveis</span></h2>
                         <div id="orders-container" style="margin-top: 8px;"></div>
@@ -471,10 +503,22 @@
             </div>
         </div>
 
-        <!-- MODAL LISTA DE USUÁRIOS LOGADOS -->
+        <!-- MODAL DETALHES DE CONTA CONECTADA (ADMIN) -->
+        <div id="modal-account-detail" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-title"><i class="fa-solid fa-user-gear"></i> Detalhes da Conta Conectada</div>
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img id="admin-acc-img" src="" alt="Foto Perfil" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #0288d1; display: inline-block;">
+                </div>
+                <div class="mech-profile-box" id="admin-acc-info" style="line-height: 1.6;"></div>
+                <button type="button" class="btn-primary" style="background:#64748b; margin-top:10px;" onclick="closeAccountDetailModal()">Fechar</button>
+            </div>
+        </div>
+
+        <!-- MODAL LISTA DE USUÁRIOS LOGADOS (COM CLIQUE PARA VER DETALHES) -->
         <div id="modal-logged-users" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-title"><i class="fa-solid fa-users"></i> Usuários Logados (Ordem Alfabética)</div>
+                <div class="modal-title"><i class="fa-solid fa-users"></i> Contas Conectadas (Clique para Detalhes)</div>
                 <div id="admin-logged-users-list" style="max-height: 250px; overflow-y: auto; margin: 10px 0; font-size: 13px;">
                     <p style="text-align: center; color: #333;">Carregando...</p>
                 </div>
@@ -714,8 +758,11 @@
                 currentUser.name = document.getElementById('client-profile-name').value || "Motorista (Google)";
                 currentUser.phone = document.getElementById('client-profile-phone').value || "(11) 99999-9999";
                 if(!currentUser.selfie) currentUser.selfie = "https://images.unsplash.com/photo-1534528741775-53994a69daeb";
+                currentUser.type = "Cliente";
                 
                 localStorage.setItem('resgate_user', JSON.stringify(currentUser));
+                rtdb.ref('resgate_users_registry/client_' + Date.now()).set(currentUser);
+
                 document.getElementById('screen-welcome').classList.remove('active');
                 document.getElementById('role-client').classList.add('active');
                 initClientMap();
@@ -736,6 +783,7 @@
                     hours: "08:00 às 18:00",
                     negotiable: true,
                     online: false,
+                    type: role === 'winch' ? "Guincho" : "Mecânico",
                     lat: lat,
                     lng: lng
                 };
@@ -766,7 +814,9 @@
             if(!currentUser) currentUser = {};
             currentUser.name = document.getElementById('client-profile-name').value.trim() || "Motorista";
             currentUser.phone = document.getElementById('client-profile-phone').value.trim() || "(11) 99999-9999";
+            currentUser.type = "Cliente";
             localStorage.setItem('resgate_user', JSON.stringify(currentUser));
+            rtdb.ref('resgate_users_registry/client_current').set(currentUser);
             alert("✅ Dados do cliente salvos com sucesso!");
         }
 
@@ -814,29 +864,51 @@
                 document.getElementById('admin-total-revenue').innerText = "R$ " + totalRev.toFixed(2).replace('.', ',');
             });
 
+            // Carregar dados combinados para a lista de contas
             rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
-                rtdb.ref('resgate_orders').on('value', (orderSnap) => {
-                    var namesList = [];
+                rtdb.ref('resgate_users_registry').on('value', (userSnap) => {
+                    var accountsList = [];
+                    
                     if(mechSnap.exists()) {
                         mechSnap.forEach((child) => {
                             var m = child.val();
-                            if(m.name) namesList.push({ name: m.name + " (Prestador)", type: "prestador" });
+                            accountsList.push({
+                                id: m.id,
+                                name: m.name,
+                                type: m.type || "Mecânico / Prestador",
+                                phone: m.nightPhone || m.phone || "Não informado",
+                                photo: m.shopPhoto || "https://images.unsplash.com/photo-1581092335397-9583fe92d232",
+                                specialty: m.specialty,
+                                address: m.address
+                            });
                         });
                     }
-                    if(orderSnap.exists()) {
-                        orderSnap.forEach((child) => {
-                            var o = child.val();
-                            if(o.clientName && !namesList.some(n => n.name.includes(o.clientName))) {
-                                namesList.push({ name: o.clientName + " (Cliente)", type: "cliente" });
-                            }
+
+                    if(userSnap.exists()) {
+                        userSnap.forEach((child) => {
+                            var u = child.val();
+                            accountsList.push({
+                                id: 'CLI-' + Math.random(),
+                                name: u.name,
+                                type: "Cliente / Motorista",
+                                phone: u.phone || "Não informado",
+                                photo: u.selfie || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+                            });
                         });
                     }
-                    if(currentUser && currentUser.name && !namesList.some(n => n.name.includes(currentUser.name))) {
-                        namesList.push({ name: currentUser.name + " (Cliente)", type: "cliente" });
+
+                    if(currentUser && !accountsList.some(a => a.name === currentUser.name)) {
+                        accountsList.push({
+                            id: 'CLI-CURR',
+                            name: currentUser.name,
+                            type: "Cliente / Motorista",
+                            phone: currentUser.phone || "(11) 99999-9999",
+                            photo: currentUser.selfie || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+                        });
                     }
-                    namesList.sort((a, b) => a.name.localeCompare(b.name));
-                    document.getElementById('admin-logins-count').innerText = namesList.length;
-                    window.cachedLoggedUsers = namesList;
+
+                    document.getElementById('admin-logins-count').innerText = accountsList.length;
+                    window.cachedAccountsList = accountsList;
                 });
             });
 
@@ -860,15 +932,85 @@
             });
         }
 
+        function fillCurrentLocationForShop() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById('adm-shop-lat').value = pos.coords.latitude;
+                    document.getElementById('adm-shop-lng').value = pos.coords.longitude;
+                    alert("📍 Coordenadas GPS capturadas!");
+                }, function(err) {
+                    alert("⚠️ Erro ao obter GPS.");
+                });
+            }
+        }
+
+        function adminRegisterShop(e) {
+            e.preventDefault();
+            var latVal = parseFloat(document.getElementById('adm-shop-lat').value);
+            var lngVal = parseFloat(document.getElementById('adm-shop-lng').value);
+
+            var newShop = {
+                id: 'SHOP-' + Math.floor(Math.random()*90000+10000),
+                name: document.getElementById('adm-shop-name').value,
+                type: document.getElementById('adm-shop-type').value,
+                address: document.getElementById('adm-shop-addr').value,
+                phone: document.getElementById('adm-shop-phone').value,
+                hours: document.getElementById('adm-shop-hours').value,
+                img: document.getElementById('adm-shop-img').value,
+                lat: !isNaN(latVal) ? latVal : -23.4800,
+                lng: !isNaN(lngVal) ? lngVal : -46.3500
+            };
+
+            rtdb.ref('resgate_shops/' + newShop.id).set(newShop).then(() => {
+                alert("✅ Oficina cadastrada com sucesso e publicada no mapa!");
+                document.getElementById('adm-shop-name').value = '';
+                document.getElementById('adm-shop-addr').value = '';
+                document.getElementById('adm-shop-phone').value = '';
+                document.getElementById('adm-shop-hours').value = '';
+                document.getElementById('adm-shop-img').value = '';
+                document.getElementById('adm-shop-lat').value = '';
+                document.getElementById('adm-shop-lng').value = '';
+            });
+        }
+
         function openLoggedUsersModal() {
             var container = document.getElementById('admin-logged-users-list');
-            var users = window.cachedLoggedUsers || [];
+            var accounts = window.cachedAccountsList || [];
             var html = '';
-            users.forEach((u, index) => {
-                html += `<div style="padding:6px 8px; border-bottom:1px solid #eee;"><b>${index + 1}.</b> ${u.name}</div>`;
-            });
-            container.innerHTML = html || '<p style="text-align:center;">Nenhum usuário.</p>';
+            
+            if(accounts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#333;">Nenhuma conta conectada.</p>';
+            } else {
+                accounts.forEach((acc, index) => {
+                    html += `<div onclick="showAccountDetails('${acc.name}', '${acc.type}', '${acc.phone}', '${acc.photo}', '${acc.specialty || ''}', '${acc.address || ''}')" style="padding:8px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:10px; cursor:pointer; transition:background 0.2s;">
+                        <img src="${acc.photo}" style="width:36px; height:36px; object-fit:cover; border-radius:50%; border:1px solid #ccc;">
+                        <div>
+                            <b>${index + 1}. ${acc.name}</b> <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">${acc.type}</span><br>
+                            <span style="font-size:11px; color:#555;">📞 ${acc.phone}</span>
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
             document.getElementById('modal-logged-users').classList.add('active');
+        }
+
+        function showAccountDetails(name, type, phone, photo, specialty, address) {
+            document.getElementById('admin-acc-img').src = photo;
+            var detailsHtml = `
+                <p><b>Nome:</b> ${name}</p>
+                <p><b>Tipo de Conta:</b> ${type}</p>
+                <p><b>Telefone / WhatsApp:</b> ${phone}</p>
+                ${specialty ? `<p><b>Especialidade:</b> ${specialty}</p>` : ''}
+                ${address ? `<p><b>Endereço:</b> ${address}</p>` : ''}
+                <p style="color:#16a34a; font-weight:bold; margin-top:6px;">✔ Conta Verificada e Ativa</p>
+            `;
+            document.getElementById('admin-acc-info').innerHTML = detailsHtml;
+            document.getElementById('modal-account-detail').classList.add('active');
+        }
+
+        function closeAccountDetailModal() {
+            document.getElementById('modal-account-detail').classList.remove('active');
         }
 
         function closeLoggedUsersModal() { document.getElementById('modal-logged-users').classList.remove('active'); }
