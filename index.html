@@ -7,6 +7,7 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
@@ -226,7 +227,7 @@
                     </div>
                 </div>
 
-                <!-- NOVA SEÇÃO: OFICINAS JÁ CADASTRADAS (VER, EDITAR E CRAVAR GPS NA HORA) -->
+                <!-- SEÇÃO: OFICINAS JÁ CADASTRADAS (VER, EDITAR E CRAVAR GPS NA HORA) -->
                 <div class="card">
                     <h2><span><i class="fa-solid fa-warehouse"></i> Oficinas Cadastradas</span></h2>
                     <p style="font-size: 11px; color: #333; margin-bottom: 8px;">Edite dados, corrija coordenadas ou clique em <b>Cravar GPS</b> quando estiver em frente à oficina.</p>
@@ -678,8 +679,8 @@
                 <div id="closing-pix-box" style="margin-top: 10px; text-align: center;">
                     <p style="font-size: 11px; color: #333; font-weight:bold;">QR Code Pix Padrão Banco Central:</p>
                     <div style="background:#fff; padding:12px; border:1px solid #ddd; border-radius:16px; display:inline-block; margin-top:5px;">
-                        <img id="qr-code-img" src="" alt="QR Code Pix" style="width:150px; height:150px;">
-                        <p style="font-size: 12px; color:#16a34a; font-weight:bold; margin-top:4px;" id="qr-valor-label">Valor: R$ 0,00</p>
+                        <div id="qr-code-container" style="width:150px; height:150px; margin:0 auto; display:flex; align-items:center; justify-content:center;"></div>
+                        <p style="font-size: 12px; color:#16a34a; font-weight:bold; margin-top:6px;" id="qr-valor-label">Valor: R$ 0,00</p>
                         <p style="font-size: 11px; color:#dc2626; font-weight:bold;">RESGATE 24 HORAS LTDA</p>
                         <p style="font-size: 10px; color:#333;">CNPJ: 70.004.251/0001-20</p>
                     </div>
@@ -838,6 +839,35 @@
 
             let crc = computeCRC16(payloadWithoutCRC);
             return payloadWithoutCRC + crc;
+        }
+
+        function renderPixQrCode(payloadText) {
+            var qrContainer = document.getElementById('qr-code-container');
+            if (!qrContainer) return;
+            qrContainer.innerHTML = "";
+
+            if (typeof QRCode !== "undefined") {
+                try {
+                    new QRCode(qrContainer, {
+                        text: payloadText,
+                        width: 150,
+                        height: 150,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                    return;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            var fallbackImg = document.createElement('img');
+            fallbackImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(payloadText);
+            fallbackImg.alt = "QR Code Pix";
+            fallbackImg.style.width = "150px";
+            fallbackImg.style.height = "150px";
+            qrContainer.appendChild(fallbackImg);
         }
 
         function copyPixCodeToClipboard() {
@@ -1223,7 +1253,6 @@
                 document.getElementById('admin-total-revenue').innerText = formatBRL(totalRev);
             });
 
-            // LISTAR OFICINAS CADASTRADAS NO PAINEL ADMIN COM EDITAR, CRAVAR GPS E EXCLUIR
             rtdb.ref('resgate_shops').on('value', (snap) => {
                 var listEl = document.getElementById('admin-registered-shops-list');
                 cachedAdminShops = {};
@@ -1316,7 +1345,6 @@
             });
         }
 
-        // CRAVAR GPS NA HORA QUANDO PASSAR EM FRENTE À OFICINA
         function stampShopGpsNow(shopId) {
             var shop = cachedAdminShops[shopId];
             if (!shop) return;
@@ -2120,9 +2148,7 @@
             var pixNameToUse = (currentMechanic && currentMechanic.name) ? currentMechanic.name : "RESGATE 24 HORAS LTDA";
             
             currentPixCopyPaste = generateValidPixPayload(pixKeyToUse, pixNameToUse, "SAO PAULO", closingOrderTotal);
-            
-            var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentPixCopyPaste)}`;
-            document.getElementById('qr-code-img').src = qrUrl;
+            renderPixQrCode(currentPixCopyPaste);
             document.getElementById('qr-valor-label').innerText = "Valor: " + formatBRL(closingOrderTotal);
 
             document.getElementById('modal-complete-service').classList.add('active');
