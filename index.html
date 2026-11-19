@@ -131,6 +131,10 @@
         .btn-client-exit-bottom { background: rgba(220, 38, 38, 0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); color: #fff; padding: 9px 18px; border-radius: 50px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 
         .cash-change-box { background: rgba(255, 247, 237, 0.92); border: 1px solid #fb923c; border-radius: 14px; padding: 10px; margin-top: 10px; font-size: 12px; color: #111; }
+
+        .admin-shop-item { background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 10px; margin-bottom: 8px; font-size: 12px; color: #111; }
+        .admin-shop-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .btn-mini { border: 1px solid rgba(255,255,255,0.7); color: #fff; padding: 6px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; backdrop-filter: blur(6px); }
     </style>
 </head>
 <body>
@@ -222,6 +226,15 @@
                     </div>
                 </div>
 
+                <!-- NOVA SEÇÃO: OFICINAS JÁ CADASTRADAS (VER, EDITAR E CRAVAR GPS NA HORA) -->
+                <div class="card">
+                    <h2><span><i class="fa-solid fa-warehouse"></i> Oficinas Cadastradas</span></h2>
+                    <p style="font-size: 11px; color: #333; margin-bottom: 8px;">Edite dados, corrija coordenadas ou clique em <b>Cravar GPS</b> quando estiver em frente à oficina.</p>
+                    <div id="admin-registered-shops-list" style="max-height: 260px; overflow-y: auto;">
+                        <p style="font-size: 12px; color: #333;">Carregando oficinas...</p>
+                    </div>
+                </div>
+
                 <div class="card">
                     <h2><i class="fa-solid fa-store"></i> Cadastrar Oficina / Borracharia Manualmente</h2>
                     <form onsubmit="adminRegisterShop(event)">
@@ -252,10 +265,51 @@
                                 <input type="text" id="adm-shop-lng" placeholder="-46.3500" required>
                             </div>
                         </div>
-                        <button type="button" class="btn-primary" onclick="fillCurrentLocationForShop()" style="background: rgba(2, 136, 209, 0.78); font-size:12px; padding:8px;"><i class="fa-solid fa-location-crosshairs"></i> Usar Minha Localização Atual</button>
+                        <button type="button" class="btn-primary" onclick="fillCurrentLocationForShop()" style="background: rgba(2, 136, 209, 0.78); font-size:12px; padding:8px;"><i class="fa-solid fa-location-crosshairs"></i> Cravar GPS Atual no Cadastro</button>
 
                         <button type="submit" class="btn-primary" style="margin-top: 10px;">Publicar no Mapa</button>
                     </form>
+                </div>
+            </div>
+
+            <!-- MODAL EDITAR OFICINA CADASTRADA (ADMIN) -->
+            <div id="modal-edit-shop" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-title"><i class="fa-solid fa-pen-to-square"></i> Editar Oficina Cadastrada</div>
+                    <input type="hidden" id="edit-shop-id">
+                    <label>Nome do Estabelecimento:</label>
+                    <input type="text" id="edit-shop-name" required>
+                    <label>Tipo:</label>
+                    <select id="edit-shop-type">
+                        <option value="Borracharia">Borracharia</option>
+                        <option value="Oficina Mecânica">Oficina Mecânica</option>
+                        <option value="Auto Socorro / Guincho">Auto Socorro / Guincho</option>
+                    </select>
+                    <label>Endereço Completo:</label>
+                    <input type="text" id="edit-shop-addr" required>
+                    <label>Telefone / WhatsApp:</label>
+                    <input type="tel" id="edit-shop-phone" required>
+                    <label>Horário de Funcionamento:</label>
+                    <input type="text" id="edit-shop-hours" required>
+                    <label>Link Foto da Fachada (URL):</label>
+                    <input type="text" id="edit-shop-img" required>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <div style="flex:1;">
+                            <label>Latitude:</label>
+                            <input type="text" id="edit-shop-lat" required>
+                        </div>
+                        <div style="flex:1;">
+                            <label>Longitude:</label>
+                            <input type="text" id="edit-shop-lng" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-primary" style="background: rgba(2, 136, 209, 0.85); margin-top:10px; font-size:12px; padding:8px;" onclick="stampGpsInEditModal()">
+                        <i class="fa-solid fa-crosshairs"></i> Cravar GPS Agora (Local Atual)
+                    </button>
+                    <div style="display:flex; gap:8px; margin-top:12px;">
+                        <button type="button" class="btn-primary" style="background: rgba(100, 116, 139, 0.8); margin-top:0; flex:1;" onclick="closeEditShopModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" style="background: rgba(22, 163, 74, 0.88); margin-top:0; flex:1;" onclick="saveEditedShop()">Salvar Alterações</button>
+                    </div>
                 </div>
             </div>
 
@@ -586,7 +640,7 @@
             </div>
         </div>
 
-        <!-- MODAL FECHAMENTO DO MECÂNICO (PIX + PAGAMENTO EM DINHEIRO + TROCO ONLINE) -->
+        <!-- MODAL FECHAMENTO DO MECÂNICO -->
         <div id="modal-complete-service" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-star"></i> Receber e Finalizar Serviço</div>
@@ -598,7 +652,6 @@
                     <span id="closing-cash-details-line" style="display:none;"></span>
                 </div>
 
-                <!-- BLOCO EXCLUSIVO PARA PAGAMENTO EM DINHEIRO E TROCO ONLINE -->
                 <div id="mechanic-cash-change-section" class="cash-change-box" style="display:none;">
                     <p style="font-weight:bold; color:#c2410c; margin-bottom:6px;"><i class="fa-solid fa-money-bill-transfer"></i> Pagamento em Dinheiro — Troco pela Plataforma</p>
                     <label style="margin-top:4px;">Valor do Troco a Enviar Online ao Cliente (R$):</label>
@@ -702,6 +755,7 @@
         var shopMarkers = [];
         var activeSelectedShop = null;
         var selectedAccountToEditKey = null;
+        var cachedAdminShops = {};
 
         var clientLat = -23.4800;
         var clientLng = -46.3500;
@@ -1169,6 +1223,40 @@
                 document.getElementById('admin-total-revenue').innerText = formatBRL(totalRev);
             });
 
+            // LISTAR OFICINAS CADASTRADAS NO PAINEL ADMIN COM EDITAR, CRAVAR GPS E EXCLUIR
+            rtdb.ref('resgate_shops').on('value', (snap) => {
+                var listEl = document.getElementById('admin-registered-shops-list');
+                cachedAdminShops = {};
+                if (!snap.exists()) {
+                    listEl.innerHTML = '<p style="font-size:12px; color:#333;">Nenhuma oficina cadastrada ainda.</p>';
+                    return;
+                }
+                var html = '';
+                snap.forEach((child) => {
+                    var s = child.val();
+                    var shopId = s.id || child.key;
+                    s.id = shopId;
+                    cachedAdminShops[shopId] = s;
+
+                    html += `
+                        <div class="admin-shop-item">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <b>${s.name}</b>
+                                <span style="font-size:10px; background:#ffedd5; color:#c2410c; padding:2px 8px; border-radius:20px; font-weight:bold;">${s.type || 'Oficina'}</span>
+                            </div>
+                            <div style="color:#333; margin-top:3px;">📍 ${s.address || 'Sem endereço'} | 📞 ${s.phone || '--'}</div>
+                            <div style="color:#0369a1; font-size:11px; margin-top:2px;"><b>GPS:</b> ${parseFloat(s.lat || 0).toFixed(6)}, ${parseFloat(s.lng || 0).toFixed(6)}</div>
+                            <div class="admin-shop-actions">
+                                <button type="button" class="btn-mini" style="background:rgba(2, 136, 209, 0.88);" onclick="stampShopGpsNow('${shopId}')"><i class="fa-solid fa-crosshairs"></i> Cravar GPS</button>
+                                <button type="button" class="btn-mini" style="background:rgba(234, 88, 12, 0.88);" onclick="openEditShopModal('${shopId}')"><i class="fa-solid fa-pen"></i> Editar</button>
+                                <button type="button" class="btn-mini" style="background:rgba(220, 38, 38, 0.85);" onclick="deleteRegisteredShop('${shopId}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            });
+
             rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
                 rtdb.ref('resgate_users_registry').on('value', (userSnap) => {
                     var accountsList = [];
@@ -1228,15 +1316,104 @@
             });
         }
 
+        // CRAVAR GPS NA HORA QUANDO PASSAR EM FRENTE À OFICINA
+        function stampShopGpsNow(shopId) {
+            var shop = cachedAdminShops[shopId];
+            if (!shop) return;
+            if (!navigator.geolocation) {
+                alert("⚠️ Geolocalização não disponível neste navegador.");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var newLat = parseFloat(pos.coords.latitude.toFixed(6));
+                var newLng = parseFloat(pos.coords.longitude.toFixed(6));
+                rtdb.ref('resgate_shops/' + shopId).update({
+                    lat: newLat,
+                    lng: newLng
+                }).then(() => {
+                    alert(`📍 GPS cravado para "${shop.name}"!\nLat: ${newLat} | Lng: ${newLng}`);
+                });
+            }, function() {
+                alert("⚠️ Não foi possível capturar o GPS. Verifique a permissão de localização.");
+            }, { enableHighAccuracy: true });
+        }
+
+        function openEditShopModal(shopId) {
+            var s = cachedAdminShops[shopId];
+            if (!s) return;
+            document.getElementById('edit-shop-id').value = shopId;
+            document.getElementById('edit-shop-name').value = s.name || '';
+            document.getElementById('edit-shop-type').value = s.type || 'Oficina Mecânica';
+            document.getElementById('edit-shop-addr').value = s.address || '';
+            document.getElementById('edit-shop-phone').value = s.phone || '';
+            document.getElementById('edit-shop-hours').value = s.hours || '';
+            document.getElementById('edit-shop-img').value = s.img || '';
+            document.getElementById('edit-shop-lat').value = s.lat || '';
+            document.getElementById('edit-shop-lng').value = s.lng || '';
+            document.getElementById('modal-edit-shop').classList.add('active');
+        }
+
+        function closeEditShopModal() {
+            document.getElementById('modal-edit-shop').classList.remove('active');
+        }
+
+        function stampGpsInEditModal() {
+            if (!navigator.geolocation) {
+                alert("⚠️ Geolocalização não disponível neste navegador.");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                document.getElementById('edit-shop-lat').value = pos.coords.latitude.toFixed(6);
+                document.getElementById('edit-shop-lng').value = pos.coords.longitude.toFixed(6);
+                alert("📍 Coordenadas GPS atualizadas no formulário!");
+            }, function() {
+                alert("⚠️ Erro ao obter GPS.");
+            }, { enableHighAccuracy: true });
+        }
+
+        function saveEditedShop() {
+            var shopId = document.getElementById('edit-shop-id').value;
+            if (!shopId) return;
+            var latVal = parseFloat(document.getElementById('edit-shop-lat').value);
+            var lngVal = parseFloat(document.getElementById('edit-shop-lng').value);
+
+            var updatedShop = {
+                id: shopId,
+                name: document.getElementById('edit-shop-name').value.trim(),
+                type: document.getElementById('edit-shop-type').value,
+                address: document.getElementById('edit-shop-addr').value.trim(),
+                phone: document.getElementById('edit-shop-phone').value.trim(),
+                hours: document.getElementById('edit-shop-hours').value.trim(),
+                img: document.getElementById('edit-shop-img').value.trim(),
+                lat: !isNaN(latVal) ? latVal : -23.4800,
+                lng: !isNaN(lngVal) ? lngVal : -46.3500
+            };
+
+            rtdb.ref('resgate_shops/' + shopId).update(updatedShop).then(() => {
+                closeEditShopModal();
+                alert("✅ Dados da oficina atualizados com sucesso!");
+            });
+        }
+
+        function deleteRegisteredShop(shopId) {
+            var s = cachedAdminShops[shopId];
+            var nome = s ? s.name : shopId;
+            if (confirm(`Deseja excluir a oficina "${nome}" do mapa?`)) {
+                rtdb.ref('resgate_shops/' + shopId).remove().then(() => {
+                    alert("🗑️ Oficina removida.");
+                });
+            }
+        }
+
         function fillCurrentLocationForShop() {
             if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(pos) {
-                    document.getElementById('adm-shop-lat').value = pos.coords.latitude;
-                    document.getElementById('adm-shop-lng').value = pos.coords.longitude;
+                    document.getElementById('adm-shop-lat').value = pos.coords.latitude.toFixed(6);
+                    document.getElementById('adm-shop-lng').value = pos.coords.longitude.toFixed(6);
                     alert("📍 Coordenadas GPS capturadas!");
                 }, function(err) {
                     alert("⚠️ Erro ao obter GPS.");
-                });
+                }, { enableHighAccuracy: true });
             }
         }
 
