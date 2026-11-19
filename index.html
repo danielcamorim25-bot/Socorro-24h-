@@ -52,7 +52,6 @@
         .welcome-title { font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
         .welcome-subtitle { font-size: 14px; color: #f3f4f6; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
         
-        /* BOTÕES BALÃO TRANSLÚCIDOS */
         .role-card-btn { width: 100%; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.65); border-radius: 50px; padding: 14px 22px; margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: 0.25s; box-shadow: 0 8px 25px rgba(0,0,0,0.35); }
         .role-card-btn:active { transform: scale(0.97); }
         .role-card-btn i { font-size: 26px; min-width: 36px; text-align: center; }
@@ -130,6 +129,8 @@
         .saved-account-pill { background: rgba(224, 242, 254, 0.85); border: 1px solid #0288d1; border-radius: 50px; padding: 6px 12px; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #0369a1; cursor: pointer; }
         .client-bottom-exit-row { display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: 55px; }
         .btn-client-exit-bottom { background: rgba(220, 38, 38, 0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); color: #fff; padding: 9px 18px; border-radius: 50px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        .cash-change-box { background: rgba(255, 247, 237, 0.92); border: 1px solid #fb923c; border-radius: 14px; padding: 10px; margin-top: 10px; font-size: 12px; color: #111; }
     </style>
 </head>
 <body>
@@ -264,7 +265,6 @@
 
                 <div id="client-main-content">
                     
-                    <!-- CARD DE DADOS DO CLIENTE (COLAPSÁVEL APÓS SALVAR + AUTOCOMPLETE DE CONTAS SALVAS) -->
                     <div class="card" id="client-profile-card" style="background: rgba(238, 247, 254, 0.78);">
                         <h2>
                             <span><i class="fa-solid fa-user-pen"></i> Meus Dados & Selfie (Cliente)</span>
@@ -340,6 +340,9 @@
                             <b>Prestador:</b> <span id="display-accepted-mech">--</span><br>
                             <b>Distância Calculada:</b> <span id="display-accepted-km">-- km</span><br>
                             <b>Total a Pagar no Final:</b> <strong id="display-accepted-total" style="font-size:16px; color:#dc2626;">R$ 0,00</strong>
+                            <div id="client-online-change-alert" style="display:none; margin-top:6px; padding:6px 10px; background:#dcfce7; border:1px solid #16a34a; border-radius:10px; color:#15803d; font-weight:bold;">
+                                💸 Troco Online Enviado pela Plataforma: <span id="client-online-change-amount">R$ 0,00</span>
+                            </div>
                         </div>
 
                         <p style="font-size: 12px; color: #111;">Passe este código para o mecânico <u>apenas quando o serviço for concluído</u>:</p>
@@ -360,7 +363,6 @@
                         <button type="button" class="btn-primary" style="background: rgba(220, 38, 38, 0.78); margin-top:10px;" onclick="cancelClientOrder()"><i class="fa-solid fa-ban"></i> Cancelar Chamado em Andamento</button>
                     </div>
 
-                    <!-- CARD DE SOLICITAÇÃO (CÁLCULO AUTOMÁTICO SEM EDIÇÃO MANUAL DE KM) -->
                     <div class="card" id="client-form-card">
                         <h2><span><i class="fa-solid fa-screwdriver-wrench"></i> Detalhes do Socorro</span></h2>
 
@@ -399,8 +401,10 @@
                         </div>
 
                         <div id="cash-troco-box" style="display: none; margin-top: 8px;">
-                            <label style="color:#c2410c;">Precisa de troco para quanto?</label>
-                            <input type="text" id="client-troco-input" placeholder="Ex: Troco para R$ 50,00">
+                            <label style="color:#c2410c;">Valor em dinheiro que você vai entregar (ex: 50.00):</label>
+                            <input type="number" step="0.01" id="client-cash-given-input" placeholder="Ex: 50.00">
+                            <label style="color:#c2410c;">Observação de troco (opcional):</label>
+                            <input type="text" id="client-troco-input" placeholder="Ex: Se não tiver nota, pode mandar troco online">
                         </div>
 
                         <label>Referência / Local:</label>
@@ -411,7 +415,6 @@
                         </button>
                     </div>
 
-                    <!-- BOTÃO SAIR NO CANTINHO INFERIOR DO CLIENTE -->
                     <div class="client-bottom-exit-row">
                         <button type="button" class="btn-client-exit-bottom" onclick="logoutAndSaveHistory()">
                             <i class="fa-solid fa-right-from-bracket"></i> Sair da Conta
@@ -429,7 +432,7 @@
                     <div class="wallet-card wallet-card-mech">
                         <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira (Saldo Líquido)</span>
                         <div class="wallet-balance" id="mech-wallet-balance">R$ 0,00</div>
-                        <p style="font-size: 11px; opacity: 0.85;">Pagamentos em dinheiro geram débito de comissão.</p>
+                        <p style="font-size: 11px; opacity: 0.85;">Pagamentos em dinheiro ou troco online ajustam o saldo (pode ficar negativo).</p>
                     </div>
 
                     <div class="status-toggle">
@@ -440,7 +443,6 @@
                         <button id="toggle-status-btn" class="status-btn" onclick="toggleStatus()">Ficar Online</button>
                     </div>
 
-                    <!-- CARD DE DADOS DO MECÂNICO (COLAPSÁVEL APÓS SALVAR) -->
                     <div class="card card-mech" id="mech-profile-card">
                         <h2>
                             <span><i class="fa-solid fa-store"></i> Dados & Foto da Oficina</span>
@@ -584,11 +586,27 @@
             </div>
         </div>
 
-        <!-- MODAL FECHAMENTO DO MECÂNICO (PIX PADRÃO BANCO CENTRAL EMV + CRC16) -->
+        <!-- MODAL FECHAMENTO DO MECÂNICO (PIX + PAGAMENTO EM DINHEIRO + TROCO ONLINE) -->
         <div id="modal-complete-service" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title"><i class="fa-solid fa-star"></i> Receber e Finalizar Serviço</div>
-                <p style="font-size: 12px; color: #333; text-align: center;">Peça o PIN ao cliente, receba o pagamento e deixe sua avaliação:</p>
+                <p style="font-size: 12px; color: #333; text-align: center;">Peça o PIN ao cliente, confirme o pagamento e deixe sua avaliação:</p>
+
+                <div class="mech-profile-box" id="closing-order-summary" style="font-size:12px;">
+                    <b>Forma de Pagamento do Cliente:</b> <span id="closing-pay-mode-label">PIX</span><br>
+                    <b>Valor do Serviço:</b> <span id="closing-service-val-label">R$ 0,00</span><br>
+                    <span id="closing-cash-details-line" style="display:none;"></span>
+                </div>
+
+                <!-- BLOCO EXCLUSIVO PARA PAGAMENTO EM DINHEIRO E TROCO ONLINE -->
+                <div id="mechanic-cash-change-section" class="cash-change-box" style="display:none;">
+                    <p style="font-weight:bold; color:#c2410c; margin-bottom:6px;"><i class="fa-solid fa-money-bill-transfer"></i> Pagamento em Dinheiro — Troco pela Plataforma</p>
+                    <label style="margin-top:4px;">Valor do Troco a Enviar Online ao Cliente (R$):</label>
+                    <input type="number" step="0.01" min="0" id="mechanic-online-change-input" placeholder="Ex: 32.50" oninput="updateCashChangePreview()">
+                    <p id="cash-change-balance-impact" style="font-size:11px; color:#b91c1c; font-weight:bold; margin-top:6px;">
+                        O valor do troco online será debitado do seu saldo (podendo deixar seu saldo negativo) e enviado ao cliente como troco online.
+                    </p>
+                </div>
 
                 <label>PIN de 4 Dígitos do Cliente:</label>
                 <input type="text" id="input-closing-pin" maxlength="4" placeholder="Ex: 4829" style="text-align:center; font-size:18px; letter-spacing:4px;">
@@ -701,10 +719,15 @@
         var currentPixCopyPaste = "";
         var completedOrderForReview = null;
 
-        // CÁLCULO REAL DE DISTÂNCIA GPS (HAVERSINE EM KM)
+        function formatBRL(num) {
+            var val = parseFloat(num || 0);
+            var sign = val < 0 ? "- " : "";
+            return sign + "R$ " + Math.abs(val).toFixed(2).replace('.', ',');
+        }
+
         function calculateDistanceKm(lat1, lon1, lat2, lon2) {
             if (!lat1 || !lon1 || !lat2 || !lon2) return 5.0;
-            var R = 6371; // Raio da Terra em km
+            var R = 6371;
             var dLat = (lat2 - lat1) * Math.PI / 180;
             var dLon = (lon2 - lon1) * Math.PI / 180;
             var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -715,7 +738,6 @@
             return Math.max(0.5, parseFloat(d.toFixed(1)));
         }
 
-        // GERADOR OFICIAL DE PAYLOAD PIX EMV + CRC16-CCITT (VÁLIDO EM TODOS OS BANCOS)
         function computeCRC16(payload) {
             let crc = 0xFFFF;
             for (let i = 0; i < payload.length; i++) {
@@ -737,9 +759,8 @@
         }
 
         function generateValidPixPayload(pixKey, merchantName, merchantCity, amountFloat) {
-            // Limpa caracteres especiais para compatibilidade bancária estrita
             let cleanKey = pixKey.replace(/[^a-zA-Z0-9@.\-+]/g, '');
-            if (!cleanKey) cleanKey = "70004251000120"; // Fallback CNPJ
+            if (!cleanKey) cleanKey = "70004251000120";
 
             let cleanName = merchantName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 25).toUpperCase() || "RESGATE 24 HORAS";
             let cleanCity = merchantCity.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 15).toUpperCase() || "SAO PAULO";
@@ -781,7 +802,7 @@
         function botReply(action) {
             var stream = document.getElementById('bot-chat-stream');
             if(!stream) return;
-            var text = (action === 'como') ? "O Resgate 24 Horas detecta via GPS a oficina mais próxima e calcula o valor automaticamente. Você só paga ao concluir!" : "Você pode pagar via Pix (QR Code válido em todos os bancos) ou em dinheiro (informando se precisa de troco).";
+            var text = (action === 'como') ? "O Resgate 24 Horas detecta via GPS a oficina mais próxima e calcula o valor automaticamente. Você só paga ao concluir!" : "Você pode pagar via Pix (QR Code válido em todos os bancos) ou em dinheiro (com opção de receber troco online pela plataforma).";
             stream.innerHTML += `<div class="bot-msg user">${action === 'como' ? 'Como funciona?' : 'Sobre o Pagamento'}</div>`;
             stream.innerHTML += `<div class="bot-msg">${text}</div>`;
             stream.scrollTop = stream.scrollHeight;
@@ -827,7 +848,6 @@
             goToWelcome();
         };
 
-        // MEMÓRIA DE PERFIS SALVOS DO CLIENTE (AO DIGITAR NOME OU TELEFONE)
         function saveUserToHistoryRegistry(userObj) {
             if (!userObj || !userObj.name) return;
             var history = JSON.parse(localStorage.getItem('resgate_saved_clients_history') || '[]');
@@ -1146,7 +1166,7 @@
                     var o = child.val();
                     if(o.status === 'completed') totalRev += parseFloat(o.clientTotal || 0);
                 });
-                document.getElementById('admin-total-revenue').innerText = "R$ " + totalRev.toFixed(2).replace('.', ',');
+                document.getElementById('admin-total-revenue').innerText = formatBRL(totalRev);
             });
 
             rtdb.ref('resgate_mechanics').on('value', (mechSnap) => {
@@ -1363,7 +1383,10 @@
         function loadMechanicWallet() {
             if(!currentMechanic) return;
             rtdb.ref('resgate_wallets/' + currentMechanic.id).on('value', (snap) => {
-                document.getElementById('mech-wallet-balance').innerText = "R$ " + parseFloat(snap.val() || 0).toFixed(2).replace('.', ',');
+                var bal = parseFloat(snap.val() || 0);
+                var el = document.getElementById('mech-wallet-balance');
+                el.innerText = formatBRL(bal);
+                el.style.color = bal < 0 ? '#fecaca' : '#ffffff';
             });
         }
 
@@ -1436,7 +1459,6 @@
                         });
                     }
 
-                    // ORDENA PELA MENOR DISTÂNCIA (MAIS PRÓXIMO PRIMEIRO)
                     combinedProviders.sort((a, b) => a._distanceKm - b._distanceKm);
 
                     if (combinedProviders.length > 0) {
@@ -1536,7 +1558,7 @@
         function openConfirmationModal() {
             document.getElementById('modal-nearest-name').innerText = nearestProviderData.name;
             document.getElementById('modal-km-text').innerText = nearestProviderData.distanceKm + " km";
-            document.getElementById('modal-pay-mode-text').innerText = selectedPaymentMethod.toUpperCase();
+            document.getElementById('modal-pay-mode-text').innerText = selectedPaymentMethod === 'cash' ? 'DINHEIRO' : 'PIX';
             document.getElementById('modal-confirm').classList.add('active');
         }
 
@@ -1554,7 +1576,8 @@
                 if (customText) finalProblemDesc = "Outros: " + customText;
             }
 
-            var trocoInfo = document.getElementById('client-troco-input').value.trim() || 'Sem troco';
+            var cashGiven = parseFloat(document.getElementById('client-cash-given-input').value || 0);
+            var trocoInfo = document.getElementById('client-troco-input').value.trim() || (cashGiven > 0 ? ("Nota entregue: R$ " + cashGiven.toFixed(2)) : 'Sem troco');
             var autoKm = nearestProviderData.distanceKm || 5.0;
             var autoTotal = autoKm * 3.50;
             var autoMechGain = autoKm * 3.00;
@@ -1563,13 +1586,15 @@
             navigator.geolocation.getCurrentPosition(function(pos) {
                 clientLat = pos.coords.latitude;
                 clientLng = pos.coords.longitude;
-                createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, autoKm, autoTotal, autoMechGain, autoFee, clientLat, clientLng);
+                createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, cashGiven, autoKm, autoTotal, autoMechGain, autoFee, clientLat, clientLng);
             }, function() {
-                createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, autoKm, autoTotal, autoMechGain, autoFee, clientLat, clientLng);
+                createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, cashGiven, autoKm, autoTotal, autoMechGain, autoFee, clientLat, clientLng);
             });
         }
 
-        function createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, autoKm, autoTotal, autoMechGain, autoFee, lat, lng) {
+        function createAndPushOrder(orderId, pin, finalProblemDesc, trocoInfo, cashGiven, autoKm, autoTotal, autoMechGain, autoFee, lat, lng) {
+            var suggestedChange = (selectedPaymentMethod === 'cash' && cashGiven > autoTotal) ? (cashGiven - autoTotal) : 0;
+
             var newOrder = {
                 id: orderId,
                 clientName: currentUser ? currentUser.name : "Cliente",
@@ -1579,6 +1604,9 @@
                 locationContext: selectedLocationContext,
                 problem: finalProblemDesc,
                 paymentMode: selectedPaymentMethod,
+                cashGiven: cashGiven.toFixed(2),
+                suggestedChange: suggestedChange.toFixed(2),
+                onlineChangeSent: 0,
                 trocoDetails: trocoInfo,
                 reference: document.getElementById('reference').value || 'Não informada',
                 distanceKm: autoKm.toFixed(1),
@@ -1638,7 +1666,15 @@
                         document.getElementById('client-active-code-card').style.display = 'block';
                         document.getElementById('display-accepted-mech').innerText = o.mechanicName || "Oficina Parceira";
                         document.getElementById('display-accepted-km').innerText = (o.distanceKm || "3.5") + " km";
-                        document.getElementById('display-accepted-total').innerText = "R$ " + parseFloat(o.clientTotal || 0).toFixed(2).replace('.', ',');
+                        document.getElementById('display-accepted-total').innerText = formatBRL(o.clientTotal || 0);
+
+                        var onlineChangeVal = parseFloat(o.onlineChangeSent || 0);
+                        if (onlineChangeVal > 0) {
+                            document.getElementById('client-online-change-alert').style.display = 'block';
+                            document.getElementById('client-online-change-amount').innerText = formatBRL(onlineChangeVal);
+                        } else {
+                            document.getElementById('client-online-change-alert').style.display = 'none';
+                        }
                         
                         if(o.mechanicLat && o.mechanicLng && mapClient) {
                             var mechPos = [o.mechanicLat, o.mechanicLng];
@@ -1650,7 +1686,6 @@
                             mapClient.panTo(mechPos);
                         }
                     } else if(o.status === 'completed') {
-                        // QUANDO O MECÂNICO CONCLUIR E CONFIRMAR O RECEBIMENTO, ABRE A AVALIAÇÃO PARA O CLIENTE
                         completedOrderForReview = o;
                         document.getElementById('rate-mech-name-label').innerText = o.mechanicName || "Oficina Parceira";
                         document.getElementById('modal-client-rate-mech').classList.add('active');
@@ -1692,7 +1727,7 @@
                             document.getElementById('client-active-code-card').style.display = 'block';
                             document.getElementById('display-accepted-mech').innerText = o.mechanicName || "Oficina Parceira";
                             document.getElementById('display-accepted-km').innerText = (o.distanceKm || "3.5") + " km";
-                            document.getElementById('display-accepted-total').innerText = "R$ " + parseFloat(o.clientTotal || 0).toFixed(2).replace('.', ',');
+                            document.getElementById('display-accepted-total').innerText = formatBRL(o.clientTotal || 0);
                         } else {
                             document.getElementById('searching-radar').style.display = 'block';
                             document.getElementById('client-active-code-card').style.display = 'none';
@@ -1802,6 +1837,7 @@
                     if(d.status === 'completed' || d.status === 'cancelled') return;
 
                     var realDist = currentMechanic ? calculateDistanceKm(currentMechanic.lat, currentMechanic.lng, d.lat, d.lng) : (d.distanceKm || 3.5);
+                    var payLabel = d.paymentMode === 'cash' ? 'DINHEIRO' : 'PIX';
 
                     if(d.status === 'accepted' && d.mechanicId === currentMechanic.id) {
                         activeOrderId = d.id;
@@ -1809,9 +1845,13 @@
                             <div class="order-card" style="background:rgba(232, 245, 233, 0.92);">
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
                                     <img src="${d.clientSelfie || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
-                                    <div><b>Cliente: ${d.clientName}</b><br><span style="font-size:11px;">Problema: ${d.problem} | Valor: <b>R$ ${parseFloat(d.clientTotal).toFixed(2).replace('.', ',')}</b></span></div>
+                                    <div>
+                                        <b>Cliente: ${d.clientName}</b><br>
+                                        <span style="font-size:11px;">Problema: ${d.problem} | Pgto: <b>${payLabel}</b> | Valor: <b>${formatBRL(d.clientTotal)}</b></span>
+                                        ${d.paymentMode === 'cash' ? `<br><span style="font-size:11px; color:#c2410c;"><b>Troco:</b> ${d.trocoDetails || 'Verificar'}</span>` : ''}
+                                    </div>
                                 </div>
-                                <button class="btn-primary" style="background: rgba(234, 88, 12, 0.88); margin-top:8px;" onclick="openClosingModal('${d.id}', '${d.clientTotal}', '${d.paymentMode}', '${d.trocoDetails}')">Receber Pagamento e Finalizar</button>
+                                <button class="btn-primary" style="background: rgba(234, 88, 12, 0.88); margin-top:8px;" onclick="openClosingModal('${d.id}', '${d.clientTotal}', '${d.paymentMode}', '${d.trocoDetails || ''}', '${d.cashGiven || 0}', '${d.suggestedChange || 0}')">Receber Pagamento e Finalizar</button>
                                 <div class="chat-box-container" style="height:120px; margin-top:8px;">
                                     <div class="chat-messages" id="mech-chat-messages"></div>
                                     <div class="chat-input-row">
@@ -1828,7 +1868,7 @@
                             <div class="order-card">
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
                                     <img src="${d.clientSelfie || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
-                                    <div><b>🚨 ${d.problem} (${realDist} km)</b><br><span style="font-size:12px;">Cliente: ${d.clientName} | Pagamento: <b>${d.paymentMode.toUpperCase()}</b></span></div>
+                                    <div><b>🚨 ${d.problem} (${realDist} km)</b><br><span style="font-size:12px;">Cliente: ${d.clientName} | Pagamento: <b>${payLabel}</b></span></div>
                                 </div>
                                 ${canAccept ? 
                                     `<button class="btn-primary" style="background: rgba(22, 163, 74, 0.85); margin-top:6px;" onclick="acceptOrder('${d.id}', ${d.lat}, ${d.lng})"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>` :
@@ -1866,27 +1906,59 @@
                 platformFee: finalFee.toFixed(2)
             });
             activeOrderId = orderId;
-            alert(`✅ Chamado aceito! Distância: ${exactDist} km | Valor total calculado: R$ ${finalClientTotal.toFixed(2).replace('.', ',')}`);
+            alert(`✅ Chamado aceito! Distância: ${exactDist} km | Valor total calculado: ${formatBRL(finalClientTotal)}`);
         }
 
         var closingOrderId = null;
         var closingOrderTotal = 0;
+        var closingPaymentMode = 'pix';
 
-        function openClosingModal(orderId, totalVal, paymentMode, trocoInfo) {
+        function openClosingModal(orderId, totalVal, paymentMode, trocoInfo, cashGivenVal, suggestedChangeVal) {
             closingOrderId = orderId;
-            closingOrderTotal = parseFloat(totalVal);
+            closingOrderTotal = parseFloat(totalVal || 0);
+            closingPaymentMode = paymentMode || 'pix';
+
+            document.getElementById('closing-pay-mode-label').innerText = closingPaymentMode === 'cash' ? 'DINHEIRO' : 'PIX';
+            document.getElementById('closing-service-val-label').innerText = formatBRL(closingOrderTotal);
+
+            var cashSection = document.getElementById('mechanic-cash-change-section');
+            var cashDetailsLine = document.getElementById('closing-cash-details-line');
+            var changeInput = document.getElementById('mechanic-online-change-input');
+
+            if (closingPaymentMode === 'cash') {
+                cashSection.style.display = 'block';
+                cashDetailsLine.style.display = 'block';
+                var givenFloat = parseFloat(cashGivenVal || 0);
+                var sugFloat = parseFloat(suggestedChangeVal || 0);
+                cashDetailsLine.innerHTML = `<b>Detalhe Dinheiro:</b> ${trocoInfo || 'Sem observação'}${givenFloat > 0 ? ` | Entregue: ${formatBRL(givenFloat)}` : ''}`;
+                changeInput.value = sugFloat > 0 ? sugFloat.toFixed(2) : "0.00";
+                updateCashChangePreview();
+            } else {
+                cashSection.style.display = 'none';
+                cashDetailsLine.style.display = 'none';
+                changeInput.value = "0.00";
+            }
             
             var pixKeyToUse = (currentMechanic && currentMechanic.pixKey) ? currentMechanic.pixKey : "70004251000120";
             var pixNameToUse = (currentMechanic && currentMechanic.name) ? currentMechanic.name : "RESGATE 24 HORAS LTDA";
             
-            // GERA O PAYLOAD PIX OFICIAL COM CRC16 VÁLIDO PARA TODOS OS BANCOS
             currentPixCopyPaste = generateValidPixPayload(pixKeyToUse, pixNameToUse, "SAO PAULO", closingOrderTotal);
             
             var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentPixCopyPaste)}`;
             document.getElementById('qr-code-img').src = qrUrl;
-            document.getElementById('qr-valor-label').innerText = "Valor: R$ " + closingOrderTotal.toFixed(2).replace('.', ',');
+            document.getElementById('qr-valor-label').innerText = "Valor: " + formatBRL(closingOrderTotal);
 
             document.getElementById('modal-complete-service').classList.add('active');
+        }
+
+        function updateCashChangePreview() {
+            var changeAmt = parseFloat(document.getElementById('mechanic-online-change-input').value || 0);
+            var impactEl = document.getElementById('cash-change-balance-impact');
+            if (changeAmt > 0) {
+                impactEl.innerText = `Será enviado ${formatBRL(changeAmt)} como troco online ao cliente e debitado do seu saldo (podendo deixar seu saldo negativo).`;
+            } else {
+                impactEl.innerText = `Nenhum troco online será debitado (troco zerado ou entregue diretamente em espécie).`;
+            }
         }
 
         function closeClosingModal() { document.getElementById('modal-complete-service').classList.remove('active'); }
@@ -1895,6 +1967,7 @@
             var pinInput = document.getElementById('input-closing-pin').value.trim();
             var stars = document.getElementById('review-stars-input').value;
             var comment = document.getElementById('review-comment-input').value.trim() || "Cliente pontual e educado.";
+            var onlineChangeToSend = (closingPaymentMode === 'cash') ? Math.max(0, parseFloat(document.getElementById('mechanic-online-change-input').value || 0)) : 0;
 
             rtdb.ref('resgate_orders/' + closingOrderId).once('value', (snap) => {
                 var order = snap.val();
@@ -1903,7 +1976,6 @@
                     return;
                 }
 
-                // REGISTRA AVALIAÇÃO DO MECÂNICO SOBRE O CLIENTE
                 rtdb.ref('resgate_client_reviews').push({
                     clientName: order.clientName,
                     rating: stars,
@@ -1913,18 +1985,25 @@
                 });
 
                 var mechKey = currentMechanic.id;
-                var mechGain = parseFloat(order.mechPay);
-                var platformCommission = parseFloat(order.platformFee);
-                var netAdjustment = (order.paymentMode === 'pix') ? mechGain : (mechGain - platformCommission);
+                var mechGain = parseFloat(order.mechPay || 0);
+                var platformCommission = parseFloat(order.platformFee || 0);
+                var netAdjustment = (order.paymentMode === 'pix') ? mechGain : (mechGain - platformCommission - onlineChangeToSend);
 
                 rtdb.ref('resgate_wallets/' + mechKey).transaction((curr) => {
-                    return (curr || 0) + netAdjustment;
+                    return parseFloat(((curr || 0) + netAdjustment).toFixed(2));
                 }, (err, committed) => {
                     if(committed) {
-                        rtdb.ref('resgate_orders/' + closingOrderId).update({ status: 'completed' }).then(() => {
+                        rtdb.ref('resgate_orders/' + closingOrderId).update({
+                            status: 'completed',
+                            onlineChangeSent: onlineChangeToSend.toFixed(2)
+                        }).then(() => {
                             closeClosingModal();
                             activeOrderId = null;
-                            alert("✅ Serviço Concluído com Sucesso! Pagamento confirmado e avaliação do cliente enviada.");
+                            var msg = "✅ Serviço Concluído com Sucesso!";
+                            if (onlineChangeToSend > 0) {
+                                msg += `\n💸 Troco online de ${formatBRL(onlineChangeToSend)} enviado ao cliente e debitado do seu saldo.`;
+                            }
+                            alert(msg);
                         });
                     }
                 });
