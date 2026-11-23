@@ -96,8 +96,14 @@
         .floating-support-btn { background: rgba(34, 197, 94, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
         .wallet-card { background: linear-gradient(135deg, rgba(22, 101, 52, 0.78), rgba(20, 83, 45, 0.78)); backdrop-filter: blur(10px); color: #fff; border-radius: 20px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.45); }
-        .wallet-card-mech { background: linear-gradient(135deg, rgba(30, 64, 175, 0.78), rgba(30, 58, 138, 0.78)); }
+        .wallet-card-mech { background: linear-gradient(135deg, rgba(30, 64, 175, 0.84), rgba(23, 37, 84, 0.88)); cursor: pointer; transition: 0.2s; }
+        .wallet-card-mech:active { transform: scale(0.99); }
         .wallet-balance { font-size: 26px; font-weight: bold; margin: 8px 0; }
+        .wallet-action-pill { background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.55); color: #fff; padding: 7px 14px; border-radius: 50px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .wallet-withdraw-panel { background: rgba(255, 255, 255, 0.92); color: #111; border-radius: 16px; padding: 14px; margin-top: 12px; border: 1px solid rgba(255, 255, 255, 0.8); display: none; }
+        .wallet-step-path { background: #eff6ff; border-left: 4px solid #2563eb; border-radius: 10px; padding: 9px 11px; font-size: 11px; color: #1e3a8a; line-height: 1.45; margin-bottom: 10px; }
+        .photo-trust-alert { background: rgba(254, 243, 199, 0.94); border: 1px solid #f59e0b; border-left: 5px solid #d97706; border-radius: 14px; padding: 10px 12px; font-size: 12px; color: #78350f; line-height: 1.45; margin-top: 8px; }
+        .withdraw-history-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 10px; font-size: 11px; color: #111; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
 
         .btn-sos { width: 100%; background: linear-gradient(135deg, rgba(220, 38, 38, 0.72), rgba(185, 28, 28, 0.72)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255,255,255,0.65); padding: 16px; border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45); text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.6); transition: 0.2s; }
         .btn-sos:active { transform: scale(0.97); }
@@ -125,7 +131,7 @@
         .mech-profile-box { background: rgba(249, 250, 251, 0.78); border: 1px solid rgba(209, 213, 219, 0.8); border-radius: 14px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
         footer { text-align: center; padding: 12px; font-size: 11px; color: #f3f4f6; background-color: rgba(0,0,0,0.45); border-top: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        .preview-img-box { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-top: 5px; display: none; }
+        .preview-img-box { width: 78px; height: 78px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-top: 8px; display: none; }
 
         .saved-account-pill { background: rgba(224, 242, 254, 0.85); border: 1px solid #0288d1; border-radius: 50px; padding: 6px 12px; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #0369a1; cursor: pointer; }
         .client-bottom-exit-row { display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: 55px; }
@@ -253,7 +259,7 @@
                         <input type="tel" id="adm-shop-phone" placeholder="11999998888" required>
                         <label>Horário de Funcionamento:</label>
                         <input type="text" id="adm-shop-hours" placeholder="Seg a Sáb: 08:00 às 18:00" required>
-                        <label>Link Foto da Fachada (URL):</label>
+                        <label>Link Foto da Fachada / Moto / Guincho (URL):</label>
                         <input type="text" id="adm-shop-img" placeholder="https://images.unsplash.com/..." required>
                         
                         <div style="display:flex; gap:8px; margin-top:8px;">
@@ -292,7 +298,7 @@
                     <input type="tel" id="edit-shop-phone" required>
                     <label>Horário de Funcionamento:</label>
                     <input type="text" id="edit-shop-hours" required>
-                    <label>Link Foto da Fachada (URL):</label>
+                    <label>Link Foto da Fachada / Moto / Guincho (URL):</label>
                     <input type="text" id="edit-shop-img" required>
                     <div style="display:flex; gap:8px; margin-top:8px;">
                         <div style="flex:1;">
@@ -484,10 +490,37 @@
                 
                 <div id="mech-main-content">
                     
-                    <div class="wallet-card wallet-card-mech">
-                        <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-wallet"></i> Minha Carteira (Saldo Líquido)</span>
+                    <!-- CARTEIRA DIGITAL COM FLUXO DE SAQUE / RESGATE -->
+                    <div class="wallet-card wallet-card-mech" onclick="toggleWithdrawPanel()">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 12px; opacity: 0.95;"><i class="fa-solid fa-wallet"></i> Minha Carteira (Saldo Líquido)</span>
+                            <span class="wallet-action-pill" id="wallet-toggle-badge">
+                                <i class="fa-solid fa-money-bill-transfer"></i> Pedir Saque <i class="fa-solid fa-chevron-down" id="wallet-chevron-icon"></i>
+                            </span>
+                        </div>
                         <div class="wallet-balance" id="mech-wallet-balance">R$ 0,00</div>
-                        <p style="font-size: 11px; opacity: 0.85;">Pagamentos em dinheiro ou troco online ajustam o saldo (pode ficar negativo).</p>
+                        <p style="font-size: 11px; opacity: 0.9;">Toque em <b>Minha Carteira</b> para abrir o caminho de resgate do saldo. Pagamentos em dinheiro ou troco online ajustam o saldo (pode ficar negativo).</p>
+
+                        <div id="wallet-withdraw-panel" class="wallet-withdraw-panel" onclick="event.stopPropagation()">
+                            <div class="wallet-step-path">
+                                <b>Caminho para pedir o resgate do valor:</b><br>
+                                <b>1.</b> Confira seu saldo positivo disponível na carteira.<br>
+                                <b>2.</b> Confira ou informe sua <b>Chave Pix</b> de destino.<br>
+                                <b>3.</b> Digite o valor e toque em <b>Solicitar Resgate via Pix</b>.
+                            </div>
+
+                            <label style="margin-top: 4px;">Valor do Resgate / Saque (R$):</label>
+                            <input type="number" step="0.01" min="1" id="withdraw-amount-input" placeholder="Ex: 50.00">
+
+                            <label>Chave Pix para Receber o Saque:</label>
+                            <input type="text" id="withdraw-pix-key-input" placeholder="CPF, CNPJ, E-mail, Celular ou Chave Aleatória">
+
+                            <button type="button" class="btn-primary" style="background: rgba(22, 163, 74, 0.92); margin-top: 10px;" onclick="requestWalletWithdrawal()">
+                                <i class="fa-solid fa-paper-plane"></i> Solicitar Resgate via Pix
+                            </button>
+
+                            <div id="withdraw-history-box" style="margin-top: 10px;"></div>
+                        </div>
                     </div>
 
                     <div class="status-toggle">
@@ -500,20 +533,25 @@
 
                     <div class="card card-mech" id="mech-profile-card">
                         <h2>
-                            <span><i class="fa-solid fa-store"></i> Dados & Foto da Oficina</span>
+                            <span><i class="fa-solid fa-store"></i> Dados & Foto da Oficina / Veículo</span>
                             <button type="button" id="toggle-profile-view-btn" onclick="toggleMechProfileEdit()" style="background: rgba(2, 136, 209, 0.78); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.7); color:#fff; padding:5px 12px; border-radius:50px; font-size:11px; cursor:pointer; display:none;"><i class="fa-solid fa-pen"></i> Editar Dados</button>
                         </h2>
+
+                        <div class="photo-trust-alert">
+                            📸 <b>Atenção Profissionais (Mecânicos, Motos e Guinchos):</b> É obrigatório enviar uma foto <b>bem nítida e iluminada</b> da sua <b>oficina, moto ou guincho</b> para que o cliente reconheça quem está indo atender e sinta <b>segurança total</b> no socorro.
+                        </div>
                         
                         <div id="mech-profile-form-body">
                             <label>Nome do Responsável / Oficina (Google Auth):</label>
                             <input type="text" id="edit-mech-name" placeholder="Ex: Oficina Mecânica 24h">
 
-                            <label>Foto da Oficina ou Veículo (Arquivos / Câmera):</label>
+                            <label>Foto Bem Nítida da Oficina, Moto ou Guincho (Arquivos / Câmera):</label>
+                            <p style="font-size: 11px; color: #1e3a8a; margin-bottom: 4px;">Mostre claramente a fachada da oficina, a moto de socorro ou o veículo guincho.</p>
                             <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                                <button type="button" class="btn-primary" style="margin-top:0; background: rgba(2, 136, 209, 0.72); flex:1;" onclick="document.getElementById('mech-photo-file').click()"><i class="fa-solid fa-folder-open"></i> Escolher dos Arquivos / Câmera</button>
-                                <input type="file" id="mech-photo-file" accept="image/*" style="display:none;" onchange="handleMechPhotoUpload(event)">
+                                <button type="button" class="btn-primary" style="margin-top:0; background: rgba(2, 136, 209, 0.78); flex:1;" onclick="document.getElementById('mech-photo-file').click()"><i class="fa-solid fa-camera"></i> Tirar / Escolher Foto Nítida</button>
+                                <input type="file" id="mech-photo-file" accept="image/*" capture="environment" style="display:none;" onchange="handleMechPhotoUpload(event)">
                             </div>
-                            <img id="mech-photo-preview" class="preview-img-box" alt="Preview Oficina">
+                            <img id="mech-photo-preview" class="preview-img-box" alt="Preview da Oficina, Moto ou Guincho">
 
                             <label>Endereço Fixo da Oficina:</label>
                             <input type="text" id="edit-mech-address" placeholder="Ex: Av. Brasil, 500 - Itaquaquecetuba">
@@ -530,7 +568,7 @@
                             <label>Preço Base por KM (R$):</label>
                             <input type="text" id="edit-mech-price" placeholder="3.00">
 
-                            <label>Chave Pix para Recebimento:</label>
+                            <label>Chave Pix para Recebimento / Saques:</label>
                             <input type="text" id="edit-mech-pix" placeholder="sua-chave@gmail.com ou CNPJ">
 
                             <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
@@ -538,7 +576,7 @@
                                 <label for="edit-mech-negotiable" style="margin: 0; font-size: 13px; color: #111; cursor: pointer;">Aceitar valores negociáveis com o cliente</label>
                             </div>
 
-                            <button type="button" class="btn-primary" style="margin-top: 12px; background: rgba(37, 99, 235, 0.78);" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados e Confirmar</button>
+                            <button type="button" class="btn-primary" style="margin-top: 12px; background: rgba(37, 99, 235, 0.82);" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados e Confirmar</button>
                         </div>
                     </div>
 
@@ -552,8 +590,8 @@
 
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-list-check"></i> Lista de Chamados Disponíveis</span></h2>
-                        <div id="mech-verification-warning" style="background: rgba(254, 243, 199, 0.9); border:1px solid #f59e0b; padding:10px; border-radius:14px; font-size:12px; color:#b45309; margin-bottom:8px; display:none;">
-                            ⚠️ <b>Confirmação Pendente:</b> Para aceitar chamados e ficar online, preencha todos os seus dados e envie a foto da oficina acima.
+                        <div id="mech-verification-warning" style="background: rgba(254, 243, 199, 0.92); border:1px solid #f59e0b; padding:10px; border-radius:14px; font-size:12px; color:#b45309; margin-bottom:8px; display:none;">
+                            ⚠️ <b>Confirmação Pendente:</b> Para aceitar chamados e ficar online, preencha seus dados e tire uma foto <b>bem nítida</b> da oficina, moto ou guincho para passar segurança ao cliente.
                         </div>
                         <div id="orders-container" style="margin-top: 8px;"></div>
                     </div>
@@ -757,6 +795,7 @@
         var activeSelectedShop = null;
         var selectedAccountToEditKey = null;
         var cachedAdminShops = {};
+        var currentWalletBalance = 0;
 
         var clientLat = -23.4800;
         var clientLng = -46.3500;
@@ -892,6 +931,90 @@
             stream.scrollTop = stream.scrollHeight;
         }
 
+        function toggleWithdrawPanel() {
+            var panel = document.getElementById('wallet-withdraw-panel');
+            var icon = document.getElementById('wallet-chevron-icon');
+            if (!panel) return;
+            var isOpen = panel.style.display === 'block';
+            panel.style.display = isOpen ? 'none' : 'block';
+            if (icon) {
+                icon.className = isOpen ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+            }
+            var pixInput = document.getElementById('withdraw-pix-key-input');
+            if (pixInput && !pixInput.value.trim()) {
+                var profilePix = document.getElementById('edit-mech-pix').value.trim() || (currentMechanic ? currentMechanic.pixKey : '');
+                if (profilePix) pixInput.value = profilePix;
+            }
+        }
+
+        function requestWalletWithdrawal() {
+            if (!currentMechanic || !currentMechanic.id) return;
+            var amountVal = parseFloat(document.getElementById('withdraw-amount-input').value || 0);
+            var pixKey = document.getElementById('withdraw-pix-key-input').value.trim();
+
+            if (isNaN(amountVal) || amountVal <= 0) {
+                alert("⚠️ Informe um valor válido para pedir o resgate.");
+                return;
+            }
+            if (!pixKey) {
+                alert("⚠️ Informe a Chave Pix para receber o valor do saque.");
+                return;
+            }
+            if (amountVal > currentWalletBalance) {
+                alert("⚠️ Saldo insuficiente para resgatar esse valor. Seu saldo disponível é " + formatBRL(currentWalletBalance) + ".");
+                return;
+            }
+
+            rtdb.ref('resgate_wallets/' + currentMechanic.id).transaction((curr) => {
+                var currentBal = parseFloat(curr || 0);
+                if (amountVal > currentBal) return;
+                return parseFloat((currentBal - amountVal).toFixed(2));
+            }, (err, committed) => {
+                if (err || !committed) {
+                    alert("⚠️ Não foi possível concluir o pedido de resgate agora. Verifique seu saldo.");
+                    return;
+                }
+
+                var reqData = {
+                    mechanicId: currentMechanic.id,
+                    mechanicName: currentMechanic.name || 'Profissional',
+                    amount: amountVal.toFixed(2),
+                    pixKey: pixKey,
+                    status: 'solicitado',
+                    createdAt: Date.now()
+                };
+
+                rtdb.ref('resgate_withdraw_requests/' + currentMechanic.id).push(reqData).then(() => {
+                    document.getElementById('withdraw-amount-input').value = '';
+                    alert(`✅ Pedido de resgate de ${formatBRL(amountVal)} enviado para a chave Pix (${pixKey})!`);
+                });
+            });
+        }
+
+        function loadWithdrawHistory() {
+            var box = document.getElementById('withdraw-history-box');
+            if (!box || !currentMechanic || !currentMechanic.id) return;
+            rtdb.ref('resgate_withdraw_requests/' + currentMechanic.id).limitToLast(4).on('value', (snap) => {
+                if (!snap.exists()) {
+                    box.innerHTML = '';
+                    return;
+                }
+                var items = [];
+                snap.forEach((child) => {
+                    items.push(child.val());
+                });
+                items.reverse();
+                var html = '<div style="font-size:11px; font-weight:bold; color:#1e3a8a; margin-top:6px;">Últimos pedidos de resgate:</div>';
+                items.forEach((it) => {
+                    html += `<div class="withdraw-history-item">
+                        <div><b>${formatBRL(it.amount)}</b><br><span style="color:#475569;">Pix: ${it.pixKey}</span></div>
+                        <span style="background:#dbeafe; color:#1d4ed8; padding:2px 8px; border-radius:20px; font-weight:bold;">${it.status || 'Solicitado'}</span>
+                    </div>`;
+                });
+                box.innerHTML = html;
+            });
+        }
+
         window.onload = function() {
             var savedUser = localStorage.getItem('resgate_user');
             if(savedUser) {
@@ -918,6 +1041,7 @@
                 document.getElementById('edit-mech-hours').value = currentMechanic.hours || '';
                 document.getElementById('edit-mech-nightphone').value = currentMechanic.nightPhone || '';
                 document.getElementById('edit-mech-pix').value = currentMechanic.pixKey || '';
+                document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey || '';
                 document.getElementById('edit-mech-negotiable').checked = currentMechanic.negotiable || false;
                 if(currentMechanic.shopPhoto) {
                     var mPrev = document.getElementById('mech-photo-preview');
@@ -1057,7 +1181,7 @@
                     var prev = document.getElementById('mech-photo-preview');
                     prev.src = e.target.result;
                     prev.style.display = 'block';
-                    alert("📸 Foto da oficina carregada com sucesso!");
+                    alert("📸 Foto nítida da oficina, moto ou guincho carregada com sucesso!");
                 };
                 reader.readAsDataURL(file);
             }
@@ -1128,11 +1252,13 @@
                 document.getElementById('edit-mech-hours').value = currentMechanic.hours;
                 document.getElementById('edit-mech-nightphone').value = currentMechanic.nightPhone;
                 document.getElementById('edit-mech-pix').value = currentMechanic.pixKey;
+                document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey;
                 document.getElementById('edit-mech-negotiable').checked = currentMechanic.negotiable;
 
                 document.getElementById('screen-welcome').classList.remove('active');
                 document.getElementById('role-mechanic').classList.add('active');
                 loadMechanicWallet();
+                loadWithdrawHistory();
                 listenLiveOrders();
                 initMechanicMap();
                 checkMechanicVerificationState();
@@ -1174,7 +1300,7 @@
             var phoneVal = document.getElementById('edit-mech-nightphone').value.trim();
             
             if(!nameVal || !phoneVal || !currentMechanic.shopPhoto) {
-                alert("⚠️ Por favor, preencha todos os campos obrigatórios e envie a foto da oficina/veículo para confirmar seu cadastro profissional!");
+                alert("⚠️ Para passar segurança ao cliente, preencha seus dados obrigatórios e envie uma foto bem nítida da oficina, moto ou guincho!");
                 return;
             }
 
@@ -1188,6 +1314,8 @@
             currentMechanic.negotiable = document.getElementById('edit-mech-negotiable').checked;
             currentMechanic.isVerified = true;
 
+            document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey;
+
             localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             rtdb.ref('resgate_mechanics/' + currentMechanic.id).set(currentMechanic);
 
@@ -1195,7 +1323,7 @@
             document.getElementById('toggle-profile-view-btn').style.display = 'inline-block';
             checkMechanicVerificationState();
 
-            alert("✅ Dados salvos e arquivados! Perfil profissional pronto e verificado.");
+            alert("✅ Dados salvos e arquivados! Foto da oficina/veículo registrada e perfil verificado.");
         }
 
         function toggleMechProfileEdit() {
@@ -1217,7 +1345,7 @@
                 warningBox.style.display = 'block';
                 toggleBtn.disabled = true;
                 toggleBtn.style.opacity = '0.5';
-                toggleBtn.title = 'Preencha seus dados e foto para desbloquear';
+                toggleBtn.title = 'Envie uma foto nítida da oficina, moto ou guincho e salve seus dados para desbloquear';
             } else {
                 warningBox.style.display = 'none';
                 toggleBtn.disabled = false;
@@ -1589,6 +1717,7 @@
             if(!currentMechanic) return;
             rtdb.ref('resgate_wallets/' + currentMechanic.id).on('value', (snap) => {
                 var bal = parseFloat(snap.val() || 0);
+                currentWalletBalance = bal;
                 var el = document.getElementById('mech-wallet-balance');
                 el.innerText = formatBRL(bal);
                 el.style.color = bal < 0 ? '#fecaca' : '#ffffff';
@@ -1989,8 +2118,8 @@
         }
 
         function toggleStatus() {
-            if(!currentMechanic || !currentMechanic.isVerified) {
-                alert("⚠️ Você precisa preencher todos os dados e enviar a foto da oficina para ficar online e aceitar chamados.");
+            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto) {
+                alert("⚠️ Você precisa enviar uma foto bem nítida da oficina, moto ou guincho e salvar seus dados para ficar online e aceitar chamados.");
                 return;
             }
 
@@ -2068,7 +2197,7 @@
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
                     } else if(d.status === 'in_custody') {
-                        var canAccept = currentMechanic && currentMechanic.isVerified;
+                        var canAccept = currentMechanic && currentMechanic.isVerified && currentMechanic.shopPhoto;
                         html += `
                             <div class="order-card">
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
@@ -2077,7 +2206,7 @@
                                 </div>
                                 ${canAccept ? 
                                     `<button class="btn-primary" style="background: rgba(22, 163, 74, 0.85); margin-top:6px;" onclick="acceptOrder('${d.id}', ${d.lat}, ${d.lng})"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>` :
-                                    `<p style="color:#dc2626; font-size:11px; font-weight:bold; margin-top:6px;">🔒 Confirmação pendente: Preencha seus dados para aceitar chamados.</p>`
+                                    `<p style="color:#dc2626; font-size:11px; font-weight:bold; margin-top:6px;">🔒 Confirmação pendente: Envie uma foto nítida da oficina, moto ou guincho e salve seus dados para aceitar chamados.</p>`
                                 }
                             </div>
                         `;
@@ -2088,8 +2217,8 @@
         }
 
         function acceptOrder(orderId, orderLat, orderLng) {
-            if(!currentMechanic || !currentMechanic.isVerified) {
-                alert("⚠️ Confirme seus dados profissionais antes de aceitar chamados.");
+            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto) {
+                alert("⚠️ Envie uma foto bem nítida da oficina, moto ou guincho e confirme seus dados antes de aceitar chamados.");
                 return;
             }
             var exactDist = calculateDistanceKm(currentMechanic.lat, currentMechanic.lng, orderLat, orderLng);
