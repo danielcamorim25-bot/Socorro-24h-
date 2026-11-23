@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
@@ -125,13 +126,14 @@
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(8px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(14px); border-radius: 22px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #111; border: 1px solid rgba(255,255,255,0.7); }
+        .modal-content { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); border-radius: 22px; padding: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #111; border: 1px solid rgba(255,255,255,0.7); }
         .modal-title { font-size: 18px; color: #dc2626; margin-bottom: 10px; font-weight: bold; text-align: center; }
 
-        .mech-profile-box { background: rgba(249, 250, 251, 0.78); border: 1px solid rgba(209, 213, 219, 0.8); border-radius: 14px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
+        .mech-profile-box { background: rgba(249, 250, 251, 0.85); border: 1px solid rgba(209, 213, 219, 0.8); border-radius: 14px; padding: 12px; margin: 10px 0; text-align: left; font-size: 13px; color: #111; }
         footer { text-align: center; padding: 12px; font-size: 11px; color: #f3f4f6; background-color: rgba(0,0,0,0.45); border-top: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
         .preview-img-box { width: 78px; height: 78px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-top: 8px; display: none; }
+        .doc-preview-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; border: 1px solid #cbd5e1; margin-top: 6px; display: none; }
 
         .saved-account-pill { background: rgba(224, 242, 254, 0.85); border: 1px solid #0288d1; border-radius: 50px; padding: 6px 12px; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #0369a1; cursor: pointer; }
         .client-bottom-exit-row { display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: 55px; }
@@ -139,9 +141,13 @@
 
         .cash-change-box { background: rgba(255, 247, 237, 0.92); border: 1px solid #fb923c; border-radius: 14px; padding: 10px; margin-top: 10px; font-size: 12px; color: #111; }
 
-        .admin-shop-item { background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 10px; margin-bottom: 8px; font-size: 12px; color: #111; }
+        .admin-shop-item { background: rgba(255,255,255,0.88); border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 10px; margin-bottom: 8px; font-size: 12px; color: #111; }
         .admin-shop-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
         .btn-mini { border: 1px solid rgba(255,255,255,0.7); color: #fff; padding: 6px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; backdrop-filter: blur(6px); }
+
+        .completed-order-item { background: rgba(240, 253, 244, 0.92); border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 14px; padding: 10px; margin-bottom: 8px; font-size: 12px; color: #111; }
+        .chart-tab-btn { flex: 1; padding: 8px 12px; border-radius: 50px; border: 1px solid #2563eb; background: #eff6ff; color: #1e3a8a; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .chart-tab-btn.active { background: #1d4ed8; color: #fff; }
     </style>
 </head>
 <body>
@@ -180,13 +186,42 @@
                         </div>
                     </button>
 
-                    <button class="role-card-btn btn-google" onclick="quickDirectLogin('winch')">
+                    <button class="role-card-btn btn-google" onclick="openWinchPreCheckModal()">
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <div>
                             <h3>Entrar como Guincho (Google)</h3>
-                            <p>Acesso rápido ao reboque integrado.</p>
+                            <p>Envie foto do guincho e documento antes de entrar.</p>
                         </div>
                     </button>
+                </div>
+            </div>
+
+            <!-- MODAL PRÉ-ENTRADA DO GUINCHO (FOTO DO GUINCHO + DOCUMENTO DO GUINCHO) -->
+            <div id="modal-winch-precheck" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-title" style="color:#1e3a8a;"><i class="fa-solid fa-truck-ramp-box"></i> Verificação do Guincho</div>
+                    <p style="font-size: 12px; color: #333; text-align: center; margin-bottom: 10px;">
+                        Para entrar na conta como guincheiro e transmitir confiança aos clientes, envie uma <b>foto nítida do guincho</b> e a <b>foto/imagem do documento do guincho</b>.
+                    </p>
+
+                    <label>1. Foto Bem Nítida do Guincho:</label>
+                    <button type="button" class="btn-primary" style="margin-top:4px; background:rgba(2, 136, 209, 0.85); padding:9px; font-size:12px;" onclick="document.getElementById('winch-vehicle-photo-input').click()">
+                        <i class="fa-solid fa-camera"></i> Tirar / Escolher Foto do Guincho
+                    </button>
+                    <input type="file" id="winch-vehicle-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handleWinchPrecheckFile(event, 'vehicle')">
+                    <img id="winch-vehicle-photo-preview" class="doc-preview-img" alt="Preview do Guincho">
+
+                    <label style="margin-top:10px;">2. Foto / Imagem do Documento do Guincho (CRLV / Documento):</label>
+                    <button type="button" class="btn-primary" style="margin-top:4px; background:rgba(30, 64, 175, 0.85); padding:9px; font-size:12px;" onclick="document.getElementById('winch-doc-photo-input').click()">
+                        <i class="fa-solid fa-id-card"></i> Tirar / Escolher Documento do Guincho
+                    </button>
+                    <input type="file" id="winch-doc-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handleWinchPrecheckFile(event, 'doc')">
+                    <img id="winch-doc-photo-preview" class="doc-preview-img" alt="Preview do Documento do Guincho">
+
+                    <div style="display:flex; gap:8px; margin-top:14px;">
+                        <button type="button" class="btn-primary" style="background:rgba(100, 116, 139, 0.85); margin-top:0; flex:1;" onclick="closeWinchPreCheckModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" style="background:rgba(22, 163, 74, 0.9); margin-top:0; flex:1;" onclick="confirmWinchPreCheckAndLogin()">Enviar e Entrar</button>
+                    </div>
                 </div>
             </div>
 
@@ -207,12 +242,23 @@
             <div id="role-admin-dashboard" class="screen" style="padding: 15px;">
                 <button class="btn-back" onclick="goToWelcome()"><i class="fa-solid fa-arrow-left"></i> Sair do Painel Admin</button>
                 
-                <div class="wallet-card" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.85), rgba(185, 28, 28, 0.85));">
+                <!-- FATURAMENTO CENTRAL CLICÁVEL PARA ABRIR GRÁFICO DE MESES E SEMANAS -->
+                <div class="wallet-card" onclick="openRevenueChartModal()" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.88), rgba(153, 27, 27, 0.92)); cursor: pointer;" title="Toque para ver gráficos por mês e semana">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-chart-line"></i> Faturamento Central (Plataforma)</span>
-                        <span style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 20px;">CNPJ 70.004.251/0001-20</span>
+                        <span style="font-size: 12px; opacity: 0.95;"><i class="fa-solid fa-chart-line"></i> Faturamento Central (Plataforma)</span>
+                        <span style="font-size: 10px; background: rgba(255,255,255,0.22); padding: 3px 9px; border-radius: 20px; font-weight:bold;"><i class="fa-solid fa-chart-column"></i> Ver Gráficos</span>
                     </div>
                     <div class="wallet-balance" id="admin-total-revenue">R$ 0,00</div>
+                    <p style="font-size: 11px; opacity: 0.9;">Toque aqui para abrir o gráfico de faturamento por meses e semanas • CNPJ 70.004.251/0001-20</p>
+                </div>
+
+                <!-- SOLICITAÇÕES DE RESGATE / SAQUE PARA O ADMINISTRADOR PAGAR VIA PIX -->
+                <div class="card">
+                    <h2><span><i class="fa-solid fa-money-bill-transfer"></i> Solicitações de Resgate (Pix)</span></h2>
+                    <p style="font-size: 11px; color: #333; margin-bottom: 8px;">Veja quem pediu o resgate, o valor e copie a chave Pix para transferir facilmente.</p>
+                    <div id="admin-withdraw-requests-list" style="max-height: 240px; overflow-y: auto;">
+                        <p style="font-size: 12px; color: #333;">Nenhuma solicitação de resgate pendente.</p>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -226,9 +272,11 @@
                     </div>
                 </div>
 
+                <!-- PROFISSIONAIS CONECTADOS (CLICÁVEIS PARA VER DADOS COMPLETOS) -->
                 <div class="card">
-                    <h2><i class="fa-solid fa-user-check"></i> Profissionais Conectados</h2>
-                    <div id="admin-online-mechanics-list" style="max-height: 150px; overflow-y: auto;">
+                    <h2><span><i class="fa-solid fa-user-check"></i> Profissionais Conectados</span></h2>
+                    <p style="font-size: 11px; color: #333; margin-bottom: 6px;">Toque em qualquer profissional conectado para ver todos os dados dele.</p>
+                    <div id="admin-online-mechanics-list" style="max-height: 170px; overflow-y: auto;">
                         <p style="font-size: 12px; color: #333;">Nenhum profissional online no momento.</p>
                     </div>
                 </div>
@@ -276,6 +324,40 @@
 
                         <button type="submit" class="btn-primary" style="margin-top: 10px;">Publicar no Mapa</button>
                     </form>
+                </div>
+            </div>
+
+            <!-- MODAL GRÁFICO DE FATURAMENTO (MESES E SEMANAS) -->
+            <div id="modal-revenue-chart" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-title" style="color:#b91c1c;"><i class="fa-solid fa-chart-column"></i> Faturamento da Plataforma</div>
+                    <p style="font-size: 12px; color: #333; text-align: center; margin-bottom: 10px;">
+                        Total acumulado: <b id="chart-total-summary" style="color:#16a34a;">R$ 0,00</b>
+                    </p>
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <button type="button" id="tab-chart-months" class="chart-tab-btn active" onclick="switchRevenueChartMode('months')">Por Meses</button>
+                        <button type="button" id="tab-chart-weeks" class="chart-tab-btn" onclick="switchRevenueChartMode('weeks')">Por Semanas</button>
+                    </div>
+                    <div style="background:#fff; padding:10px; border-radius:14px; border:1px solid #e2e8f0; height:240px;">
+                        <canvas id="revenue-chart-canvas"></canvas>
+                    </div>
+                    <button type="button" class="btn-primary" style="background: rgba(100, 116, 139, 0.85); margin-top:12px;" onclick="closeRevenueChartModal()">Fechar</button>
+                </div>
+            </div>
+
+            <!-- MODAL DETALHES DO PROFISSIONAL CONECTADO (ADMIN) -->
+            <div id="modal-connected-pro-detail" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-title" style="color:#1e3a8a;"><i class="fa-solid fa-id-badge"></i> Dados do Profissional</div>
+                    <div style="text-align:center; margin-bottom:10px;">
+                        <img id="pro-detail-photo" src="" alt="Foto do Profissional" style="width:90px; height:90px; object-fit:cover; border-radius:50%; border:2px solid #2563eb; display:inline-block;">
+                    </div>
+                    <div class="mech-profile-box" id="pro-detail-info" style="line-height:1.6;"></div>
+                    <div id="pro-detail-doc-box" style="display:none; margin-top:8px;">
+                        <b style="font-size:12px; color:#1e3a8a;">Documento do Guincho Enviado:</b>
+                        <img id="pro-detail-doc-img" src="" alt="Documento do Guincho" class="doc-preview-img" style="display:block;">
+                    </div>
+                    <button type="button" class="btn-primary" style="background: rgba(100, 116, 139, 0.85); margin-top:12px;" onclick="closeConnectedProModal()">Fechar</button>
                 </div>
             </div>
 
@@ -537,18 +619,19 @@
                             <button type="button" id="toggle-profile-view-btn" onclick="toggleMechProfileEdit()" style="background: rgba(2, 136, 209, 0.78); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.7); color:#fff; padding:5px 12px; border-radius:50px; font-size:11px; cursor:pointer; display:none;"><i class="fa-solid fa-pen"></i> Editar Dados</button>
                         </h2>
 
-                        <div class="photo-trust-alert">
-                            📸 <b>Atenção Profissionais (Mecânicos, Motos e Guinchos):</b> É obrigatório enviar uma foto <b>bem nítida e iluminada</b> da sua <b>oficina, moto ou guincho</b> para que o cliente reconheça quem está indo atender e sinta <b>segurança total</b> no socorro.
+                        <!-- AVISO QUE DESAPARECE APÓS CONFIRMAR DADOS + FOTO NÍTIDA -->
+                        <div id="mech-photo-trust-alert" class="photo-trust-alert">
+                            📸 <b>Atenção Profissionais (Mecânicos, Motos e Guinchos):</b> É obrigatório enviar uma foto <b>bonita e bem iluminada</b> da sua <b>oficina, moto ou guincho</b> para que o cliente reconheça quem está indo atender e sinta <b>segurança total</b> no socorro. Após confirmar os dados e a foto, este aviso sai da tela.
                         </div>
                         
                         <div id="mech-profile-form-body">
                             <label>Nome do Responsável / Oficina (Google Auth):</label>
                             <input type="text" id="edit-mech-name" placeholder="Ex: Oficina Mecânica 24h">
 
-                            <label>Foto Bem Nítida da Oficina, Moto ou Guincho (Arquivos / Câmera):</label>
+                            <label>Foto Bonita e Bem Iluminada da Oficina, Moto ou Guincho:</label>
                             <p style="font-size: 11px; color: #1e3a8a; margin-bottom: 4px;">Mostre claramente a fachada da oficina, a moto de socorro ou o veículo guincho.</p>
                             <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                                <button type="button" class="btn-primary" style="margin-top:0; background: rgba(2, 136, 209, 0.78); flex:1;" onclick="document.getElementById('mech-photo-file').click()"><i class="fa-solid fa-camera"></i> Tirar / Escolher Foto Nítida</button>
+                                <button type="button" class="btn-primary" style="margin-top:0; background: rgba(2, 136, 209, 0.78); flex:1;" onclick="document.getElementById('mech-photo-file').click()"><i class="fa-solid fa-camera"></i> Tirar / Escolher Foto Iluminada</button>
                                 <input type="file" id="mech-photo-file" accept="image/*" capture="environment" style="display:none;" onchange="handleMechPhotoUpload(event)">
                             </div>
                             <img id="mech-photo-preview" class="preview-img-box" alt="Preview da Oficina, Moto ou Guincho">
@@ -576,7 +659,12 @@
                                 <label for="edit-mech-negotiable" style="margin: 0; font-size: 13px; color: #111; cursor: pointer;">Aceitar valores negociáveis com o cliente</label>
                             </div>
 
-                            <button type="button" class="btn-primary" style="margin-top: 12px; background: rgba(37, 99, 235, 0.82);" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados e Confirmar</button>
+                            <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="confirm-photo-quality-check" style="width: 18px; height: 18px;">
+                                <label for="confirm-photo-quality-check" style="margin: 0; font-size: 12px; color: #1e3a8a; cursor: pointer;">Confirmo que a foto está bonita, iluminada e nítida para o cliente</label>
+                            </div>
+
+                            <button type="button" class="btn-primary" style="margin-top: 12px; background: rgba(37, 99, 235, 0.82);" onclick="updateMechanicProfileSettings()">Salvar Todos os Dados e Confirmar Foto</button>
                         </div>
                     </div>
 
@@ -591,9 +679,18 @@
                     <div class="card card-mech">
                         <h2><span><i class="fa-solid fa-list-check"></i> Lista de Chamados Disponíveis</span></h2>
                         <div id="mech-verification-warning" style="background: rgba(254, 243, 199, 0.92); border:1px solid #f59e0b; padding:10px; border-radius:14px; font-size:12px; color:#b45309; margin-bottom:8px; display:none;">
-                            ⚠️ <b>Confirmação Pendente:</b> Para aceitar chamados e ficar online, preencha seus dados e tire uma foto <b>bem nítida</b> da oficina, moto ou guincho para passar segurança ao cliente.
+                            ⚠️ <b>Confirmação Pendente:</b> Para aceitar chamados e ficar online, preencha seus dados e confirme uma foto <b>bonita e iluminada</b> da oficina, moto ou guincho para passar segurança ao cliente.
                         </div>
                         <div id="orders-container" style="margin-top: 8px;"></div>
+                    </div>
+
+                    <!-- PARTE DE BAIXO: CHAMADOS JÁ REALIZADOS E VALORES JÁ PAGOS -->
+                    <div class="card card-mech">
+                        <h2><span><i class="fa-solid fa-circle-check"></i> Chamados Realizados & Valores Pagos</span></h2>
+                        <p style="font-size: 11px; color: #333; margin-bottom: 8px;">Histórico salvo dos serviços concluídos e valores creditados/pagos.</p>
+                        <div id="mech-completed-orders-list" style="max-height: 240px; overflow-y: auto;">
+                            <p style="font-size: 12px; color: #333;">Nenhum chamado concluído ainda.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -795,7 +892,14 @@
         var activeSelectedShop = null;
         var selectedAccountToEditKey = null;
         var cachedAdminShops = {};
+        var cachedOnlinePros = {};
+        var cachedAllOrders = [];
         var currentWalletBalance = 0;
+        var revenueChartInstance = null;
+        var revenueChartMode = 'months';
+
+        var winchPrecheckVehiclePhoto = "";
+        var winchPrecheckDocPhoto = "";
 
         var clientLat = -23.4800;
         var clientLng = -46.3500;
@@ -918,6 +1022,15 @@
             });
         }
 
+        function copyTextValue(textVal, labelText) {
+            if (!textVal) return;
+            navigator.clipboard.writeText(textVal).then(() => {
+                alert(`📋 ${labelText || 'Chave Pix'} copiada: ${textVal}`);
+            }).catch(() => {
+                prompt("Copie abaixo:", textVal);
+            });
+        }
+
         function openSupportWhatsApp() {
             window.open("https://api.whatsapp.com/send?phone=" + SUPPORT_PHONE + "&text=" + encodeURIComponent("Olá! Preciso de suporte no Resgate 24 Horas."), '_blank');
         }
@@ -929,6 +1042,66 @@
             stream.innerHTML += `<div class="bot-msg user">${action === 'como' ? 'Como funciona?' : 'Sobre o Pagamento'}</div>`;
             stream.innerHTML += `<div class="bot-msg">${text}</div>`;
             stream.scrollTop = stream.scrollHeight;
+        }
+
+        function openWinchPreCheckModal() {
+            var savedMech = localStorage.getItem('resgate_mechanic');
+            if (savedMech) {
+                var parsed = JSON.parse(savedMech);
+                if (parsed.winchVehiclePhoto) {
+                    winchPrecheckVehiclePhoto = parsed.winchVehiclePhoto;
+                    var vPrev = document.getElementById('winch-vehicle-photo-preview');
+                    vPrev.src = winchPrecheckVehiclePhoto;
+                    vPrev.style.display = 'block';
+                }
+                if (parsed.winchDocPhoto) {
+                    winchPrecheckDocPhoto = parsed.winchDocPhoto;
+                    var dPrev = document.getElementById('winch-doc-photo-preview');
+                    dPrev.src = winchPrecheckDocPhoto;
+                    dPrev.style.display = 'block';
+                }
+            }
+            document.getElementById('modal-winch-precheck').classList.add('active');
+        }
+
+        function closeWinchPreCheckModal() {
+            document.getElementById('modal-winch-precheck').classList.remove('active');
+        }
+
+        function handleWinchPrecheckFile(event, kind) {
+            var file = event.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                if (kind === 'vehicle') {
+                    winchPrecheckVehiclePhoto = e.target.result;
+                    var vPrev = document.getElementById('winch-vehicle-photo-preview');
+                    vPrev.src = e.target.result;
+                    vPrev.style.display = 'block';
+                } else {
+                    winchPrecheckDocPhoto = e.target.result;
+                    var dPrev = document.getElementById('winch-doc-photo-preview');
+                    dPrev.src = e.target.result;
+                    dPrev.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function confirmWinchPreCheckAndLogin() {
+            if (!winchPrecheckVehiclePhoto || !winchPrecheckDocPhoto) {
+                alert("⚠️ É obrigatório enviar a foto do guincho e a foto/imagem do documento do guincho antes de entrar na conta.");
+                return;
+            }
+            if (!currentMechanic) currentMechanic = {};
+            currentMechanic.winchVehiclePhoto = winchPrecheckVehiclePhoto;
+            currentMechanic.winchDocPhoto = winchPrecheckDocPhoto;
+            if (!currentMechanic.shopPhoto) {
+                currentMechanic.shopPhoto = winchPrecheckVehiclePhoto;
+            }
+            localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
+            closeWinchPreCheckModal();
+            quickDirectLogin('winch');
         }
 
         function toggleWithdrawPanel() {
@@ -978,13 +1151,16 @@
                 var reqData = {
                     mechanicId: currentMechanic.id,
                     mechanicName: currentMechanic.name || 'Profissional',
+                    mechanicType: currentMechanic.type || 'Mecânico',
                     amount: amountVal.toFixed(2),
                     pixKey: pixKey,
                     status: 'solicitado',
                     createdAt: Date.now()
                 };
 
-                rtdb.ref('resgate_withdraw_requests/' + currentMechanic.id).push(reqData).then(() => {
+                var refPush = rtdb.ref('resgate_withdraw_requests/' + currentMechanic.id).push();
+                reqData.requestId = refPush.key;
+                refPush.set(reqData).then(() => {
                     document.getElementById('withdraw-amount-input').value = '';
                     alert(`✅ Pedido de resgate de ${formatBRL(amountVal)} enviado para a chave Pix (${pixKey})!`);
                 });
@@ -1006,13 +1182,56 @@
                 items.reverse();
                 var html = '<div style="font-size:11px; font-weight:bold; color:#1e3a8a; margin-top:6px;">Últimos pedidos de resgate:</div>';
                 items.forEach((it) => {
+                    var badgeColor = it.status === 'pago' ? '#dcfce7' : (it.status === 'recusado' ? '#fee2e2' : '#dbeafe');
+                    var textColor = it.status === 'pago' ? '#15803d' : (it.status === 'recusado' ? '#b91c1c' : '#1d4ed8');
                     html += `<div class="withdraw-history-item">
                         <div><b>${formatBRL(it.amount)}</b><br><span style="color:#475569;">Pix: ${it.pixKey}</span></div>
-                        <span style="background:#dbeafe; color:#1d4ed8; padding:2px 8px; border-radius:20px; font-weight:bold;">${it.status || 'Solicitado'}</span>
+                        <span style="background:${badgeColor}; color:${textColor}; padding:2px 8px; border-radius:20px; font-weight:bold; text-transform:capitalize;">${it.status || 'Solicitado'}</span>
                     </div>`;
                 });
                 box.innerHTML = html;
             });
+        }
+
+        function refreshMechPhotoNoticeVisibility() {
+            var alertEl = document.getElementById('mech-photo-trust-alert');
+            if (!alertEl) return;
+            var hasConfirmedPhoto = Boolean(
+                currentMechanic &&
+                currentMechanic.isVerified &&
+                currentMechanic.photoConfirmed &&
+                (currentMechanic.shopPhoto || currentMechanic.winchVehiclePhoto)
+            );
+            alertEl.style.display = hasConfirmedPhoto ? 'none' : 'block';
+        }
+
+        function renderMechanicCompletedOrders() {
+            var box = document.getElementById('mech-completed-orders-list');
+            if (!box) return;
+            var mechId = currentMechanic ? currentMechanic.id : null;
+            var completed = cachedAllOrders.filter(o => o.status === 'completed' && (!mechId || o.mechanicId === mechId));
+
+            if (completed.length === 0) {
+                box.innerHTML = '<p style="font-size:12px; color:#333;">Nenhum chamado concluído ainda.</p>';
+                return;
+            }
+
+            completed.sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0));
+            var html = '';
+            completed.forEach((o) => {
+                var paidVal = parseFloat(o.netCredited || o.mechPay || o.clientTotal || 0);
+                var payModeLabel = o.paymentMode === 'cash' ? 'Dinheiro' : 'Pix';
+                html += `<div class="completed-order-item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <b>✅ ${o.problem || 'Serviço'} — ${o.clientName || 'Cliente'}</b>
+                        <span style="color:#15803d; font-weight:bold;">${formatBRL(paidVal)}</span>
+                    </div>
+                    <div style="color:#374151; font-size:11px; margin-top:3px;">
+                        Pgto: <b>${payModeLabel}</b> • Distância: <b>${o.distanceKm || '--'} km</b> • Total serviço: ${formatBRL(o.clientTotal || 0)}
+                    </div>
+                </div>`;
+            });
+            box.innerHTML = html;
         }
 
         window.onload = function() {
@@ -1043,6 +1262,7 @@
                 document.getElementById('edit-mech-pix').value = currentMechanic.pixKey || '';
                 document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey || '';
                 document.getElementById('edit-mech-negotiable').checked = currentMechanic.negotiable || false;
+                document.getElementById('confirm-photo-quality-check').checked = Boolean(currentMechanic.photoConfirmed);
                 if(currentMechanic.shopPhoto) {
                     var mPrev = document.getElementById('mech-photo-preview');
                     mPrev.src = currentMechanic.shopPhoto;
@@ -1053,6 +1273,7 @@
                     document.getElementById('toggle-profile-view-btn').style.display = 'inline-block';
                 }
             }
+            refreshMechPhotoNoticeVisibility();
             goToWelcome();
         };
 
@@ -1181,7 +1402,7 @@
                     var prev = document.getElementById('mech-photo-preview');
                     prev.src = e.target.result;
                     prev.style.display = 'block';
-                    alert("📸 Foto nítida da oficina, moto ou guincho carregada com sucesso!");
+                    alert("📸 Foto bonita e iluminada da oficina, moto ou guincho carregada com sucesso!");
                 };
                 reader.readAsDataURL(file);
             }
@@ -1224,10 +1445,16 @@
             } else {
                 var mechId = (currentMechanic && currentMechanic.id) ? currentMechanic.id : ('MECH-' + Math.floor(Math.random() * 90000 + 10000));
                 var savedMechName = document.getElementById('edit-mech-name').value.trim();
+                var vPhoto = (currentMechanic && currentMechanic.winchVehiclePhoto) ? currentMechanic.winchVehiclePhoto : winchPrecheckVehiclePhoto;
+                var dPhoto = (currentMechanic && currentMechanic.winchDocPhoto) ? currentMechanic.winchDocPhoto : winchPrecheckDocPhoto;
+                var sPhoto = (currentMechanic && currentMechanic.shopPhoto) ? currentMechanic.shopPhoto : (vPhoto || "");
+
                 currentMechanic = {
                     id: mechId,
                     name: savedMechName || (role === 'winch' ? "Guincho 24h Express (Google Auth)" : "Oficina Mecânica Parceira (Google Auth)"),
-                    shopPhoto: currentMechanic && currentMechanic.shopPhoto ? currentMechanic.shopPhoto : "",
+                    shopPhoto: sPhoto,
+                    winchVehiclePhoto: vPhoto || "",
+                    winchDocPhoto: dPhoto || "",
                     specialty: (currentMechanic && currentMechanic.specialty) ? currentMechanic.specialty : (role === 'winch' ? "Guincho e Reboque" : "Mecânica Geral & Borracharia"),
                     pricePerKm: (currentMechanic && currentMechanic.pricePerKm) ? currentMechanic.pricePerKm : "3.00",
                     phone: "(11) 99999-9999",
@@ -1237,7 +1464,8 @@
                     hours: (currentMechanic && currentMechanic.hours) ? currentMechanic.hours : "08:00 às 18:00",
                     negotiable: true,
                     online: false,
-                    isVerified: currentMechanic ? currentMechanic.isVerified : false,
+                    photoConfirmed: currentMechanic ? Boolean(currentMechanic.photoConfirmed) : false,
+                    isVerified: currentMechanic ? Boolean(currentMechanic.isVerified) : false,
                     type: role === 'winch' ? "Guincho" : "Mecânico",
                     lat: lat,
                     lng: lng
@@ -1254,6 +1482,13 @@
                 document.getElementById('edit-mech-pix').value = currentMechanic.pixKey;
                 document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey;
                 document.getElementById('edit-mech-negotiable').checked = currentMechanic.negotiable;
+                document.getElementById('confirm-photo-quality-check').checked = Boolean(currentMechanic.photoConfirmed);
+
+                if (currentMechanic.shopPhoto) {
+                    var mPrev = document.getElementById('mech-photo-preview');
+                    mPrev.src = currentMechanic.shopPhoto;
+                    mPrev.style.display = 'block';
+                }
 
                 document.getElementById('screen-welcome').classList.remove('active');
                 document.getElementById('role-mechanic').classList.add('active');
@@ -1262,6 +1497,7 @@
                 listenLiveOrders();
                 initMechanicMap();
                 checkMechanicVerificationState();
+                refreshMechPhotoNoticeVisibility();
             }
             currentRole = role;
             updateLogoutButton();
@@ -1298,9 +1534,14 @@
             if(!currentMechanic) return;
             var nameVal = document.getElementById('edit-mech-name').value.trim();
             var phoneVal = document.getElementById('edit-mech-nightphone').value.trim();
+            var photoOkChecked = document.getElementById('confirm-photo-quality-check').checked;
             
             if(!nameVal || !phoneVal || !currentMechanic.shopPhoto) {
-                alert("⚠️ Para passar segurança ao cliente, preencha seus dados obrigatórios e envie uma foto bem nítida da oficina, moto ou guincho!");
+                alert("⚠️ Para passar segurança ao cliente, preencha seus dados obrigatórios e envie uma foto bonita e iluminada da oficina, moto ou guincho!");
+                return;
+            }
+            if(!photoOkChecked) {
+                alert("⚠️ Marque a caixa confirmando que a foto está bonita, iluminada e nítida para o cliente.");
                 return;
             }
 
@@ -1312,6 +1553,7 @@
             currentMechanic.nightPhone = phoneVal;
             currentMechanic.pixKey = document.getElementById('edit-mech-pix').value.trim() || "70004251000120";
             currentMechanic.negotiable = document.getElementById('edit-mech-negotiable').checked;
+            currentMechanic.photoConfirmed = true;
             currentMechanic.isVerified = true;
 
             document.getElementById('withdraw-pix-key-input').value = currentMechanic.pixKey;
@@ -1322,8 +1564,9 @@
             document.getElementById('mech-profile-form-body').style.display = 'none';
             document.getElementById('toggle-profile-view-btn').style.display = 'inline-block';
             checkMechanicVerificationState();
+            refreshMechPhotoNoticeVisibility();
 
-            alert("✅ Dados salvos e arquivados! Foto da oficina/veículo registrada e perfil verificado.");
+            alert("✅ Dados salvos e foto confirmada! O aviso foi removido da tela principal.");
         }
 
         function toggleMechProfileEdit() {
@@ -1341,11 +1584,11 @@
             var warningBox = document.getElementById('mech-verification-warning');
             var toggleBtn = document.getElementById('toggle-status-btn');
             
-            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto) {
+            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto || !currentMechanic.photoConfirmed) {
                 warningBox.style.display = 'block';
                 toggleBtn.disabled = true;
                 toggleBtn.style.opacity = '0.5';
-                toggleBtn.title = 'Envie uma foto nítida da oficina, moto ou guincho e salve seus dados para desbloquear';
+                toggleBtn.title = 'Envie e confirme uma foto bonita e iluminada da oficina, moto ou guincho para desbloquear';
             } else {
                 warningBox.style.display = 'none';
                 toggleBtn.disabled = false;
@@ -1374,11 +1617,62 @@
         function loadAdminData() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var totalRev = 0;
+                var ordersArr = [];
                 snap.forEach((child) => {
                     var o = child.val();
+                    ordersArr.push(o);
                     if(o.status === 'completed') totalRev += parseFloat(o.clientTotal || 0);
                 });
+                cachedAllOrders = ordersArr;
                 document.getElementById('admin-total-revenue').innerText = formatBRL(totalRev);
+                document.getElementById('chart-total-summary').innerText = formatBRL(totalRev);
+                if (document.getElementById('modal-revenue-chart').classList.contains('active')) {
+                    renderRevenueChart();
+                }
+            });
+
+            rtdb.ref('resgate_withdraw_requests').on('value', (snap) => {
+                var reqBox = document.getElementById('admin-withdraw-requests-list');
+                if (!reqBox) return;
+                if (!snap.exists()) {
+                    reqBox.innerHTML = '<p style="font-size:12px; color:#333;">Nenhuma solicitação de resgate no momento.</p>';
+                    return;
+                }
+                var allReqs = [];
+                snap.forEach((mechGroup) => {
+                    mechGroup.forEach((reqChild) => {
+                        allReqs.push(reqChild.val());
+                    });
+                });
+                allReqs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                var html = '';
+                allReqs.forEach((r) => {
+                    var isDone = r.status === 'pago';
+                    var isRejected = r.status === 'recusado';
+                    var statusBadge = isDone
+                        ? '<span style="background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold;">PAGO</span>'
+                        : (isRejected
+                            ? '<span style="background:#fee2e2; color:#b91c1c; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold;">RECUSADO</span>'
+                            : '<span style="background:#fef3c7; color:#b45309; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold;">PENDENTE</span>');
+
+                    html += `<div class="admin-shop-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>${r.mechanicName || 'Profissional'}</b>
+                            ${statusBadge}
+                        </div>
+                        <div style="color:#15803d; font-weight:bold; font-size:13px; margin-top:3px;">Valor: ${formatBRL(r.amount || 0)}</div>
+                        <div style="color:#1e3a8a; font-size:12px; margin-top:2px;"><b>Chave Pix:</b> <span style="user-select:all;">${r.pixKey || '--'}</span></div>
+                        <div class="admin-shop-actions">
+                            <button type="button" class="btn-mini" style="background:rgba(2, 136, 209, 0.9);" onclick="copyTextValue('${(r.pixKey || '').replace(/'/g, '')}', 'Chave Pix')"><i class="fa-solid fa-copy"></i> Copiar Pix</button>
+                            ${(!isDone && !isRejected) ? `
+                                <button type="button" class="btn-mini" style="background:rgba(22, 163, 74, 0.9);" onclick="markWithdrawRequestPaid('${r.mechanicId}', '${r.requestId}')"><i class="fa-solid fa-check"></i> Marcar Pago</button>
+                                <button type="button" class="btn-mini" style="background:rgba(220, 38, 38, 0.88);" onclick="rejectWithdrawRequest('${r.mechanicId}', '${r.requestId}', ${parseFloat(r.amount || 0)})"><i class="fa-solid fa-xmark"></i> Recusar</button>
+                            ` : ''}
+                        </div>
+                    </div>`;
+                });
+                reqBox.innerHTML = html;
             });
 
             rtdb.ref('resgate_shops').on('value', (snap) => {
@@ -1427,7 +1721,7 @@
                                 name: m.name,
                                 type: m.type || "Mecânico / Prestador",
                                 phone: m.nightPhone || m.phone || "Não informado",
-                                photo: m.shopPhoto || "https://images.unsplash.com/photo-1581092335397-9583fe92d232",
+                                photo: m.shopPhoto || m.winchVehiclePhoto || "https://images.unsplash.com/photo-1581092335397-9583fe92d232",
                                 specialty: m.specialty,
                                 address: m.address
                             });
@@ -1456,20 +1750,160 @@
             rtdb.ref('resgate_mechanics').on('value', (snap) => {
                 var onlineCount = 0;
                 var onlineHtml = '';
+                cachedOnlinePros = {};
                 
                 snap.forEach((child) => {
                     var m = child.val();
                     if(m.online) {
                         onlineCount++;
-                        onlineHtml += `<div style="background:rgba(232, 245, 233, 0.9); border:1px solid #c8e6c9; padding:8px; border-radius:12px; margin-bottom:5px; font-size:12px; display:flex; align-items:center; gap:10px; color:#111;">
-                            <img src="${m.shopPhoto || 'https://images.unsplash.com/photo-1581092335397-9583fe92d232'}" style="width:36px; height:36px; object-fit:cover; border-radius:50%;">
-                            <div><b>🟢 ${m.name}</b><br><span style="font-size:10px; color:#333;">${m.specialty} | R$ ${m.pricePerKm || '3.00'}/km</span></div>
+                        var proId = m.id || child.key;
+                        m.id = proId;
+                        cachedOnlinePros[proId] = m;
+                        onlineHtml += `<div onclick="openConnectedProModal('${proId}')" style="background:rgba(232, 245, 233, 0.94); border:1px solid #c8e6c9; padding:8px; border-radius:12px; margin-bottom:5px; font-size:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; color:#111; cursor:pointer;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="${m.shopPhoto || m.winchVehiclePhoto || 'https://images.unsplash.com/photo-1581092335397-9583fe92d232'}" style="width:36px; height:36px; object-fit:cover; border-radius:50%;">
+                                <div><b>🟢 ${m.name}</b><br><span style="font-size:10px; color:#333;">${m.specialty || m.type} | R$ ${m.pricePerKm || '3.00'}/km</span></div>
+                            </div>
+                            <span style="font-size:11px; color:#1e3a8a; font-weight:bold;">Ver dados <i class="fa-solid fa-chevron-right"></i></span>
                         </div>`;
                     }
                 });
 
                 document.getElementById('admin-online-count').innerText = onlineCount;
                 document.getElementById('admin-online-mechanics-list').innerHTML = onlineHtml || '<p style="font-size:12px; color:#333;">Nenhum profissional online no momento.</p>';
+            });
+        }
+
+        function markWithdrawRequestPaid(mechId, reqId) {
+            if (!mechId || !reqId) return;
+            rtdb.ref('resgate_withdraw_requests/' + mechId + '/' + reqId).update({
+                status: 'pago',
+                paidAt: Date.now()
+            }).then(() => {
+                alert("✅ Resgate marcado como PAGO!");
+            });
+        }
+
+        function rejectWithdrawRequest(mechId, reqId, amountFloat) {
+            if (!mechId || !reqId) return;
+            rtdb.ref('resgate_withdraw_requests/' + mechId + '/' + reqId).update({
+                status: 'recusado',
+                rejectedAt: Date.now()
+            }).then(() => {
+                rtdb.ref('resgate_wallets/' + mechId).transaction((curr) => {
+                    return parseFloat(((parseFloat(curr || 0)) + parseFloat(amountFloat || 0)).toFixed(2));
+                });
+                alert("↩️ Resgate recusado e valor devolvido para a carteira do profissional.");
+            });
+        }
+
+        function openConnectedProModal(proId) {
+            var pro = cachedOnlinePros[proId];
+            if (!pro) return;
+            document.getElementById('pro-detail-photo').src = pro.shopPhoto || pro.winchVehiclePhoto || 'https://images.unsplash.com/photo-1581092335397-9583fe92d232';
+            document.getElementById('pro-detail-info').innerHTML = `
+                <p><b>Nome:</b> ${pro.name || '--'}</p>
+                <p><b>Perfil:</b> ${pro.type || 'Profissional'}</p>
+                <p><b>Especialidade:</b> ${pro.specialty || '--'}</p>
+                <p><b>Endereço:</b> ${pro.address || '--'}</p>
+                <p><b>Horário:</b> ${pro.hours || '--'}</p>
+                <p><b>Telefone / WhatsApp:</b> ${pro.nightPhone || pro.phone || '--'}</p>
+                <p><b>Chave Pix:</b> ${pro.pixKey || '--'}</p>
+                <p><b>Preço por KM:</b> R$ ${pro.pricePerKm || '3.00'}</p>
+                <p><b>GPS:</b> ${pro.lat ? parseFloat(pro.lat).toFixed(6) : '--'}, ${pro.lng ? parseFloat(pro.lng).toFixed(6) : '--'}</p>
+            `;
+            var docBox = document.getElementById('pro-detail-doc-box');
+            var docImg = document.getElementById('pro-detail-doc-img');
+            if (pro.winchDocPhoto) {
+                docBox.style.display = 'block';
+                docImg.src = pro.winchDocPhoto;
+            } else {
+                docBox.style.display = 'none';
+            }
+            document.getElementById('modal-connected-pro-detail').classList.add('active');
+        }
+
+        function closeConnectedProModal() {
+            document.getElementById('modal-connected-pro-detail').classList.remove('active');
+        }
+
+        function openRevenueChartModal() {
+            document.getElementById('modal-revenue-chart').classList.add('active');
+            renderRevenueChart();
+        }
+
+        function closeRevenueChartModal() {
+            document.getElementById('modal-revenue-chart').classList.remove('active');
+        }
+
+        function switchRevenueChartMode(mode) {
+            revenueChartMode = mode;
+            document.getElementById('tab-chart-months').classList.toggle('active', mode === 'months');
+            document.getElementById('tab-chart-weeks').classList.toggle('active', mode === 'weeks');
+            renderRevenueChart();
+        }
+
+        function renderRevenueChart() {
+            var canvas = document.getElementById('revenue-chart-canvas');
+            if (!canvas || typeof Chart === 'undefined') return;
+
+            var completedOrders = cachedAllOrders.filter(o => o.status === 'completed');
+            var labels = [];
+            var values = [];
+
+            if (revenueChartMode === 'months') {
+                var monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                var monthTotals = new Array(12).fill(0);
+                completedOrders.forEach((o) => {
+                    var ts = o.completedAt || Date.now();
+                    var d = new Date(ts);
+                    var mIdx = isNaN(d.getMonth()) ? 10 : d.getMonth();
+                    monthTotals[mIdx] += parseFloat(o.clientTotal || 0);
+                });
+                labels = monthNames;
+                values = monthTotals.map(v => parseFloat(v.toFixed(2)));
+            } else {
+                var weekTotals = [0, 0, 0, 0];
+                completedOrders.forEach((o) => {
+                    var ts = o.completedAt || Date.now();
+                    var d = new Date(ts);
+                    var day = isNaN(d.getDate()) ? 1 : d.getDate();
+                    var wIdx = Math.min(3, Math.floor((day - 1) / 7));
+                    weekTotals[wIdx] += parseFloat(o.clientTotal || 0);
+                });
+                labels = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
+                values = weekTotals.map(v => parseFloat(v.toFixed(2)));
+            }
+
+            if (revenueChartInstance) {
+                revenueChartInstance.destroy();
+            }
+
+            revenueChartInstance = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: revenueChartMode === 'months' ? 'Faturamento Mensal (R$)' : 'Faturamento Semanal (R$)',
+                        data: values,
+                        backgroundColor: 'rgba(220, 38, 38, 0.78)',
+                        borderColor: '#991b1b',
+                        borderWidth: 1,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
             });
         }
 
@@ -1692,13 +2126,7 @@
                 saveUserToHistoryRegistry(currentUser);
             }
             if(watchPosId) navigator.geolocation.clearWatch(watchPosId);
-            localStorage.removeItem('resgate_user');
             currentUser = null;
-            document.getElementById('client-profile-name').value = '';
-            document.getElementById('client-profile-phone').value = '';
-            document.getElementById('client-selfie-preview').style.display = 'none';
-            document.getElementById('client-profile-form-body').style.display = 'block';
-            document.getElementById('toggle-client-profile-btn').style.display = 'none';
             goToWelcome();
             alert("👋 Você saiu da conta. Seus dados ficaram salvos no sistema para próximo acesso rápido!");
         }
@@ -1706,10 +2134,7 @@
         function logoutCurrentRole() {
             if(watchPosId) navigator.geolocation.clearWatch(watchPosId);
             if(currentUser) saveUserToHistoryRegistry(currentUser);
-            localStorage.removeItem('resgate_user');
-            localStorage.removeItem('resgate_mechanic');
-            currentUser = null;
-            currentMechanic = null;
+            if(currentMechanic) localStorage.setItem('resgate_mechanic', JSON.stringify(currentMechanic));
             goToWelcome();
         }
 
@@ -1850,7 +2275,7 @@
         function openShopDetails(shop) {
             activeSelectedShop = shop;
             document.getElementById('shop-modal-title').innerHTML = `<i class="fa-solid fa-store"></i> ${shop.name || shop.shopName}`;
-            document.getElementById('shop-modal-img').src = shop.img || shop.shopPhoto || 'https://images.unsplash.com/photo-1580273916550-e323be2ae537';
+            document.getElementById('shop-modal-img').src = shop.img || shop.shopPhoto || shop.winchVehiclePhoto || 'https://images.unsplash.com/photo-1580273916550-e323be2ae537';
             
             var infoHtml = `
                 <p><b>Distância até você:</b> ${shop._distanceKm || '--'} km</p>
@@ -2118,8 +2543,8 @@
         }
 
         function toggleStatus() {
-            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto) {
-                alert("⚠️ Você precisa enviar uma foto bem nítida da oficina, moto ou guincho e salvar seus dados para ficar online e aceitar chamados.");
+            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto || !currentMechanic.photoConfirmed) {
+                alert("⚠️ Você precisa enviar e confirmar uma foto bonita e iluminada da oficina, moto ou guincho e salvar seus dados para ficar online e aceitar chamados.");
                 return;
             }
 
@@ -2160,14 +2585,22 @@
         function listenLiveOrders() {
             rtdb.ref('resgate_orders').on('value', (snap) => {
                 var container = document.getElementById('orders-container');
+                var allOrders = [];
+                if(snap.exists()) {
+                    snap.forEach((child) => {
+                        allOrders.push(child.val());
+                    });
+                }
+                cachedAllOrders = allOrders;
+                renderMechanicCompletedOrders();
+
                 if(!snap.exists()) {
                     if(container) container.innerHTML = '<p style="font-size:12px; text-align:center; color:#111;">Nenhum chamado disponível.</p>';
                     return;
                 }
 
                 var html = '';
-                snap.forEach((child) => {
-                    var d = child.val();
+                allOrders.forEach((d) => {
                     if(d.status === 'completed' || d.status === 'cancelled') return;
 
                     var realDist = currentMechanic ? calculateDistanceKm(currentMechanic.lat, currentMechanic.lng, d.lat, d.lng) : (d.distanceKm || 3.5);
@@ -2197,7 +2630,7 @@
                         `;
                         listenChatMessages(d.id, 'mech-chat-messages');
                     } else if(d.status === 'in_custody') {
-                        var canAccept = currentMechanic && currentMechanic.isVerified && currentMechanic.shopPhoto;
+                        var canAccept = currentMechanic && currentMechanic.isVerified && currentMechanic.shopPhoto && currentMechanic.photoConfirmed;
                         html += `
                             <div class="order-card">
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
@@ -2206,7 +2639,7 @@
                                 </div>
                                 ${canAccept ? 
                                     `<button class="btn-primary" style="background: rgba(22, 163, 74, 0.85); margin-top:6px;" onclick="acceptOrder('${d.id}', ${d.lat}, ${d.lng})"><i class="fa-solid fa-check"></i> Aceitar Chamado</button>` :
-                                    `<p style="color:#dc2626; font-size:11px; font-weight:bold; margin-top:6px;">🔒 Confirmação pendente: Envie uma foto nítida da oficina, moto ou guincho e salve seus dados para aceitar chamados.</p>`
+                                    `<p style="color:#dc2626; font-size:11px; font-weight:bold; margin-top:6px;">🔒 Confirmação pendente: Envie e confirme uma foto bonita e iluminada da oficina, moto ou guincho para aceitar chamados.</p>`
                                 }
                             </div>
                         `;
@@ -2217,8 +2650,8 @@
         }
 
         function acceptOrder(orderId, orderLat, orderLng) {
-            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto) {
-                alert("⚠️ Envie uma foto bem nítida da oficina, moto ou guincho e confirme seus dados antes de aceitar chamados.");
+            if(!currentMechanic || !currentMechanic.isVerified || !currentMechanic.shopPhoto || !currentMechanic.photoConfirmed) {
+                alert("⚠️ Envie e confirme uma foto bonita e iluminada da oficina, moto ou guincho antes de aceitar chamados.");
                 return;
             }
             var exactDist = calculateDistanceKm(currentMechanic.lat, currentMechanic.lng, orderLat, orderLng);
@@ -2327,7 +2760,9 @@
                     if(committed) {
                         rtdb.ref('resgate_orders/' + closingOrderId).update({
                             status: 'completed',
-                            onlineChangeSent: onlineChangeToSend.toFixed(2)
+                            onlineChangeSent: onlineChangeToSend.toFixed(2),
+                            netCredited: netAdjustment.toFixed(2),
+                            completedAt: Date.now()
                         }).then(() => {
                             closeClosingModal();
                             activeOrderId = null;
