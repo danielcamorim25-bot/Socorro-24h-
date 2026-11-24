@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resgate 24 Horas - Socorro Rápido</title>
     <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -31,6 +35,8 @@
         }
         
         header { background: rgba(255, 152, 0, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; padding: 15px 20px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.35); border-bottom-left-radius: 22px; border-bottom-right-radius: 22px; }
+        .header-brand-row { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .header-brand-icon { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
         header h1 { font-size: 22px; margin-bottom: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         header p { font-size: 12px; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
@@ -155,7 +161,10 @@
     <div class="app-container">
         <header>
             <button class="admin-corner-btn" onclick="openAdminLoginModal()" title="Painel Admin"><i class="fa-solid fa-lock"></i></button>
-            <h1><i class="fa-solid fa-truck-fast"></i> Resgate 24 Horas</h1>
+            <div class="header-brand-row">
+                <img src="./icon-192.png" alt="Ícone Resgate 24 Horas" class="header-brand-icon">
+                <h1><i class="fa-solid fa-truck-fast"></i> Resgate 24 Horas</h1>
+            </div>
             <p>Socorro Mecânico na Rodovia e Cidade</p>
             <button id="logout-btn" class="btn-logout-top" onclick="logoutCurrentRole()">
                 <i class="fa-solid fa-right-from-bracket"></i> Sair
